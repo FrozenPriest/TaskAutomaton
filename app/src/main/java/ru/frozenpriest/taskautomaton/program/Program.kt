@@ -1,5 +1,6 @@
 package ru.frozenpriest.taskautomaton.program
 
+import android.content.Context
 import ru.frozenpriest.taskautomaton.MainActivity
 
 class Program(val commands: List<Command>) {
@@ -12,9 +13,9 @@ class Program(val commands: List<Command>) {
 
     val commandPointer: Int = 0
 
-    fun executeCommands() {
+    fun executeCommands(context: Context) {
         for (commandPointer in commands.indices) {
-            commands[commandPointer].perform(this)
+            commands[commandPointer].perform(this, context)
         }
 
         for(variable in variables) {
