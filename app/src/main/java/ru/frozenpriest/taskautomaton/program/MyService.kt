@@ -15,6 +15,7 @@ import android.view.WindowManager
 import android.widget.TextView
 import androidx.core.app.NotificationCompat
 import ru.frozenpriest.taskautomaton.R
+import ru.frozenpriest.taskautomaton.utils.HtmlViewBuilder
 
 
 class MyService : Service() {
@@ -38,21 +39,16 @@ class MyService : Service() {
     }
 
     fun showHtml(html: String) {
-        val params = WindowManager.LayoutParams(
-            WindowManager.LayoutParams.WRAP_CONTENT,
-            WindowManager.LayoutParams.WRAP_CONTENT,
-            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
-            PixelFormat.TRANSLUCENT
-        )
-        params.gravity = Gravity.CENTER
-        params.x = 0
-        params.y = 0
-        val view = LayoutInflater.from(applicationContext).inflate(R.layout.view_holder_task, null)
-        val textView: TextView = view.findViewById(R.id.textView2)
-        textView.text = Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY)
-        textView.setOnClickListener { windowManager.removeView(view) }
-        windowManager.addView(view, params)
+        HtmlViewBuilder(applicationContext, windowManager)
+            .setBackgroundColor("#123343")
+            .setTextColor("#665500")
+            .setGravity(Gravity.TOP or Gravity.CENTER_HORIZONTAL)
+            .setHtml(html)
+            .setExpireTime(10000)
+            .build()
+
+
+
     }
 
     private fun startForegroundService() {
