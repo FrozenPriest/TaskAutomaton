@@ -6,20 +6,20 @@ import android.app.NotificationManager.IMPORTANCE_LOW
 import android.app.Service
 import android.content.Context
 import android.content.Intent
-import android.graphics.PixelFormat
+import android.graphics.Color
 import android.os.IBinder
-import android.text.Html
 import android.view.Gravity
-import android.view.LayoutInflater
+import android.view.View
 import android.view.WindowManager
-import android.widget.TextView
+import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import ru.frozenpriest.taskautomaton.R
-import ru.frozenpriest.taskautomaton.utils.HtmlViewBuilder
-
+import ru.frozenpriest.taskautomaton.program.commands.gui.ShowHtml
+import ru.frozenpriest.taskautomaton.program.commands.gui.ShowToast
+import ru.frozenpriest.taskautomaton.program.commands.variables.AddVar
+import ru.frozenpriest.taskautomaton.program.commands.variables.SetVar
 
 class MyService : Service() {
-    private lateinit var windowManager: WindowManager
 
     override fun onBind(intent: Intent?): IBinder? {
         return null
@@ -30,25 +30,38 @@ class MyService : Service() {
         startForegroundService()
 
         windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
-        showHtml("<html>\n" +
-                "<body>\n" +
-                "<h1 style=\"font-size:300%;\">This is a heading</h1>\n" +
-                "<p>Do not forget to buy <mark>milk</mark> today.</p>\n" +
-                "</body>\n" +
-                "</html>\n")
+
+        val list = listOf(
+            SetVar("funkyVar1", true),
+            SetVar("funkyVar2", 5),
+            SetVar("funkyVar3", 3.0),
+            SetVar("funkyVar4", 2),
+            SetVar("funkyVar5", -6),
+            AddVar("funkyVar888", "funkyVar2", "funkyVar3"),
+            AddVar("funkyVar999", "funkyVar2", "funkyVar5"),
+            ShowToast("New text %s, to go %s", arrayOf("funkyVar1", "funkyVar2"), Toast.LENGTH_LONG),
+            ShowHtml(
+                "<html>\n" +
+                        "<body>\n" +
+                        "<h1 style=\"font-size:300%%;\">This is a heading</h1>\n" +
+                        "<p>Do not (%s, %s) forget to buy <mark>milk</mark> today.</p>\n" +
+                        "</body>\n" +
+                        "</html>\n",
+                duration = 15000,
+                args = arrayOf("funkyVar1", "funkyVar4"),
+                textColor = Color.WHITE,
+                backgroundColor = Color.BLACK,
+                gravity = Gravity.START or Gravity.CENTER_VERTICAL
+            )
+        )
+
+        val program = Program(list)
+
+        program.executeCommands(applicationContext)
     }
 
-    fun showHtml(html: String) {
-        HtmlViewBuilder(applicationContext, windowManager)
-            .setBackgroundColor("#123343")
-            .setTextColor("#665500")
-            .setGravity(Gravity.TOP or Gravity.CENTER_HORIZONTAL)
-            .setHtml(html)
-            .setExpireTime(10000)
-            .build()
-
-
-
+    fun showWindowedView(view: View, params: WindowManager.LayoutParams) {
+        windowManager.addView(view, params)
     }
 
     private fun startForegroundService() {
@@ -72,14 +85,11 @@ class MyService : Service() {
             NotificationChannel(NOTIFICATION_CHANNEL_ID, NOTIFICATION_CHANNEL_NAME, IMPORTANCE_LOW)
 
         notificationManager.createNotificationChannel(channel)
-
     }
-
-
     companion object {
-        val NOTIFICATION_CHANNEL_ID = "service_channel"
-        val NOTIFICATION_CHANNEL_NAME = "Service channel"
-        val NOTIFICATION_ID = 13
+        const val NOTIFICATION_CHANNEL_ID = "service_channel"
+        const val NOTIFICATION_CHANNEL_NAME = "Service channel"
+        const val NOTIFICATION_ID = 13
+        lateinit var windowManager: WindowManager
     }
-
 }

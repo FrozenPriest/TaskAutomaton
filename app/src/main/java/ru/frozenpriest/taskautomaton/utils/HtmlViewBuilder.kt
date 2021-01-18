@@ -1,17 +1,22 @@
 package ru.frozenpriest.taskautomaton.utils
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.graphics.PixelFormat
 import android.os.CountDownTimer
 import android.text.Html
 import android.view.LayoutInflater
+import android.view.View
 import android.view.WindowManager
 import android.widget.TextView
 import ru.frozenpriest.taskautomaton.R
+import ru.frozenpriest.taskautomaton.program.MyService
 
-class HtmlViewBuilder(private val applicationContext: Context, private val windowManager: WindowManager) {
-    private val params = WindowManager.LayoutParams(
+class HtmlViewBuilder(
+    private val applicationContext: Context,
+) {
+    val params = WindowManager.LayoutParams(
         WindowManager.LayoutParams.WRAP_CONTENT,
         WindowManager.LayoutParams.WRAP_CONTENT,
         WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
@@ -19,23 +24,24 @@ class HtmlViewBuilder(private val applicationContext: Context, private val windo
         PixelFormat.TRANSLUCENT
     )
 
+
     private var html: String = ""
     private var backgroundColor: Int = Color.WHITE
     private var textColor: Int = Color.BLACK
     private var time = -1L
 
-    fun setGravity(gravity: Int) : HtmlViewBuilder {
+    fun setGravity(gravity: Int): HtmlViewBuilder {
         params.gravity = gravity
         return this
     }
 
-    fun setBackgroundColor(hexColor: String): HtmlViewBuilder {
-        backgroundColor = Color.parseColor(hexColor)
+    fun setBackgroundColor(color: Int): HtmlViewBuilder {
+        backgroundColor = color
         return this
     }
 
-    fun setTextColor(hexColor: String): HtmlViewBuilder {
-        textColor = Color.parseColor(hexColor)
+    fun setTextColor(color: Int): HtmlViewBuilder {
+        textColor = color
         return this
     }
 
@@ -49,7 +55,8 @@ class HtmlViewBuilder(private val applicationContext: Context, private val windo
         return this
     }
 
-    fun build() {
+    @SuppressLint("InflateParams")
+    fun build(): View {
         params.x = 0
         params.y = 0
 
@@ -57,18 +64,21 @@ class HtmlViewBuilder(private val applicationContext: Context, private val windo
         val view = LayoutInflater.from(applicationContext).inflate(R.layout.view_html_popup, null)
         val textView: TextView = view.findViewById(R.id.textViewHtml)
         textView.text = Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY)
-        textView.setOnClickListener { windowManager.removeView(view) }
+        textView.setOnClickListener {
+            if (view.windowToken != null) MyService.windowManager.removeView(view)
+        }
         textView.setBackgroundColor(backgroundColor)
         textView.setTextColor(textColor)
-        if(time > 0) {
-            val timer = object: CountDownTimer(time, time) {
+        if (time > 0) {
+            val timer = object : CountDownTimer(time, time) {
                 override fun onTick(millisUntilFinished: Long) {}
 
-                override fun onFinish() {windowManager.removeView(view)}
+                override fun onFinish() {
+                    if (view.windowToken != null) MyService.windowManager.removeView(view)
+                }
             }
             timer.start()
         }
-
-        windowManager.addView(view, params)
+        return view
     }
 }

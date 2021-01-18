@@ -17,9 +17,5 @@ class Program(val commands: List<Command>) {
         for (commandPointer in commands.indices) {
             commands[commandPointer].perform(this, context)
         }
-
-        for(variable in variables) {
-            MainActivity.tv.append("Var: $variable\n")
-        }
     }
 }
