@@ -22,6 +22,7 @@ class Program(val commands: List<Command>) {
     fun executeCommands(context: Context) {
         commandPointer = 0
         while (commandPointer < commands.size) {
+            println("Executing command ${commands[commandPointer]::class.simpleName}")
             commands[commandPointer].perform(this, context)
             commandPointer++
         }

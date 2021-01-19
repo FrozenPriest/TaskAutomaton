@@ -36,35 +36,45 @@ class MyService : Service() {
         windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
 
         val list = listOf(
-            SetVar("funkyVar1", true),
-            SetVar("funkyVar2", 5),
-            SetVar("funkyVar3", 3.0),
-            SetVar("funkyVar4", 2),
-            SetVar("funkyVar5", -6),
-            AddVar("funkyVar888", "funkyVar2", "funkyVar3"),
-            AddVar("funkyVar999", "funkyVar2", "funkyVar5"),
-
+            SetVar("funkyVar1", false),
+            SetVar("funkyVar2", true),
             IfCondition(CheckVar("funkyVar1")),
-            ShowHtml(
-                "<html>\n" +
-                        "<body>\n" +
-                        "<h1 style=\"font-size:300%%;\">This is a heading</h1>\n" +
-                        "<p>Do not (%s, %s) forget to buy <mark>milk</mark> today.</p>\n" +
-                        "</body>\n" +
-                        "</html>\n",
-                duration = 15000,
-                args = arrayOf("funkyVar1", "funkyVar4"),
-                textColor = Color.WHITE,
-                backgroundColor = Color.BLACK,
-                gravity = Gravity.START or Gravity.CENTER_VERTICAL
-            ),
+                IfCondition(CheckVar("funkyVar2")),
+                    ShowToast(
+                        "Test test test",
+                        arrayOf(),
+                        Toast.LENGTH_LONG
+                    ),
+                EndIf(),
+                ElseCondition(),
+                    ShowToast(
+                        "NOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO",
+                        arrayOf(),
+                        Toast.LENGTH_LONG
+                    ),
+                EndElse(),
+            EndIf(),
+            IfCondition(CheckVar("funkyVar1")),
+                ShowHtml(
+                    "<html>\n" +
+                            "<body>\n" +
+                            "<h1 style=\"font-size:300%%;\">This is a heading</h1>\n" +
+                            "<p>Do not (%s, %s) forget to buy <mark>milk</mark> today.</p>\n" +
+                            "</body>\n" +
+                            "</html>\n",
+                    duration = 15000,
+                    args = arrayOf("funkyVar1", "funkyVar4"),
+                    textColor = Color.WHITE,
+                    backgroundColor = Color.BLACK,
+                    gravity = Gravity.START or Gravity.CENTER_VERTICAL
+                ),
             EndIf(),
             ElseCondition(),
-            ShowToast(
-                "New text %s, to go %s",
-                arrayOf("funkyVar1", "funkyVar2"),
-                Toast.LENGTH_LONG
-            ),
+                ShowToast(
+                    "New text %s, to go %s",
+                    arrayOf("funkyVar1", "funkyVar2"),
+                    Toast.LENGTH_LONG
+                ),
             EndElse()
         )
 
