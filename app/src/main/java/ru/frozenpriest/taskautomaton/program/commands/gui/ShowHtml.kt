@@ -15,7 +15,7 @@ class ShowHtml(
     private val textColor: Int = Color.BLACK,
     private val gravity: Int = Gravity.CENTER,
     private val duration: Long = -1
-) : Command {
+) : Command() {
     override fun perform(program: Program, context: Context) {
         val vars = args.map { program.variables[it] }.toTypedArray()
         val fixedHTML = String.format(stringToShow, *vars)

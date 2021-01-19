@@ -11,7 +11,7 @@ class SubVar(
     private val varRes: String,
     private val varName1: String,
     private val varName2: String
-) : Command {
+) : Command() {
     override fun perform(program: Program, context: Context) {
 
         val a = program.variables[varName1]

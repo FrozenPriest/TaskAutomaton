@@ -2,13 +2,14 @@ package ru.frozenpriest.taskautomaton.program.commands.variables
 
 import android.content.Context
 import ru.frozenpriest.taskautomaton.program.Command
+import ru.frozenpriest.taskautomaton.program.Conditional
 import ru.frozenpriest.taskautomaton.program.Program
 
 /**
  * varResult = isExist(varName)
  */
-class ExistVar(val varResult: String, val varName: String): Command {
+class ExistVar(val varName: String): Conditional() {
     override fun perform(program: Program, context: Context) {
-        program.variables[varResult] = program.variables.containsKey(varName)
+        conditionResult = program.variables.containsKey(varName)
     }
 }

@@ -9,14 +9,18 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.IBinder
 import android.view.Gravity
-import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import ru.frozenpriest.taskautomaton.R
 import ru.frozenpriest.taskautomaton.program.commands.gui.ShowHtml
 import ru.frozenpriest.taskautomaton.program.commands.gui.ShowToast
+import ru.frozenpriest.taskautomaton.program.commands.logic.ElseCondition
+import ru.frozenpriest.taskautomaton.program.commands.logic.EndElse
+import ru.frozenpriest.taskautomaton.program.commands.logic.EndIf
+import ru.frozenpriest.taskautomaton.program.commands.logic.IfCondition
 import ru.frozenpriest.taskautomaton.program.commands.variables.AddVar
+import ru.frozenpriest.taskautomaton.program.commands.variables.CheckVar
 import ru.frozenpriest.taskautomaton.program.commands.variables.SetVar
 
 class MyService : Service() {
@@ -39,7 +43,8 @@ class MyService : Service() {
             SetVar("funkyVar5", -6),
             AddVar("funkyVar888", "funkyVar2", "funkyVar3"),
             AddVar("funkyVar999", "funkyVar2", "funkyVar5"),
-            ShowToast("New text %s, to go %s", arrayOf("funkyVar1", "funkyVar2"), Toast.LENGTH_LONG),
+
+            IfCondition(CheckVar("funkyVar1")),
             ShowHtml(
                 "<html>\n" +
                         "<body>\n" +
@@ -52,18 +57,22 @@ class MyService : Service() {
                 textColor = Color.WHITE,
                 backgroundColor = Color.BLACK,
                 gravity = Gravity.START or Gravity.CENTER_VERTICAL
-            )
+            ),
+            EndIf(),
+            ElseCondition(),
+            ShowToast(
+                "New text %s, to go %s",
+                arrayOf("funkyVar1", "funkyVar2"),
+                Toast.LENGTH_LONG
+            ),
+            EndElse()
         )
 
         val program = Program(list)
 
         program.executeCommands(applicationContext)
     }
-
-    fun showWindowedView(view: View, params: WindowManager.LayoutParams) {
-        windowManager.addView(view, params)
-    }
-
+    
     private fun startForegroundService() {
         val notificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -86,6 +95,7 @@ class MyService : Service() {
 
         notificationManager.createNotificationChannel(channel)
     }
+
     companion object {
         const val NOTIFICATION_CHANNEL_ID = "service_channel"
         const val NOTIFICATION_CHANNEL_NAME = "Service channel"
