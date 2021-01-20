@@ -2,10 +2,10 @@ package ru.frozenpriest.taskautomaton.program.commands.logic
 
 import android.content.Context
 import ru.frozenpriest.taskautomaton.program.Command
-import ru.frozenpriest.taskautomaton.program.Conditional
+import ru.frozenpriest.taskautomaton.program.Function
 import ru.frozenpriest.taskautomaton.program.Program
 
-class WhileCondition(private val condition: Conditional) : Command() {
+class WhileCondition(private val condition: Function) : Command() {
     override fun perform(program: Program, context: Context) {
         condition.perform(program, context)
         if (!condition.conditionResult) {

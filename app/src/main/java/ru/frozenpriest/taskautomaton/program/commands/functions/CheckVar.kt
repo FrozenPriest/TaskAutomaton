@@ -1,10 +1,10 @@
-package ru.frozenpriest.taskautomaton.program.commands.conditionals
+package ru.frozenpriest.taskautomaton.program.commands.functions
 
 import android.content.Context
-import ru.frozenpriest.taskautomaton.program.Conditional
+import ru.frozenpriest.taskautomaton.program.Function
 import ru.frozenpriest.taskautomaton.program.Program
 
-class CheckVar(private val varNmae: String): Conditional() {
+class CheckVar(private val varNmae: String): Function() {
     override fun perform(program: Program, context: Context) {
         val ev = ExistVar(varNmae)
         ev.perform(program, context)
