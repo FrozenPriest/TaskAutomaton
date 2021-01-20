@@ -1,4 +1,4 @@
-package ru.frozenpriest.taskautomaton.program.commands.gui
+package ru.frozenpriest.taskautomaton.program.commands.output
 
 import android.content.Context
 import android.graphics.Color

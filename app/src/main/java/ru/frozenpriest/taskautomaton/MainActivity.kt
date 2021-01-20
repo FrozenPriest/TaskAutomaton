@@ -6,14 +6,8 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import ru.frozenpriest.taskautomaton.program.Command
 import ru.frozenpriest.taskautomaton.program.MyService
-import ru.frozenpriest.taskautomaton.program.Program
-import ru.frozenpriest.taskautomaton.program.commands.gui.ShowToast
-import ru.frozenpriest.taskautomaton.program.commands.variables.AddVar
-import ru.frozenpriest.taskautomaton.program.commands.variables.SetVar
 
 
 class MainActivity : AppCompatActivity() {

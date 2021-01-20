@@ -7,19 +7,21 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.os.IBinder
+import android.speech.tts.TextToSpeech
+import android.util.Log
 import android.view.WindowManager
-import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import ru.frozenpriest.taskautomaton.R
-import ru.frozenpriest.taskautomaton.program.commands.gui.ShowToast
-import ru.frozenpriest.taskautomaton.program.commands.logic.EndWhile
-import ru.frozenpriest.taskautomaton.program.commands.logic.WhileCondition
-import ru.frozenpriest.taskautomaton.program.commands.variables.IncVar
 import ru.frozenpriest.taskautomaton.program.commands.conditionals.LowerVar
 import ru.frozenpriest.taskautomaton.program.commands.conditionals.NotConditional
+import ru.frozenpriest.taskautomaton.program.commands.logic.EndWhile
+import ru.frozenpriest.taskautomaton.program.commands.logic.WhileCondition
+import ru.frozenpriest.taskautomaton.program.commands.output.UseTts
+import ru.frozenpriest.taskautomaton.program.commands.variables.IncVar
 import ru.frozenpriest.taskautomaton.program.commands.variables.SetVar
+import java.util.*
 
-class MyService : Service() {
+class MyService : Service(), TextToSpeech.OnInitListener {
 
     override fun onBind(intent: Intent?): IBinder? {
         return null
@@ -30,7 +32,14 @@ class MyService : Service() {
         startForegroundService()
 
         windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        // creating TTS:
+        mTts = TextToSpeech(this, this)
 
+
+
+    }
+
+    private fun executeDebug() {
         val list = listOf(
             SetVar("funkyVar1", false),
             SetVar("funkyVar2", true),
@@ -38,7 +47,7 @@ class MyService : Service() {
             SetVar("f4", 9),
             SetVar("f10", 10),
             WhileCondition(NotConditional(LowerVar("f10", "f3"))),
-                ShowToast("Test is %s", arrayOf("f3"), Toast.LENGTH_SHORT),
+                UseTts("Test is %s", arrayOf("f3"), Locale.ENGLISH),
                 IncVar("f3"),
             EndWhile(),
             /*
@@ -110,10 +119,27 @@ class MyService : Service() {
         notificationManager.createNotificationChannel(channel)
     }
 
+
+    override fun onInit(status: Int) {
+        if (status == TextToSpeech.SUCCESS) {
+            val result = mTts.setLanguage(Locale.US)
+            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                Log.e("TTS", "The Language specified is not supported!")
+            } else {
+                mTts.stop()
+                executeDebug()
+            }
+        } else {
+            Log.e("TTS", "Initilization Failed!")
+        }
+    }
+
     companion object {
         const val NOTIFICATION_CHANNEL_ID = "service_channel"
         const val NOTIFICATION_CHANNEL_NAME = "Service channel"
         const val NOTIFICATION_ID = 13
         lateinit var windowManager: WindowManager
+        lateinit var mTts: TextToSpeech
+
     }
 }
