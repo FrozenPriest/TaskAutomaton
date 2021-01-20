@@ -32,8 +32,8 @@ class Program(val commands: List<Command>) {
         var level = 0
         for(command in commands) {
             command.level = level
-            if((command is IfCondition) or (command is ElseCondition)) level++
-            if((command is EndIf) or (command is EndElse)) {
+            if((command is IfCondition) || (command is ElseCondition)) level++
+            if((command is EndIf) || (command is EndElse)) {
                 command.level--
                 level--
             }

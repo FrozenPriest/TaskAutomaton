@@ -6,21 +6,16 @@ import android.app.NotificationManager.IMPORTANCE_LOW
 import android.app.Service
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.os.IBinder
-import android.view.Gravity
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import ru.frozenpriest.taskautomaton.R
-import ru.frozenpriest.taskautomaton.program.commands.gui.ShowHtml
 import ru.frozenpriest.taskautomaton.program.commands.gui.ShowToast
-import ru.frozenpriest.taskautomaton.program.commands.logic.ElseCondition
-import ru.frozenpriest.taskautomaton.program.commands.logic.EndElse
-import ru.frozenpriest.taskautomaton.program.commands.logic.EndIf
-import ru.frozenpriest.taskautomaton.program.commands.logic.IfCondition
-import ru.frozenpriest.taskautomaton.program.commands.variables.AddVar
-import ru.frozenpriest.taskautomaton.program.commands.variables.CheckVar
+import ru.frozenpriest.taskautomaton.program.commands.logic.EndWhile
+import ru.frozenpriest.taskautomaton.program.commands.logic.WhileCondition
+import ru.frozenpriest.taskautomaton.program.commands.variables.IncVar
+import ru.frozenpriest.taskautomaton.program.commands.variables.LowerVar
 import ru.frozenpriest.taskautomaton.program.commands.variables.SetVar
 
 class MyService : Service() {
@@ -38,6 +33,18 @@ class MyService : Service() {
         val list = listOf(
             SetVar("funkyVar1", false),
             SetVar("funkyVar2", true),
+            SetVar("f3", 0),
+            SetVar("f4", 9),
+            SetVar("f10", 10),
+            WhileCondition(LowerVar("f4", "f10")),
+                ShowToast("Test is %s", arrayOf("f3"), Toast.LENGTH_SHORT),
+                IncVar("f4"),
+            EndWhile(),
+            WhileCondition(LowerVar("f3", "f10")),
+                ShowToast("Var is %s", arrayOf("f3"), Toast.LENGTH_SHORT),
+                IncVar("f3"),
+            EndWhile()
+            /*
             IfCondition(CheckVar("funkyVar1")),
                 IfCondition(CheckVar("funkyVar2")),
                     ShowToast(
@@ -75,14 +82,14 @@ class MyService : Service() {
                     arrayOf("funkyVar1", "funkyVar2"),
                     Toast.LENGTH_LONG
                 ),
-            EndElse()
+            EndElse()*/
         )
 
         val program = Program(list)
 
         program.executeCommands(applicationContext)
     }
-    
+
     private fun startForegroundService() {
         val notificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
