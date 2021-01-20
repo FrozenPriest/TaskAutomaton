@@ -6,23 +6,44 @@ import android.app.NotificationManager.IMPORTANCE_LOW
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.IBinder
+import android.os.Vibrator
 import android.speech.tts.TextToSpeech
 import android.util.Log
+import android.view.Gravity
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import ru.frozenpriest.taskautomaton.R
+import ru.frozenpriest.taskautomaton.program.commands.conditionals.CheckVar
 import ru.frozenpriest.taskautomaton.program.commands.conditionals.LowerVar
 import ru.frozenpriest.taskautomaton.program.commands.conditionals.NotConditional
-import ru.frozenpriest.taskautomaton.program.commands.logic.EndWhile
-import ru.frozenpriest.taskautomaton.program.commands.logic.WhileCondition
+import ru.frozenpriest.taskautomaton.program.commands.logic.*
+import ru.frozenpriest.taskautomaton.program.commands.output.ShowHtml
+import ru.frozenpriest.taskautomaton.program.commands.output.ShowToast
 import ru.frozenpriest.taskautomaton.program.commands.output.UseTts
+import ru.frozenpriest.taskautomaton.program.commands.output.VibrateWithPattern
 import ru.frozenpriest.taskautomaton.program.commands.variables.IncVar
 import ru.frozenpriest.taskautomaton.program.commands.variables.SetVar
 import java.util.*
 
 class MyService : Service(), TextToSpeech.OnInitListener {
 
+    /*
+    todo
+        ожидание конца ттс
+        Генерируемый звуковой сигнал
+         Уведомление
+         Запуск приложения
+
+         Wifi on/off
+         Bluetooth on/off
+         DnD on/off
+         NFC on/off
+         Wake device
+         
+     */
     override fun onBind(intent: Intent?): IBinder? {
         return null
     }
@@ -32,25 +53,27 @@ class MyService : Service(), TextToSpeech.OnInitListener {
         startForegroundService()
 
         windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
-        // creating TTS:
+        // creating TTS
         mTts = TextToSpeech(this, this)
-
+        //creating vibrator
+        vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
 
 
     }
 
     private fun executeDebug() {
         val list = listOf(
-            SetVar("funkyVar1", false),
+            SetVar("funkyVar1", true),
             SetVar("funkyVar2", true),
             SetVar("f3", 0),
             SetVar("f4", 9),
             SetVar("f10", 10),
+            VibrateWithPattern(arrayOf(200, 100, 200, 100, 400, 200, 500)),
             WhileCondition(NotConditional(LowerVar("f10", "f3"))),
                 UseTts("Test is %s", arrayOf("f3"), Locale.ENGLISH),
                 IncVar("f3"),
             EndWhile(),
-            /*
+
             IfCondition(CheckVar("funkyVar1")),
                 IfCondition(CheckVar("funkyVar2")),
                     ShowToast(
@@ -88,7 +111,7 @@ class MyService : Service(), TextToSpeech.OnInitListener {
                     arrayOf("funkyVar1", "funkyVar2"),
                     Toast.LENGTH_LONG
                 ),
-            EndElse()*/
+            EndElse()
         )
 
         val program = Program(list)
@@ -140,6 +163,7 @@ class MyService : Service(), TextToSpeech.OnInitListener {
         const val NOTIFICATION_ID = 13
         lateinit var windowManager: WindowManager
         lateinit var mTts: TextToSpeech
+        lateinit var vibrator: Vibrator
 
     }
 }
