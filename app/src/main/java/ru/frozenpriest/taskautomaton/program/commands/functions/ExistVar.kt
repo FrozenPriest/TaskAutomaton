@@ -9,6 +9,6 @@ import ru.frozenpriest.taskautomaton.program.Program
  */
 class ExistVar(val varName: String): Function() {
     override fun perform(program: Program, context: Context) {
-        conditionResult = program.variables.containsKey(varName)
+        functionResult = program.variables.containsKey(varName)
     }
 }
