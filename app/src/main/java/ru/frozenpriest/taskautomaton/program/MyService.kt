@@ -16,9 +16,9 @@ import android.view.WindowManager
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import ru.frozenpriest.taskautomaton.R
-import ru.frozenpriest.taskautomaton.program.commands.conditionals.CheckVar
-import ru.frozenpriest.taskautomaton.program.commands.conditionals.LowerVar
-import ru.frozenpriest.taskautomaton.program.commands.conditionals.NotConditional
+import ru.frozenpriest.taskautomaton.program.commands.functions.CheckVar
+import ru.frozenpriest.taskautomaton.program.commands.functions.LowerVar
+import ru.frozenpriest.taskautomaton.program.commands.functions.NotFunction
 import ru.frozenpriest.taskautomaton.program.commands.logic.*
 import ru.frozenpriest.taskautomaton.program.commands.output.ShowHtml
 import ru.frozenpriest.taskautomaton.program.commands.output.ShowToast
@@ -32,7 +32,6 @@ class MyService : Service(), TextToSpeech.OnInitListener {
 
     /*
     todo
-        ожидание конца ттс
         Генерируемый звуковой сигнал
          Уведомление
          Запуск приложения
@@ -69,7 +68,7 @@ class MyService : Service(), TextToSpeech.OnInitListener {
             SetVar("f4", 9),
             SetVar("f10", 10),
             VibrateWithPattern(arrayOf(200, 100, 200, 100, 400, 200, 500)),
-            WhileCondition(NotConditional(LowerVar("f10", "f3"))),
+            WhileCondition(NotFunction(LowerVar("f10", "f3"))),
                 UseTts("Test is %s", arrayOf("f3"), Locale.ENGLISH),
                 IncVar("f3"),
             EndWhile(),
