@@ -1,4 +1,4 @@
-package ru.frozenpriest.taskautomaton.program.commands.variables
+package ru.frozenpriest.taskautomaton.program.commands.conditionals
 
 import android.content.Context
 import ru.frozenpriest.taskautomaton.program.Command
