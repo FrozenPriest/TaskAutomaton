@@ -7,6 +7,6 @@ import ru.frozenpriest.taskautomaton.program.Program
 class NotFunction(val function: Function) : Function() {
     override fun perform(program: Program, context: Context) {
         function.perform(program, context)
-        functionResult = !function.functionResult
+        conditionResult = !function.conditionResult
     }
 }
