@@ -1,12 +1,10 @@
 package ru.frozenpriest.taskautomaton.program
 
 import android.content.Context
-import ru.frozenpriest.taskautomaton.program.commands.logic.ElseCondition
-import ru.frozenpriest.taskautomaton.program.commands.logic.EndElse
-import ru.frozenpriest.taskautomaton.program.commands.logic.EndIf
-import ru.frozenpriest.taskautomaton.program.commands.logic.IfCondition
+import ru.frozenpriest.taskautomaton.program.commands.logic.*
 
-class Program(val commands: List<Command>) {
+class Program(var commands: List<Command>) {
+    var isSyntaxGood = false
 
     constructor(commands: ArrayList<Command>, params: HashMap<String, Any>) : this(commands) {
         this.variables.putAll(params)
@@ -29,15 +27,17 @@ class Program(val commands: List<Command>) {
     }
 
     fun setLevels() {
+        //todo check valid
         var level = 0
         for(command in commands) {
             command.level = level
-            if((command is IfCondition) || (command is ElseCondition)) level++
-            if((command is EndIf) || (command is EndElse)) {
+            if((command is IfCondition) || (command is ElseCondition) || (command is WhileCondition)) {
+                level++
+            }
+            if((command is EndIf) || (command is EndElse) || (command is EndWhile)) {
                 command.level--
                 level--
             }
-
         }
     }
 }

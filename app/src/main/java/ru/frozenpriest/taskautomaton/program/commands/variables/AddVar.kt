@@ -1,6 +1,7 @@
 package ru.frozenpriest.taskautomaton.program.commands.variables
 
 import android.content.Context
+import ru.frozenpriest.taskautomaton.R
 import ru.frozenpriest.taskautomaton.program.Command
 import ru.frozenpriest.taskautomaton.program.Program
 
@@ -12,11 +13,19 @@ class AddVar(
     private val varName1: String,
     private val varName2: String
 ) : Command() {
+    override val commandName: String
+        get() = "Add two variables"
+    override val commandDescription: String
+        get() = "$varRes = $varName1 + $varName2"
+    override val iconId: Int
+        get() = R.drawable.icon_sample
+
+
     override fun perform(program: Program, context: Context) {
 
         val a = program.variables[varName1]
         val b = program.variables[varName2]
-        if(a is Number && b is Number) {
+        if (a is Number && b is Number) {
             if (a is Double || b is Double || a is Float || b is Float) {
                 program.variables[varRes] = (a.toDouble() + b.toDouble())
             } else {

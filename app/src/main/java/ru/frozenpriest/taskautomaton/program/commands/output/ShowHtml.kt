@@ -3,6 +3,7 @@ package ru.frozenpriest.taskautomaton.program.commands.output
 import android.content.Context
 import android.graphics.Color
 import android.view.Gravity
+import ru.frozenpriest.taskautomaton.R
 import ru.frozenpriest.taskautomaton.program.Command
 import ru.frozenpriest.taskautomaton.program.MyService
 import ru.frozenpriest.taskautomaton.program.Program
@@ -16,10 +17,18 @@ class ShowHtml(
     private val gravity: Int = Gravity.CENTER,
     private val duration: Long = -1
 ) : Command() {
+    override val commandName: String
+        get() = "Show pop-up"
+    override val commandDescription: String
+        get() = ""
+    override val iconId: Int
+        get() = R.drawable.icon_sample
+
+
     override fun perform(program: Program, context: Context) {
         val vars = args.map { program.variables[it] }.toTypedArray()
         val fixedHTML = String.format(stringToShow, *vars)
-        //todo show html pop-up
+
         val builder = HtmlViewBuilder(context)
             .setBackgroundColor(backgroundColor)
             .setTextColor(textColor)

@@ -1,6 +1,7 @@
 package ru.frozenpriest.taskautomaton.program.commands.variables
 
 import android.content.Context
+import ru.frozenpriest.taskautomaton.R
 import ru.frozenpriest.taskautomaton.program.Command
 import ru.frozenpriest.taskautomaton.program.Program
 
@@ -12,6 +13,14 @@ class DivVar(
     private val varName1: String,
     private val varName2: String
 ) : Command() {
+    override val commandName: String
+        get() = "Divide two variables"
+    override val commandDescription: String
+        get() = "$varRes = $varName1 / $varName2"
+    override val iconId: Int
+        get() = R.drawable.icon_sample
+
+
     override fun perform(program: Program, context: Context) {
 
         val a = program.variables[varName1]

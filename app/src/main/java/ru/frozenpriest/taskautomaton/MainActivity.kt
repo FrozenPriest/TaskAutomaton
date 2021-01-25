@@ -2,47 +2,131 @@ package ru.frozenpriest.taskautomaton
 
 import android.annotation.TargetApi
 import android.content.Intent
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import android.widget.TextView
+import android.util.Log
+import android.view.Gravity
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import ru.frozenpriest.taskautomaton.program.MyService
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import ru.frozenpriest.taskautomaton.program.Command
+import ru.frozenpriest.taskautomaton.program.Program
+import ru.frozenpriest.taskautomaton.program.commands.functions.CheckVar
+import ru.frozenpriest.taskautomaton.program.commands.functions.LowerVar
+import ru.frozenpriest.taskautomaton.program.commands.functions.NotFunction
+import ru.frozenpriest.taskautomaton.program.commands.logic.*
+import ru.frozenpriest.taskautomaton.program.commands.output.ShowHtml
+import ru.frozenpriest.taskautomaton.program.commands.output.ShowToast
+import ru.frozenpriest.taskautomaton.program.commands.output.UseTts
+import ru.frozenpriest.taskautomaton.program.commands.output.VibrateWithPattern
+import ru.frozenpriest.taskautomaton.program.commands.variables.IncVar
+import ru.frozenpriest.taskautomaton.program.commands.variables.SetVar
+import ru.frozenpriest.taskautomaton.utils.CustomItemTouchHelper
+import ru.frozenpriest.taskautomaton.utils.ItemTouchHelperAdapter
+import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
     companion object {
-        lateinit var tv: TextView
         const val OVERLAY_PERMISSION_REQ_CODE = 1
 
     }
 
+    private lateinit var rvProgram: RecyclerView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        tv = findViewById(R.id.textView)
 
-//        val list = listOf<Command>(
-//            SetVar("funkyVar1", true),
-//            SetVar("funkyVar2", 5),
-//            SetVar("funkyVar3", 3.0),
-//            SetVar("funkyVar4", 2),
-//            SetVar("funkyVar5", -6),
-//            AddVar("funkyVar888", "funkyVar2", "funkyVar3"),
-//            AddVar("funkyVar999", "funkyVar2", "funkyVar5"),
-//            ShowToast("New text %s, to go %s", arrayOf("funkyVar1", "funkyVar2"), Toast.LENGTH_LONG)
-//
-//        )
-//
-//        val program = Program(list)
-//
-//        program.executeCommands(applicationContext)
+        setupRecyclerView()
 
         checkPermissionOverlay()
 
-        val intent = Intent(this, MyService::class.java)
-        stopService(intent) //todo for debug purposes, remove later
-        startService(intent)
+        val list = listOf(
+            SetVar("funkyVar1", true),
+            SetVar("funkyVar2", true),
+            SetVar("f3", 0),
+            SetVar("f4", 9),
+            SetVar("f10", 10),
+            VibrateWithPattern(arrayOf(200, 100, 200, 100, 400, 200, 500)),
+            WhileCondition(NotFunction(LowerVar("f10", "f3"))),
+            UseTts("Test is %s", arrayOf("f3"), Locale.ENGLISH),
+            IncVar("f3"),
+            EndWhile(),
+
+            IfCondition(CheckVar("funkyVar1")),
+            IfCondition(CheckVar("funkyVar2")),
+            ShowToast(
+                "Test test test",
+                arrayOf(),
+                Toast.LENGTH_LONG
+            ),
+            EndIf(),
+            ElseCondition(),
+            ShowToast(
+                "NOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO",
+                arrayOf(),
+                Toast.LENGTH_LONG
+            ),
+            EndElse(),
+            EndIf(),
+            IfCondition(CheckVar("funkyVar1")),
+            ShowHtml(
+                "<html>\n" +
+                        "<body>\n" +
+                        "<h1 style=\"font-size:300%%;\">This is a heading</h1>\n" +
+                        "<p>Do not (%s, %s) forget to buy <mark>milk</mark> today.</p>\n" +
+                        "</body>\n" +
+                        "</html>\n",
+                duration = 15000,
+                args = arrayOf("funkyVar1", "funkyVar4"),
+                textColor = Color.WHITE,
+                backgroundColor = Color.BLACK,
+                gravity = Gravity.START or Gravity.CENTER_VERTICAL
+            ),
+            EndIf(),
+            ElseCondition(),
+            ShowToast(
+                "New text %s, to go %s",
+                arrayOf("funkyVar1", "funkyVar2"),
+                Toast.LENGTH_LONG
+            ),
+            EndElse()
+        )
+        Log.e("0", "Prog size is ${list.size}")
+        val program = Program(list)
+
+        (rvProgram.adapter as CommandItemAdapter).bind(program)
+
+//        val intent = Intent(this, MyService::class.java)
+//        stopService(intent) //todo for debug purposes, remove later
+//        startService(intent)
+    }
+
+    private fun setupRecyclerView() {
+        rvProgram = findViewById(R.id.rvProgram)
+        rvProgram.apply {
+            layoutManager =
+                LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            adapter = CommandItemAdapter(context = context, program = Program(emptyList()))
+
+            val dividerItemDecoration = DividerItemDecoration(context, RecyclerView.VERTICAL)
+            AppCompatResources.getDrawable(this@MainActivity, R.drawable.divider_drawable)?.let {
+                dividerItemDecoration.setDrawable(it)
+            }
+
+            addItemDecoration(dividerItemDecoration)
+
+            val callback: ItemTouchHelper.Callback = CustomItemTouchHelper(adapter as ItemTouchHelperAdapter)
+            val touchHelper = ItemTouchHelper(callback)
+            touchHelper.attachToRecyclerView(rvProgram)
+        }
     }
 
 
