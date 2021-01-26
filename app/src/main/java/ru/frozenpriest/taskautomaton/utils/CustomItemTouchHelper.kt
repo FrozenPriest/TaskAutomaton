@@ -49,6 +49,8 @@ class CustomItemTouchHelper(private val adapter: ItemTouchHelperAdapter) :
         return true
     }
 
+
+
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
 
     }

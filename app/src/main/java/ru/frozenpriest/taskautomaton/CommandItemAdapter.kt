@@ -1,14 +1,14 @@
 package ru.frozenpriest.taskautomaton
 
 import android.content.Context
-import android.util.Log
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import ru.frozenpriest.taskautomaton.program.Command
+import ru.frozenpriest.taskautomaton.program.OnCommandRunListener
 import ru.frozenpriest.taskautomaton.program.Program
 import ru.frozenpriest.taskautomaton.utils.ItemTouchHelperAdapter
 
@@ -16,7 +16,9 @@ class CommandItemAdapter(
     private val context: Context,
     var program: Program,
 ) :
-    RecyclerView.Adapter<CommandItemAdapter.ViewHolder>(), ItemTouchHelperAdapter {
+    RecyclerView.Adapter<CommandItemAdapter.ViewHolder>(),
+    ItemTouchHelperAdapter,
+    OnCommandRunListener {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -44,6 +46,9 @@ class CommandItemAdapter(
         holder.commandName.text = item.commandName
         holder.commandDesc.text = item.commandDescription
 
+        if (program.commandPointer == position) holder.itemView.setBackgroundColor(Color.GREEN)
+        else holder.itemView.setBackgroundColor(Color.WHITE)
+
     }
 
     override fun getItemCount(): Int {
@@ -66,6 +71,8 @@ class CommandItemAdapter(
         val mutable = program.commands.toMutableList()
         val movingItem = program.commands[fromPos]
 
+        notifyItemChanged(toPos)
+
         mutable.remove(movingItem)
         mutable.add(toPos, movingItem)
 
@@ -73,8 +80,14 @@ class CommandItemAdapter(
 
         program.setLevels()
 
+
         notifyItemMoved(fromPos, toPos)
         notifyItemChanged(toPos)
 
+    }
+
+    override fun onCommandRun(commandPointerFrom: Int, commandPointerTo: Int) {
+        notifyItemChanged(commandPointerTo)
+        notifyItemChanged(commandPointerFrom)
     }
 }

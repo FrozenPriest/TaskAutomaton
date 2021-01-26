@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
 import android.widget.TextView
+import ru.frozenpriest.taskautomaton.App
 import ru.frozenpriest.taskautomaton.R
 import ru.frozenpriest.taskautomaton.program.MyService
 
@@ -65,7 +66,7 @@ class HtmlViewBuilder(
         val textView: TextView = view.findViewById(R.id.textViewHtml)
         textView.text = Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY)
         textView.setOnClickListener {
-            if (view.windowToken != null) MyService.windowManager.removeView(view)
+            if (view.windowToken != null) App.windowManager.removeView(view)
         }
         textView.setBackgroundColor(backgroundColor)
         textView.setTextColor(textColor)
@@ -74,7 +75,7 @@ class HtmlViewBuilder(
                 override fun onTick(millisUntilFinished: Long) {}
 
                 override fun onFinish() {
-                    if (view.windowToken != null) MyService.windowManager.removeView(view)
+                    if (view.windowToken != null) App.windowManager.removeView(view)
                 }
             }
             timer.start()

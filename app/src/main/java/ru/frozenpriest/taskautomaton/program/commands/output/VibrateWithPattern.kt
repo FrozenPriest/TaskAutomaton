@@ -2,6 +2,7 @@ package ru.frozenpriest.taskautomaton.program.commands.output
 
 import android.content.Context
 import android.os.VibrationEffect
+import ru.frozenpriest.taskautomaton.App
 import ru.frozenpriest.taskautomaton.R
 import ru.frozenpriest.taskautomaton.program.Command
 import ru.frozenpriest.taskautomaton.program.MyService
@@ -16,6 +17,6 @@ class VibrateWithPattern(private val delays: Array<Long>) : Command() {
         get() = R.drawable.icon_sample
     override fun perform(program: Program, context: Context) {
         val effect = VibrationEffect.createWaveform(delays.toLongArray(), -1)
-        MyService.vibrator.vibrate(effect)
+        App.vibrator.vibrate(effect)
     }
 }

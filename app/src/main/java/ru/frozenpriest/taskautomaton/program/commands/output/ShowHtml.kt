@@ -3,9 +3,9 @@ package ru.frozenpriest.taskautomaton.program.commands.output
 import android.content.Context
 import android.graphics.Color
 import android.view.Gravity
+import ru.frozenpriest.taskautomaton.App
 import ru.frozenpriest.taskautomaton.R
 import ru.frozenpriest.taskautomaton.program.Command
-import ru.frozenpriest.taskautomaton.program.MyService
 import ru.frozenpriest.taskautomaton.program.Program
 import ru.frozenpriest.taskautomaton.utils.HtmlViewBuilder
 
@@ -35,6 +35,6 @@ class ShowHtml(
             .setGravity(gravity)
             .setHtml(fixedHTML)
             .setExpireTime(duration)
-        MyService.windowManager.addView(builder.build(), builder.params)
+        App.windowManager.addView(builder.build(), builder.params)
     }
 }

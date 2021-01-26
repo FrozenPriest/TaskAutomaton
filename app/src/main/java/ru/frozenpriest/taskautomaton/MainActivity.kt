@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
 import android.view.Gravity
+import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
@@ -15,7 +16,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import ru.frozenpriest.taskautomaton.program.Command
+import ru.frozenpriest.taskautomaton.program.MyService
 import ru.frozenpriest.taskautomaton.program.Program
 import ru.frozenpriest.taskautomaton.program.commands.functions.CheckVar
 import ru.frozenpriest.taskautomaton.program.commands.functions.LowerVar
@@ -39,14 +40,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     private lateinit var rvProgram: RecyclerView
+    private lateinit var program: Program
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        checkPermissionOverlay()
 
         setupRecyclerView()
+        setupButtons()
 
-        checkPermissionOverlay()
 
         val list = listOf(
             SetVar("funkyVar1", true),
@@ -100,13 +103,28 @@ class MainActivity : AppCompatActivity() {
             EndElse()
         )
         Log.e("0", "Prog size is ${list.size}")
-        val program = Program(list)
+        program = Program(list)
 
         (rvProgram.adapter as CommandItemAdapter).bind(program)
+        program.listener = rvProgram.adapter as CommandItemAdapter
 
-//        val intent = Intent(this, MyService::class.java)
-//        stopService(intent) //todo for debug purposes, remove later
-//        startService(intent)
+        val intent = Intent(this, MyService::class.java)
+        intent.putExtra("ProgramId", "id") //todo when have database
+        stopService(intent) //todo for debug purposes, remove later
+        startService(intent)
+
+
+    }
+
+    private fun setupButtons() {
+        val buttonStart: ImageButton = findViewById(R.id.imageButtonPlay)
+        buttonStart.setOnClickListener { onButtonStart() }
+
+        val buttonStep: ImageButton = findViewById(R.id.imageButtonStep)
+        buttonStep.setOnClickListener { onButtonStep() }
+
+        val buttonReset: ImageButton = findViewById(R.id.imageButtonStop)
+        buttonReset.setOnClickListener { onButtonReset() }
     }
 
     private fun setupRecyclerView() {
@@ -123,10 +141,36 @@ class MainActivity : AppCompatActivity() {
 
             addItemDecoration(dividerItemDecoration)
 
-            val callback: ItemTouchHelper.Callback = CustomItemTouchHelper(adapter as ItemTouchHelperAdapter)
+            val callback: ItemTouchHelper.Callback =
+                CustomItemTouchHelper(adapter as ItemTouchHelperAdapter)
             val touchHelper = ItemTouchHelper(callback)
             touchHelper.attachToRecyclerView(rvProgram)
         }
+    }
+
+    private fun onButtonStart() {
+        if (program.isSyntaxValid)
+            program.executeCommands(this)
+        else
+            showProgramErrorToast()
+    }
+
+    private fun onButtonReset() {
+        if (program.isSyntaxValid)
+            program.stop()
+        else
+            showProgramErrorToast()
+    }
+
+    private fun onButtonStep() {
+        if (program.isSyntaxValid)
+            program.nextCommand(this)
+        else
+            showProgramErrorToast()
+    }
+
+    private fun showProgramErrorToast() {
+        Toast.makeText(this, "Syntax error", Toast.LENGTH_LONG).show()
     }
 
 
