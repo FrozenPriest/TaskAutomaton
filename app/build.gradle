@@ -5,6 +5,7 @@ plugins {
     id 'kotlin-parcelize'
 
 }
+def compose_version = "1.0.0-beta05"
 
 android {
     compileSdkVersion 30
@@ -26,14 +27,9 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
-        useIR = true
     }
     composeOptions {
-        def kotlin_compiler_version = "1.4.0"
-        kotlinCompilerVersion kotlin_compiler_version
-
-        def kotlin_compiler_extension_version = "1.0.0-alpha05"
-        kotlinCompilerExtensionVersion kotlin_compiler_extension_version
+        kotlinCompilerExtensionVersion compose_version
     }
     buildFeatures {
         compose true
@@ -41,6 +37,12 @@ android {
 }
 
 dependencies {
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.compose.ui:ui-tooling:1.0.0-beta05'
+    def navigation = "2.3.5"
+    implementation "androidx.navigation:navigation-fragment-ktx:$navigation"
+    implementation "androidx.navigation:navigation-ui-ktx:$navigation"
+
     def lifecycleVersion = "2.3.1"
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
@@ -78,12 +80,11 @@ dependencies {
     def androidx_ui = "1.0.0-alpha07"
     implementation "androidx.ui:ui-tooling:$androidx_ui"
 
-    def compose = "1.0.0-beta05"
-    implementation "androidx.compose.ui:ui:$compose"
-    implementation "androidx.compose.foundation:foundation:$compose"
-    implementation "androidx.compose.runtime:runtime-livedata:$compose"
-    implementation "androidx.compose.runtime:runtime-rxjava2:$compose"
-    implementation "androidx.compose.material:material:$compose"
-    implementation "androidx.compose.material:material-icons-core:$compose"
-    implementation "androidx.compose.material:material-icons-extended:$compose"
+    implementation "androidx.compose.ui:ui:$compose_version"
+    implementation "androidx.compose.foundation:foundation:$compose_version"
+    implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
+    implementation "androidx.compose.runtime:runtime-rxjava2:$compose_version"
+    implementation "androidx.compose.material:material:$compose_version"
+    implementation "androidx.compose.material:material-icons-core:$compose_version"
+    implementation "androidx.compose.material:material-icons-extended:$compose_version"
 }
