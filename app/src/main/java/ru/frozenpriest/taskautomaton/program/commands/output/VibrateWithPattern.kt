@@ -2,10 +2,11 @@ package ru.frozenpriest.taskautomaton.program.commands.output
 
 import android.content.Context
 import android.os.VibrationEffect
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.QuestionAnswer
+import androidx.compose.ui.graphics.vector.ImageVector
 import ru.frozenpriest.taskautomaton.App
-import ru.frozenpriest.taskautomaton.R
 import ru.frozenpriest.taskautomaton.program.Command
-import ru.frozenpriest.taskautomaton.program.MyService
 import ru.frozenpriest.taskautomaton.program.Program
 
 class VibrateWithPattern(private val delays: Array<Long>) : Command() {
@@ -13,8 +14,8 @@ class VibrateWithPattern(private val delays: Array<Long>) : Command() {
         get() = "Vibrate"
     override val commandDescription: String
         get() = ""
-    override val iconId: Int
-        get() = R.drawable.icon_sample
+    override val iconVector: ImageVector
+        get() = Icons.Default.QuestionAnswer
     override fun perform(program: Program, context: Context) {
         val effect = VibrationEffect.createWaveform(delays.toLongArray(), -1)
         App.vibrator.vibrate(effect)

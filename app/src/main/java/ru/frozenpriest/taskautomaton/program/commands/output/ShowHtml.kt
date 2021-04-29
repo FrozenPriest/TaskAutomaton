@@ -3,8 +3,10 @@ package ru.frozenpriest.taskautomaton.program.commands.output
 import android.content.Context
 import android.graphics.Color
 import android.view.Gravity
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.OpenInBrowser
+import androidx.compose.ui.graphics.vector.ImageVector
 import ru.frozenpriest.taskautomaton.App
-import ru.frozenpriest.taskautomaton.R
 import ru.frozenpriest.taskautomaton.program.Command
 import ru.frozenpriest.taskautomaton.program.Program
 import ru.frozenpriest.taskautomaton.utils.HtmlViewBuilder
@@ -21,8 +23,8 @@ class ShowHtml(
         get() = "Show pop-up"
     override val commandDescription: String
         get() = ""
-    override val iconId: Int
-        get() = R.drawable.icon_sample
+    override val iconVector: ImageVector
+        get() = Icons.Default.OpenInBrowser
 
 
     override fun perform(program: Program, context: Context) {

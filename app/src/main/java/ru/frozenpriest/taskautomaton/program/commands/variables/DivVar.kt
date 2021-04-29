@@ -1,7 +1,9 @@
 package ru.frozenpriest.taskautomaton.program.commands.variables
 
 import android.content.Context
-import ru.frozenpriest.taskautomaton.R
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.SafetyDivider
+import androidx.compose.ui.graphics.vector.ImageVector
 import ru.frozenpriest.taskautomaton.program.Command
 import ru.frozenpriest.taskautomaton.program.Program
 
@@ -17,8 +19,8 @@ class DivVar(
         get() = "Divide two variables"
     override val commandDescription: String
         get() = "$varRes = $varName1 / $varName2"
-    override val iconId: Int
-        get() = R.drawable.icon_sample
+    override val iconVector: ImageVector
+        get() = Icons.Default.SafetyDivider
 
 
     override fun perform(program: Program, context: Context) {

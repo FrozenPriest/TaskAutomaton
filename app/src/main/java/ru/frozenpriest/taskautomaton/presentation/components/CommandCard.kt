@@ -6,8 +6,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ImportContacts
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
@@ -33,8 +31,9 @@ fun CommandCard(
     Card(
         shape = MaterialTheme.shapes.small,
         modifier = Modifier
+            .padding(start = (16*command.level).dp)
             .fillMaxWidth()
-            .clickable { onClick }
+            .clickable { onClick() }
             .padding(bottom = 4.dp),
         elevation = 8.dp,
     ) {
@@ -45,7 +44,7 @@ fun CommandCard(
         ) {
 
             Image(
-                imageVector = Icons.Default.ImportContacts,
+                imageVector = command.iconVector,
                 contentDescription = "",
                 modifier = Modifier
                     .size(48.dp)

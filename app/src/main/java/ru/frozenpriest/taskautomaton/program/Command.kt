@@ -1,6 +1,7 @@
 package ru.frozenpriest.taskautomaton.program
 
 import android.content.Context
+import androidx.compose.ui.graphics.vector.ImageVector
 
 
 abstract class Command : ICommand {
@@ -8,7 +9,7 @@ abstract class Command : ICommand {
 
     abstract val commandName: String
     abstract val commandDescription: String
-    abstract val iconId: Int
+    abstract val iconVector: ImageVector
 }
 
 

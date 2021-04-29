@@ -90,9 +90,9 @@ private fun CommandCardPreview() {
     CommandsList(
         false,
         Program(list),
-        {},
-        {},
-        {}
+        {println("play")},
+        {println("step")},
+        {println("stop")}
     )
 }
 
