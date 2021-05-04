@@ -2,9 +2,7 @@ package ru.frozenpriest.taskautomaton.program.commands.output
 
 import android.content.Context
 import android.widget.Toast
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.TableView
-import androidx.compose.ui.graphics.vector.ImageVector
+import ru.frozenpriest.taskautomaton.R
 import ru.frozenpriest.taskautomaton.program.Command
 import ru.frozenpriest.taskautomaton.program.Program
 
@@ -20,8 +18,8 @@ class ShowToast(val stringToShow: String, val args: Array<String>, val duration:
         get() = "$stringToShow, duration = ${
             if (duration == Toast.LENGTH_LONG) "long" else "short"
         }"
-    override val iconVector: ImageVector
-        get() = Icons.Default.TableView
+    override val iconId: Int
+        get() = R.drawable.icon_sample
 
 
     override fun perform(program: Program, context: Context) {

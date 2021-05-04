@@ -1,8 +1,6 @@
 package ru.frozenpriest.taskautomaton.presentation
 
-import android.annotation.TargetApi
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import androidx.appcompat.app.AppCompatActivity
@@ -32,9 +30,9 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    @TargetApi(Build.VERSION_CODES.M)
     fun checkPermissionOverlay() {
         if (!Settings.canDrawOverlays(this)) {
+            println("WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW")
             requestPermissions(
                 arrayOf(Settings.ACTION_MANAGE_OVERLAY_PERMISSION),
                 OVERLAY_PERMISSION_REQ_CODE

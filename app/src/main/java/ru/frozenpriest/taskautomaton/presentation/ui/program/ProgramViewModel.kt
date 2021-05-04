@@ -1,5 +1,6 @@
 package ru.frozenpriest.taskautomaton.presentation.ui.program
 
+import android.content.Context
 import android.graphics.Color
 import android.util.Log
 import android.view.Gravity
@@ -22,14 +23,16 @@ import ru.frozenpriest.taskautomaton.program.commands.variables.IncVar
 import ru.frozenpriest.taskautomaton.program.commands.variables.SetVar
 import java.util.*
 
-class ProgramViewModel: ViewModel() {
+class ProgramViewModel : ViewModel() {
 
-    val program: MutableState<Program?> = mutableStateOf(null)
+    val program: MutableState<Program> = mutableStateOf(Program(emptyList()))
     val loading = mutableStateOf(false)
 
     init {
         loadProgram()
     }
+
+    fun isSyntaxValid() = program.value.isSyntaxValid
     fun loadProgram() {
         viewModelScope.launch {
             loading.value = true
@@ -90,5 +93,17 @@ class ProgramViewModel: ViewModel() {
 
             loading.value = false
         }
+    }
+
+    fun stop() {
+        program.value.stop()
+    }
+
+    fun nextCommand(context: Context) {
+        program.value.nextCommand(context)
+    }
+
+    fun executeCommands(context: Context) {
+        program.value.executeCommands(context)
     }
 }

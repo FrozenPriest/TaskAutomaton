@@ -1,9 +1,7 @@
 package ru.frozenpriest.taskautomaton.program.commands
 
 import android.content.Context
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.QuestionAnswer
-import androidx.compose.ui.graphics.vector.ImageVector
+import ru.frozenpriest.taskautomaton.R
 import ru.frozenpriest.taskautomaton.program.Command
 import ru.frozenpriest.taskautomaton.program.Program
 
@@ -12,8 +10,8 @@ class ExecuteProgram(val program: String, val args: HashMap<String, Any>): Comma
         get() = "Execute $program with args"
     override val commandDescription: String
         get() = ""
-    override val iconVector: ImageVector
-        get() = Icons.Default.QuestionAnswer
+    override val iconId: Int
+        get() = R.drawable.icon_sample
 
     override fun perform(program: Program, context: Context) {
         //todo later
