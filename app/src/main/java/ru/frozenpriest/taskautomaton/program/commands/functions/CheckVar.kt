@@ -2,7 +2,7 @@ package ru.frozenpriest.taskautomaton.program.commands.functions
 
 import android.content.Context
 import ru.frozenpriest.taskautomaton.R
-import ru.frozenpriest.taskautomaton.program.Function
+import ru.frozenpriest.taskautomaton.program.commands.Function
 import ru.frozenpriest.taskautomaton.program.Program
 
 class CheckVar(private val varName: String): Function() {

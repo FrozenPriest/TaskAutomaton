@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.provider.Settings
 import androidx.appcompat.app.AppCompatActivity
 import ru.frozenpriest.taskautomaton.R
-import ru.frozenpriest.taskautomaton.program.MyService
+import ru.frozenpriest.taskautomaton.program.service.MyService
 
 
 class MainActivity : AppCompatActivity() {

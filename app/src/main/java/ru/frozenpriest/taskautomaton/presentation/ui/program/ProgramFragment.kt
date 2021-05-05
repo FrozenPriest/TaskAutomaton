@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ru.frozenpriest.taskautomaton.R
-import ru.frozenpriest.taskautomaton.program.MyService
+import ru.frozenpriest.taskautomaton.program.service.MyService
 import ru.frozenpriest.taskautomaton.program.Program
 import ru.frozenpriest.taskautomaton.utils.CustomItemTouchHelper
 import ru.frozenpriest.taskautomaton.utils.ItemTouchHelperAdapter

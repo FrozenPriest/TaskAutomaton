@@ -12,7 +12,6 @@ import android.view.WindowManager
 import android.widget.TextView
 import ru.frozenpriest.taskautomaton.App
 import ru.frozenpriest.taskautomaton.R
-import ru.frozenpriest.taskautomaton.program.MyService
 
 class HtmlViewBuilder(
     private val applicationContext: Context,
