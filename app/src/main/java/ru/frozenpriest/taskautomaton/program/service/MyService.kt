@@ -31,7 +31,9 @@ class MyService : Service() {
          
      */
     private lateinit var locationManager: LocationManager
-    private val locationListener = MyLocationListener()
+
+    private lateinit var triggerActivationListener: TriggerActivationListener
+    private lateinit var locationListener: MyLocationListener
 
     override fun onBind(intent: Intent?): IBinder? {
         return null
@@ -40,7 +42,8 @@ class MyService : Service() {
     override fun onCreate() {
         super.onCreate()
         startForegroundService()
-
+        triggerActivationListener = TriggerActivationListener(applicationContext)
+        locationListener = MyLocationListener(triggerActivationListener)
         createLocationManager()
     }
 

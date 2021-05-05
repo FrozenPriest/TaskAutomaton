@@ -7,11 +7,11 @@ import android.util.Log
 import ru.frozenpriest.taskautomaton.program.triggers.LocationTrigger
 import ru.frozenpriest.taskautomaton.program.triggers.LocationTriggerType.*
 
-class MyLocationListener() : LocationListener {
+class MyLocationListener(private val triggerActivationListener: TriggerActivationListener) : LocationListener {
     private val triggers: List<TriggerWithState> =
         listOf(
             TriggerWithState(
-                LocationTrigger(59.991273981908556, 30.3189792548688, 50.0, EnterOrExit),
+                LocationTrigger(59.991273981908556, 30.3189792548688, 50.0, EnterOrExit, "test"),
                 LocationState.Undefined
             )
         )
@@ -35,7 +35,7 @@ class MyLocationListener() : LocationListener {
 
             Log.e("LocationListener", "Trigger? $triggerToStart")
             if (triggerToStart) {
-                //todo run associated program
+                triggerActivationListener.onTriggerLaunch(entry.locationTrigger.programName)
             }
         }
 
