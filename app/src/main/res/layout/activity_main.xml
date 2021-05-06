@@ -4,48 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".presentation.MainActivity">
 
 
-    <ImageButton
-        android:id="@+id/imageButtonPlay"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/play"
-        app:layout_constraintBottom_toBottomOf="@+id/imageButtonStep"
-        app:layout_constraintEnd_toStartOf="@+id/imageButtonStep"
-        app:layout_constraintTop_toTopOf="@+id/imageButtonStep"
-        app:srcCompat="@drawable/ic_baseline_play_arrow_24" />
-
-    <ImageButton
-        android:id="@+id/imageButtonStep"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/step"
-        app:layout_constraintBottom_toBottomOf="@+id/imageButtonStop"
-        app:layout_constraintEnd_toStartOf="@+id/imageButtonStop"
-        app:layout_constraintTop_toTopOf="@+id/imageButtonStop"
-        app:srcCompat="@drawable/ic_baseline_play_for_work_24" />
-
-    <ImageButton
-        android:id="@+id/imageButtonStop"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:contentDescription="@string/reset"
-        app:layout_constraintEnd_toEndOf="parent"
+    <androidx.fragment.app.FragmentContainerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/main_nav_host_fragment"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_baseline_stop_24" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvProgram"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageButtonStop" />
+        app:defaultNavHost="true"
+        app:navGraph="@navigation/main_graph"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

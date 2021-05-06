@@ -4,7 +4,6 @@ import android.content.Context
 import ru.frozenpriest.taskautomaton.R
 import ru.frozenpriest.taskautomaton.program.Command
 import ru.frozenpriest.taskautomaton.program.Program
-import kotlin.math.max
 
 class EndIf : Command() {
     override val commandName: String

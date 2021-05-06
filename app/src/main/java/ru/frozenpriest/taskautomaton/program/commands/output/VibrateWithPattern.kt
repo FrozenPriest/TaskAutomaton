@@ -5,7 +5,6 @@ import android.os.VibrationEffect
 import ru.frozenpriest.taskautomaton.App
 import ru.frozenpriest.taskautomaton.R
 import ru.frozenpriest.taskautomaton.program.Command
-import ru.frozenpriest.taskautomaton.program.MyService
 import ru.frozenpriest.taskautomaton.program.Program
 
 class VibrateWithPattern(private val delays: Array<Long>) : Command() {

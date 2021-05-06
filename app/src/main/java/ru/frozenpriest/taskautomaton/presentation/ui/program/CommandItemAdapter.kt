@@ -1,4 +1,4 @@
-package ru.frozenpriest.taskautomaton
+package ru.frozenpriest.taskautomaton.presentation.ui.program
 
 import android.content.Context
 import android.graphics.Color
@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import ru.frozenpriest.taskautomaton.R
 import ru.frozenpriest.taskautomaton.program.OnCommandRunListener
 import ru.frozenpriest.taskautomaton.program.Program
 import ru.frozenpriest.taskautomaton.utils.ItemTouchHelperAdapter
