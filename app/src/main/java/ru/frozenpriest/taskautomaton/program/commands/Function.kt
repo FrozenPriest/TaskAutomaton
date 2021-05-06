@@ -1,8 +1,7 @@
 package ru.frozenpriest.taskautomaton.program.commands
 
-import ru.frozenpriest.taskautomaton.program.Command
-
-abstract class Function : Command() {
+abstract class Function(name: String, description: String, iconId: Int) :
+    Command(name, description, iconId) {
     var functionResult: Boolean = false
         protected set
 }

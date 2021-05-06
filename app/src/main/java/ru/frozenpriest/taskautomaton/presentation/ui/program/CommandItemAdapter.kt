@@ -1,5 +1,6 @@
 package ru.frozenpriest.taskautomaton.presentation.ui.program
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.view.LayoutInflater
@@ -44,8 +45,8 @@ class CommandItemAdapter(
 
         holder.ivIcon.setImageResource(item.iconId)
 
-        holder.commandName.text = item.commandName
-        holder.commandDesc.text = item.commandDescription
+        holder.commandName.text = item.name
+        holder.commandDesc.text = item.description
 
         if (program.commandPointer == position) holder.itemView.setBackgroundColor(Color.GREEN)
         else holder.itemView.setBackgroundColor(Color.WHITE)
@@ -56,6 +57,7 @@ class CommandItemAdapter(
         return program.commands.size
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun bind(program: Program) {
         this.program = program
         notifyDataSetChanged()

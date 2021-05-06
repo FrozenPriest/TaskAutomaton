@@ -2,6 +2,7 @@ package ru.frozenpriest.taskautomaton.program
 
 import android.content.Context
 import android.util.Log
+import ru.frozenpriest.taskautomaton.program.commands.Command
 import ru.frozenpriest.taskautomaton.program.commands.logic.*
 
 class Program(var commands: List<Command>) {

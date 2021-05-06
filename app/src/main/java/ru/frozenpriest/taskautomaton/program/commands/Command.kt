@@ -1,17 +1,16 @@
-package ru.frozenpriest.taskautomaton.program
+package ru.frozenpriest.taskautomaton.program.commands
 
 import android.content.Context
+import ru.frozenpriest.taskautomaton.program.Program
 
 
-abstract class Command : ICommand {
+abstract class Command(val name: String, val description: String, val iconId: Int) : ICommand {
     var level = 0
-
-    abstract val commandName: String
-    abstract val commandDescription: String
-    abstract val iconId: Int
 }
 
 
 interface ICommand {
     fun perform(program: Program, context: Context)
 }
+
+

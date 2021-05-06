@@ -2,24 +2,21 @@ package ru.frozenpriest.taskautomaton.program.commands.variables
 
 import android.content.Context
 import ru.frozenpriest.taskautomaton.R
-import ru.frozenpriest.taskautomaton.program.Command
 import ru.frozenpriest.taskautomaton.program.Program
+import ru.frozenpriest.taskautomaton.program.commands.Command
 
 /**
  * Put varName1 + varName2 into varRes
  */
-class AddVar(
+class SumVar(
     private val varRes: String,
     private val varName1: String,
     private val varName2: String
-) : Command() {
-    override val commandName: String
-        get() = "Add two variables"
-    override val commandDescription: String
-        get() = "$varRes = $varName1 + $varName2"
-    override val iconId: Int
-        get() = R.drawable.icon_sample
-
+) : Command(
+    name = "Sum two variables",
+    description = "$varRes = $varName1 + $varName2",
+    iconId = R.drawable.icon_sample
+) {
 
     override fun perform(program: Program, context: Context) {
 

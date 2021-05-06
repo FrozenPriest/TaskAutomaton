@@ -5,8 +5,8 @@ import android.graphics.Color
 import android.view.Gravity
 import ru.frozenpriest.taskautomaton.App
 import ru.frozenpriest.taskautomaton.R
-import ru.frozenpriest.taskautomaton.program.Command
 import ru.frozenpriest.taskautomaton.program.Program
+import ru.frozenpriest.taskautomaton.program.commands.Command
 import ru.frozenpriest.taskautomaton.utils.HtmlViewBuilder
 
 class ShowHtml(
@@ -16,14 +16,11 @@ class ShowHtml(
     private val textColor: Int = Color.BLACK,
     private val gravity: Int = Gravity.CENTER,
     private val duration: Long = -1
-) : Command() {
-    override val commandName: String
-        get() = "Show pop-up"
-    override val commandDescription: String
-        get() = ""
-    override val iconId: Int
-        get() = R.drawable.icon_sample
-
+) : Command(
+    name = "Show pop-up",
+    description = "",
+    iconId = R.drawable.icon_sample
+) {
 
     override fun perform(program: Program, context: Context) {
         val vars = args.map { program.variables[it] }.toTypedArray()

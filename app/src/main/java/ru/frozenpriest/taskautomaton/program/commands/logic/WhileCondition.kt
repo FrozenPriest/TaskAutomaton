@@ -2,17 +2,12 @@ package ru.frozenpriest.taskautomaton.program.commands.logic
 
 import android.content.Context
 import ru.frozenpriest.taskautomaton.R
-import ru.frozenpriest.taskautomaton.program.Command
-import ru.frozenpriest.taskautomaton.program.commands.Function
 import ru.frozenpriest.taskautomaton.program.Program
+import ru.frozenpriest.taskautomaton.program.commands.Command
+import ru.frozenpriest.taskautomaton.program.commands.Function
 
-class WhileCondition(private val condition: Function) : Command() {
-    override val commandName: String
-        get() = "While"
-    override val commandDescription: String
-        get() = condition.commandName
-    override val iconId: Int
-        get() = R.drawable.icon_sample
+class WhileCondition(private val condition: Function) :
+    Command("While", condition.name, R.drawable.icon_sample) {
 
     override fun perform(program: Program, context: Context) {
         condition.perform(program, context)

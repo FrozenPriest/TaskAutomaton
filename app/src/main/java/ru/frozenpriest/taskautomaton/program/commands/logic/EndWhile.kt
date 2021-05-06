@@ -2,16 +2,11 @@ package ru.frozenpriest.taskautomaton.program.commands.logic
 
 import android.content.Context
 import ru.frozenpriest.taskautomaton.R
-import ru.frozenpriest.taskautomaton.program.Command
 import ru.frozenpriest.taskautomaton.program.Program
+import ru.frozenpriest.taskautomaton.program.commands.Command
 
-class EndWhile : Command() {
-    override val commandName: String
-        get() = "End while"
-    override val commandDescription: String
-        get() = ""
-    override val iconId: Int
-        get() = R.drawable.icon_sample
+class EndWhile : Command("End while", "", R.drawable.icon_sample) {
+
     override fun perform(program: Program, context: Context) {
         val whileIndex = program.commands.indices.lastOrNull {
             (it < program.commandPointer)
@@ -20,7 +15,7 @@ class EndWhile : Command() {
         }
 
         whileIndex?.let {
-            program.commandPointer = whileIndex-1
+            program.commandPointer = whileIndex - 1
         }
     }
 }
