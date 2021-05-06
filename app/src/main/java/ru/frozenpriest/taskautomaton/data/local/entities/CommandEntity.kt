@@ -1,32 +1,26 @@
 package ru.frozenpriest.taskautomaton.data.local.entities
 
-//data class CommandEntity(
-//    val commandType: CommandType,
-//    val params: String
-//)
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.PrimaryKey
+import kotlinx.serialization.SerialName
+import ru.frozenpriest.taskautomaton.program.triggers.Trigger
 
-
-//enum class CommandType {
-//    CheckVar,
-//    EqualVar,
-//    ExistVar,
-//    GreaterVar,
-//    LoverVar,
-//    NotFunction,
-//    ElseCondition,
-//    EndElse,
-//    EndIf,
-//
-//    EndWhile,
-//    IfCondition,
-//    WhileCondition,
-//    ShowHtml,
-//    UseTls,
-//    VibrateWithPattern,
-//    AddVar,
-//    DivVar,
-//    IncVar,
-//    MulVar,
-//    SetVar,
-//    SubVar
-//}
+@Entity(
+    tableName = "table_triggers",
+    foreignKeys = [ForeignKey(
+        entity = ProgramEntity::class,
+        parentColumns = arrayOf("name"),
+        childColumns = arrayOf("connectedProgramName"),
+        onDelete = ForeignKey.CASCADE
+    )]
+)
+data class TriggerEntity(
+    @PrimaryKey(autoGenerate = true)
+    @SerialName("id")
+    val id: Long,
+    @SerialName("programName")
+    val connectedProgramName: String,
+    @SerialName("trigger")
+    val trigger: Trigger
+)

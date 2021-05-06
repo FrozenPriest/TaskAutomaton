@@ -11,7 +11,7 @@ class MyLocationListener(private val triggerActivationListener: TriggerActivatio
     private val triggers: List<TriggerWithState> =
         listOf(
             TriggerWithState(
-                LocationTrigger(59.991273981908556, 30.3189792548688, 50.0, EnterOrExit, "test"),
+                LocationTrigger(59.991273981908556, 30.3189792548688, 50.0, EnterOrExit, "test", true),
                 LocationState.Undefined
             )
         )
@@ -19,8 +19,8 @@ class MyLocationListener(private val triggerActivationListener: TriggerActivatio
     override fun onLocationChanged(location: Location) {
         triggers.onEach { entry ->
             val dest = Location(LocationManager.GPS_PROVIDER).apply {
-                latitude = entry.locationTrigger.latitude;
-                longitude = entry.locationTrigger.longitude;
+                latitude = entry.locationTrigger.latitude
+                longitude = entry.locationTrigger.longitude
             }
             val distance = location.distanceTo(dest)
             val prevState = entry.state

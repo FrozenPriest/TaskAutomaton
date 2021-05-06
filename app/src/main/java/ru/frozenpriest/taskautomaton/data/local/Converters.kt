@@ -4,6 +4,7 @@ import androidx.room.TypeConverter
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import ru.frozenpriest.taskautomaton.program.commands.Command
+import ru.frozenpriest.taskautomaton.program.triggers.Trigger
 
 
 object Converters {
@@ -11,7 +12,7 @@ object Converters {
     @TypeConverter
     fun fromCommandList(commands: List<Command>): String {
         val mapper = ObjectMapper()
-        return mapper.writerFor(object : TypeReference<List<Command>>() {}).withDefaultPrettyPrinter().writeValueAsString(commands)
+        return mapper.writerFor(object : TypeReference<List<Command>>() {}).writeValueAsString(commands)
     }
 
     @TypeConverter
@@ -20,5 +21,15 @@ object Converters {
         return mapper.readValue(commands, object : TypeReference<List<Command>>() {})
     }
 
+    @TypeConverter
+    fun fromTrigger(trigger: Trigger): String {
+        val mapper = ObjectMapper()
+        return mapper.writerFor(object : TypeReference<Trigger>() {}).writeValueAsString(trigger)
+    }
 
+    @TypeConverter
+    fun toTrigger(triggerString: String): Trigger {
+        val mapper = ObjectMapper()
+        return mapper.readValue(triggerString, object : TypeReference<Trigger>() {})
+    }
 }

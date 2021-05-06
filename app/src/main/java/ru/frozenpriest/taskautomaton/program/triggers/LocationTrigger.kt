@@ -1,15 +1,29 @@
 package ru.frozenpriest.taskautomaton.program.triggers
 
-data class LocationTrigger(
-    val latitude: Double,
-    val longitude: Double,
-    val radius: Double,
-    val type: LocationTriggerType,
-    val programName: String
-)
+import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.annotation.JsonTypeName
+
+@JsonTypeName("LocationTrigger")
+class LocationTrigger(
+    @JsonProperty("latitude")
+    var latitude: Double,
+    @JsonProperty("longitude")
+    var longitude: Double,
+    @JsonProperty("radius")
+    var radius: Double,
+    @JsonProperty("type")
+    var type: LocationTriggerType,
+    @JsonProperty("programName")
+    programName: String,
+    @JsonProperty("enabled")
+    enabled: Boolean
+): Trigger(programName, enabled)
 
 enum class LocationTriggerType {
+    @JsonProperty("Enter")
     Enter,
+    @JsonProperty("Exit")
     Exit,
+    @JsonProperty("EnterOrExit")
     EnterOrExit
 }
