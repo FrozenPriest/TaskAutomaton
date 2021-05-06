@@ -1,10 +1,18 @@
 package ru.frozenpriest.taskautomaton.program.commands
 
 import android.content.Context
+import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.annotation.JsonTypeName
 import ru.frozenpriest.taskautomaton.R
 import ru.frozenpriest.taskautomaton.program.Program
 
-class ExecuteProgram(val program: String, val args: HashMap<String, Any>) : Command(
+@JsonTypeName("ExecuteProgram")
+class ExecuteProgram(
+    @JsonProperty("program")
+    val program: String,
+    @JsonProperty("args")
+    val args: HashMap<String, Any>
+) : Command(
     name = "Execute $program with args",
     description = "",
     iconId = R.drawable.icon_sample

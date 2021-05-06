@@ -1,12 +1,19 @@
 package ru.frozenpriest.taskautomaton.program.commands.variables
 
 import android.content.Context
+import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.annotation.JsonTypeName
 import ru.frozenpriest.taskautomaton.R
 import ru.frozenpriest.taskautomaton.program.Program
 import ru.frozenpriest.taskautomaton.program.commands.Command
 import ru.frozenpriest.taskautomaton.program.commands.Function
 
-class SetVar(val varName: String, val value: Any) : Command(
+@JsonTypeName("SetVar")
+class SetVar(
+    @JsonProperty("varName")
+    val varName: String,
+    @JsonProperty("value")
+    val value: Any) : Command(
     name = "Set variable",
     description = "$varName = $value",
     iconId = R.drawable.icon_sample

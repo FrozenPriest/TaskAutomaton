@@ -1,11 +1,17 @@
 package ru.frozenpriest.taskautomaton.program.commands.functions
 
 import android.content.Context
+import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.annotation.JsonTypeName
 import ru.frozenpriest.taskautomaton.R
 import ru.frozenpriest.taskautomaton.program.Program
 import ru.frozenpriest.taskautomaton.program.commands.Function
 
-class CheckVar(private val varName: String) :
+@JsonTypeName("CheckVar")
+class CheckVar(
+    @JsonProperty("varName")
+    val varName: String
+) :
     Function("Check as boolean", varName, R.drawable.icon_sample) {
 
 

@@ -1,6 +1,8 @@
 package ru.frozenpriest.taskautomaton.program.commands.variables
 
 import android.content.Context
+import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.annotation.JsonTypeName
 import ru.frozenpriest.taskautomaton.R
 import ru.frozenpriest.taskautomaton.program.Program
 import ru.frozenpriest.taskautomaton.program.commands.Command
@@ -8,10 +10,14 @@ import ru.frozenpriest.taskautomaton.program.commands.Command
 /**
  * Put varName1 + varName2 into varRes
  */
+@JsonTypeName("SumVar")
 class SumVar(
-    private val varRes: String,
-    private val varName1: String,
-    private val varName2: String
+    @JsonProperty("varRes")
+    val varRes: String,
+    @JsonProperty("varName1")
+    val varName1: String,
+    @JsonProperty("varName2")
+    val varName2: String
 ) : Command(
     name = "Sum two variables",
     description = "$varRes = $varName1 + $varName2",

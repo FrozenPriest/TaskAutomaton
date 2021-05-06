@@ -2,13 +2,23 @@ package ru.frozenpriest.taskautomaton.program.commands.output
 
 import android.content.Context
 import android.speech.tts.TextToSpeech
+import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.annotation.JsonTypeName
 import ru.frozenpriest.taskautomaton.App
 import ru.frozenpriest.taskautomaton.R
 import ru.frozenpriest.taskautomaton.program.Program
 import ru.frozenpriest.taskautomaton.program.commands.Command
 import java.util.*
 
-class UseTts(val stringToShow: String, val args: Array<String>, val language: Locale) : Command(
+@JsonTypeName("UseTts")
+class UseTts(
+    @JsonProperty("stringToShow")
+    val stringToShow: String,
+    @JsonProperty("args")
+    val args: Array<String>,
+    @JsonProperty("language")
+    val language: Locale
+) : Command(
     name = "Speak text",
     description = "$stringToShow, lang = ${language.language}",
     iconId = R.drawable.icon_sample
