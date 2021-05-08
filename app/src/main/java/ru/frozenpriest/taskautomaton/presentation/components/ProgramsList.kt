@@ -5,11 +5,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.NavigateNext
 import androidx.compose.material.icons.filled.PlayArrow
@@ -22,7 +19,7 @@ import ru.frozenpriest.taskautomaton.program.Program
 @Preview
 @Composable
 fun ProgramListPreview() {
-    ProgramList(emptyList(), {})
+    ProgramList(emptyList()) {}
 }
 
 @Composable
@@ -32,29 +29,35 @@ fun ProgramList(
 ) {
     Scaffold(
         topBar = {
-            Row(
+            TopAppBar(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(MaterialTheme.colors.secondary),
-                horizontalArrangement = Arrangement.End
             ) {
-                IconButton(onClick = { }) {
-                    Icon(imageVector = Icons.Filled.PlayArrow, contentDescription = "Play")
-                }
-                IconButton(onClick = {}) {
-                    Icon(imageVector = Icons.Filled.NavigateNext, contentDescription = "Step")
-                }
-                IconButton(onClick = {}) {
-                    Icon(imageVector = Icons.Filled.Stop, contentDescription = "Stop")
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    IconButton(onClick = { }) {
+                        Icon(imageVector = Icons.Filled.PlayArrow, contentDescription = "Play")
+                    }
+                    IconButton(onClick = {}) {
+                        Icon(imageVector = Icons.Filled.NavigateNext, contentDescription = "Step")
+                    }
+                    IconButton(onClick = {}) {
+                        Icon(imageVector = Icons.Filled.Stop, contentDescription = "Stop")
+                    }
                 }
             }
         }
     ) {
         LazyColumn {
-            itemsIndexed(
+            items(
                 items = programs
-            ) { index, program ->
-                ProgramItem(program) { onNavigateToDetailsScreen(program.id) }
+            ) { item ->
+                ProgramItem(item) {
+                    onNavigateToDetailsScreen(item.id)
+                }
             }
         }
     }
