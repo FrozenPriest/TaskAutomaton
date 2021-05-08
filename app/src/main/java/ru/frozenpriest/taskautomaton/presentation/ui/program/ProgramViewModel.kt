@@ -25,7 +25,7 @@ import java.util.*
 
 class ProgramViewModel : ViewModel() {
 
-    val program: MutableState<Program> = mutableStateOf(Program(emptyList()))
+    val program: MutableState<Program> = mutableStateOf(Program(1, "test", emptyList()))
     val loading = mutableStateOf(false)
 
     init {
@@ -89,7 +89,7 @@ class ProgramViewModel : ViewModel() {
                 EndElse()
             )
             Log.e("0", "Prog size is ${list.size}")
-            program.value = Program(list)
+            program.value = Program(1, "test", list)
 
             loading.value = false
         }

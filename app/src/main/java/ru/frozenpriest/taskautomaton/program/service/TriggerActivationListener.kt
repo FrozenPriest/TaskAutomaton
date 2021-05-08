@@ -39,7 +39,7 @@ class TriggerActivationListener(val context: Context) {
                 )
             )
             //todo load params
-            Program(list).executeCommands(context)
+            Program(1, "test", list).executeCommands(context)
         }
     }
 }

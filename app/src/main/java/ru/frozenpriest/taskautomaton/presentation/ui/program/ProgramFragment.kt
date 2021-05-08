@@ -3,9 +3,9 @@ package ru.frozenpriest.taskautomaton.presentation.ui.program
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.appcompat.view.menu.ActionMenuItemView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -13,8 +13,8 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ru.frozenpriest.taskautomaton.R
-import ru.frozenpriest.taskautomaton.program.service.MyService
 import ru.frozenpriest.taskautomaton.program.Program
+import ru.frozenpriest.taskautomaton.program.service.MyService
 import ru.frozenpriest.taskautomaton.utils.CustomItemTouchHelper
 import ru.frozenpriest.taskautomaton.utils.ItemTouchHelperAdapter
 
@@ -27,16 +27,17 @@ class ProgramFragment : Fragment(R.layout.fragment_program) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.getInt("programId")?.let { recipeId ->
-            //load program
+        arguments?.getLong("programId")?.let { programId ->
+            println("Got program id")
         }
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         setupRecyclerView()
-        setupButtons()
+        setupToolbar()
 
         (rvProgram.adapter as CommandItemAdapter).bind(viewModel.program.value)
 //       todo remake as viewmodel command
@@ -50,16 +51,16 @@ class ProgramFragment : Fragment(R.layout.fragment_program) {
         }
     }
 
-    private fun setupButtons() {
+    private fun setupToolbar() {
         activity?.apply {
 
-            val buttonStart: ImageButton = findViewById(R.id.imageButtonPlay)
+            val buttonStart: ActionMenuItemView = findViewById(R.id.imageButtonPlay)
             buttonStart.setOnClickListener { onButtonStart() }
 
-            val buttonStep: ImageButton = findViewById(R.id.imageButtonStep)
+            val buttonStep: ActionMenuItemView = findViewById(R.id.imageButtonStep)
             buttonStep.setOnClickListener { onButtonStep() }
 
-            val buttonReset: ImageButton = findViewById(R.id.imageButtonStop)
+            val buttonReset: ActionMenuItemView = findViewById(R.id.imageButtonStop)
             buttonReset.setOnClickListener { onButtonReset() }
         }
     }
@@ -70,7 +71,7 @@ class ProgramFragment : Fragment(R.layout.fragment_program) {
             rvProgram.apply {
                 layoutManager =
                     LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-                adapter = CommandItemAdapter(context = context, program = Program(emptyList()))
+                adapter = CommandItemAdapter(context = context, program = Program(1, "emptynaem", emptyList()))
 
                 val dividerItemDecoration = DividerItemDecoration(context, RecyclerView.VERTICAL)
                 AppCompatResources.getDrawable(context, R.drawable.divider_drawable)?.let {

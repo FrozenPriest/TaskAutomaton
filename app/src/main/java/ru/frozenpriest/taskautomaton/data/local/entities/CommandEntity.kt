@@ -10,8 +10,8 @@ import ru.frozenpriest.taskautomaton.program.triggers.Trigger
     tableName = "table_triggers",
     foreignKeys = [ForeignKey(
         entity = ProgramEntity::class,
-        parentColumns = arrayOf("name"),
-        childColumns = arrayOf("connectedProgramName"),
+        parentColumns = arrayOf("id"),
+        childColumns = arrayOf("connectedProgramId"),
         onDelete = ForeignKey.CASCADE
     )]
 )
@@ -19,8 +19,8 @@ data class TriggerEntity(
     @PrimaryKey(autoGenerate = true)
     @SerialName("id")
     val id: Long,
-    @SerialName("programName")
-    val connectedProgramName: String,
+    @SerialName("programId")
+    val connectedProgramId: Long,
     @SerialName("trigger")
     val trigger: Trigger
 )

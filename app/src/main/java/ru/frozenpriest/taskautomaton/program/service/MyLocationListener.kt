@@ -4,14 +4,24 @@ import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.util.Log
+import com.fasterxml.jackson.annotation.JsonProperty
 import ru.frozenpriest.taskautomaton.program.triggers.LocationTrigger
 import ru.frozenpriest.taskautomaton.program.triggers.LocationTriggerType.*
 
-class MyLocationListener(private val triggerActivationListener: TriggerActivationListener) : LocationListener {
+class MyLocationListener(private val triggerActivationListener: TriggerActivationListener) :
+    LocationListener {
     private val triggers: List<TriggerWithState> =
         listOf(
             TriggerWithState(
-                LocationTrigger(59.991273981908556, 30.3189792548688, 50.0, EnterOrExit, "test", true),
+                LocationTrigger(
+                    59.991273981908556,
+                    30.3189792548688,
+                    50.0,
+                    LocationState.Outside,
+                    EnterOrExit,
+                    "test",
+                    true
+                ),
                 LocationState.Undefined
             )
         )
@@ -42,12 +52,19 @@ class MyLocationListener(private val triggerActivationListener: TriggerActivatio
     }
 
 
-    private enum class LocationState {
-        Inside, Outside, Undefined
-    }
-
     private data class TriggerWithState(
         val locationTrigger: LocationTrigger,
         var state: LocationState
     )
+}
+
+enum class LocationState {
+    @JsonProperty("Inside")
+    Inside,
+
+    @JsonProperty("Outside")
+    Outside,
+
+    @JsonProperty("Undefined")
+    Undefined
 }

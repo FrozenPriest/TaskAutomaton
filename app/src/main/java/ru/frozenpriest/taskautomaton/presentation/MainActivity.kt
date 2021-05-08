@@ -3,12 +3,12 @@ package ru.frozenpriest.taskautomaton.presentation
 import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentActivity
 import ru.frozenpriest.taskautomaton.R
 import ru.frozenpriest.taskautomaton.program.service.MyService
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : FragmentActivity() {
     companion object {
         const val OVERLAY_PERMISSION_REQ_CODE = 1
 

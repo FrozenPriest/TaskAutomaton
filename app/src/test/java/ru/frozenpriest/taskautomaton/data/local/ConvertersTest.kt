@@ -15,6 +15,7 @@ import ru.frozenpriest.taskautomaton.program.commands.output.UseTts
 import ru.frozenpriest.taskautomaton.program.commands.output.VibrateWithPattern
 import ru.frozenpriest.taskautomaton.program.commands.variables.IncVar
 import ru.frozenpriest.taskautomaton.program.commands.variables.SetVar
+import ru.frozenpriest.taskautomaton.program.service.LocationState
 import ru.frozenpriest.taskautomaton.program.triggers.LocationTrigger
 import ru.frozenpriest.taskautomaton.program.triggers.LocationTriggerType
 import ru.frozenpriest.taskautomaton.program.triggers.TimeTrigger
@@ -140,19 +141,19 @@ class ConvertersTest : TestCase() {
 
     fun testFromTrigger() {
         val trigger = LocationTrigger(
-            1.0, 2.0, 3.0, LocationTriggerType.Enter, "test1", true
+            1.0, 2.0, 3.0, LocationState.Undefined, LocationTriggerType.Enter, "test1", true
         )
         val expected =
-            "{\"type\":\"LocationTrigger\",\"latitude\":1.0,\"longitude\":2.0,\"radius\":3.0,\"type\":\"Enter\",\"programName\":\"test1\",\"enabled\":true}"
+            "{\"type\":\"LocationTrigger\",\"latitude\":1.0,\"longitude\":2.0,\"radius\":3.0,\"currentState\":\"Undefined\",\"type\":\"Enter\",\"programName\":\"test1\",\"enabled\":true}"
         val json = Converters.fromTrigger(trigger)
         assertEquals(expected, json)
     }
 
     fun testToTriggerLocation() {
         val json =
-            "{\"type\":\"LocationTrigger\",\"latitude\":1.0,\"longitude\":2.0,\"radius\":3.0,\"type\":\"Enter\",\"programName\":\"test1\",\"enabled\":true}"
+            "{\"type\":\"LocationTrigger\",\"latitude\":1.0,\"longitude\":2.0,\"radius\":3.0,\"currentState\":\"Undefined\",\"type\":\"Enter\",\"programName\":\"test1\",\"enabled\":true}"
         val expected = LocationTrigger(
-            1.0, 2.0, 3.0, LocationTriggerType.Enter, "test1", true
+            1.0, 2.0, 3.0, LocationState.Undefined, LocationTriggerType.Enter, "test1", true
         )
         val result = Converters.toTrigger(json) as LocationTrigger
 

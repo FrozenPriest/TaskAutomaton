@@ -2,10 +2,18 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main_graph"
-    app:startDestination="@id/programFragment">
+    app:startDestination="@id/programListFragment">
 
     <fragment
         android:id="@+id/programFragment"
         android:name="ru.frozenpriest.taskautomaton.presentation.ui.program.ProgramFragment"
         android:label="ProgramFragment" />
+    <fragment
+        android:id="@+id/programListFragment"
+        android:name="ru.frozenpriest.taskautomaton.presentation.ui.program_list.ProgramListFragment"
+        android:label="ProgramListFragment" >
+        <action
+            android:id="@+id/view_program_details"
+            app:destination="@id/programFragment" />
+    </fragment>
 </navigation>

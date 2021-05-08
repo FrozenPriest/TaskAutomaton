@@ -19,7 +19,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.TaskAutomaton">
-        <activity android:name=".presentation.MainActivity">
+        <activity
+            android:name=".presentation.MainActivity"
+            android:theme="@style/Theme.TaskAutomaton">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

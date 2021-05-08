@@ -5,11 +5,12 @@ import android.util.Log
 import ru.frozenpriest.taskautomaton.program.commands.Command
 import ru.frozenpriest.taskautomaton.program.commands.logic.*
 
-class Program(var commands: List<Command>) {
+
+class Program(val id: Long, val name: String, var commands: List<Command>) {
     var listener: OnCommandRunListener? = null
     var isSyntaxValid = false
 
-    constructor(commands: ArrayList<Command>, params: HashMap<String, Any>) : this(commands) {
+    constructor(id: Long, name: String, commands: ArrayList<Command>, params: HashMap<String, Any>) : this(id, name, commands) {
         this.variables.putAll(params)
     }
 
