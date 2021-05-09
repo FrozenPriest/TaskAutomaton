@@ -8,8 +8,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.NavigateNext
-import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Stop
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -19,7 +19,7 @@ import ru.frozenpriest.taskautomaton.program.Program
 @Preview
 @Composable
 fun ProgramListPreview() {
-    ProgramList(emptyList()) {}
+    ProgramList(listOf(Program(0, "name", emptyList()))) {}
 }
 
 @Composable
@@ -39,7 +39,7 @@ fun ProgramList(
                     horizontalArrangement = Arrangement.End
                 ) {
                     IconButton(onClick = { }) {
-                        Icon(imageVector = Icons.Filled.PlayArrow, contentDescription = "Play")
+                        Icon(imageVector = Icons.Filled.Add, contentDescription = "Add")
                     }
                     IconButton(onClick = {}) {
                         Icon(imageVector = Icons.Filled.NavigateNext, contentDescription = "Step")
@@ -55,10 +55,14 @@ fun ProgramList(
             items(
                 items = programs
             ) { item ->
-                ProgramItem(item) {
-                    onNavigateToDetailsScreen(item.id)
-                }
+                ProgramItem(
+                    program = item,
+                    onClick = { onNavigateToDetailsScreen(item.id) },
+                    onClickEdit = {/*todo edit*/},
+                    onClickDelete = {/*todo delete*/}
+                )
             }
         }
+
     }
 }
