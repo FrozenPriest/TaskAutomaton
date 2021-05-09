@@ -18,7 +18,7 @@ import ru.frozenpriest.taskautomaton.program.triggers.Trigger
 data class TriggerEntity(
     @PrimaryKey(autoGenerate = true)
     @SerialName("id")
-    val id: Long,
+    val id: Long = 0,
     @SerialName("programId")
     val connectedProgramId: Long,
     @SerialName("trigger")

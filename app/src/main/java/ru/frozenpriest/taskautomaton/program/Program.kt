@@ -6,11 +6,16 @@ import ru.frozenpriest.taskautomaton.program.commands.Command
 import ru.frozenpriest.taskautomaton.program.commands.logic.*
 
 
-class Program(val id: Long, val name: String, var commands: List<Command>) {
+class Program(val id: Long = 0, val name: String, var commands: List<Command>) {
     var listener: OnCommandRunListener? = null
     var isSyntaxValid = false
 
-    constructor(id: Long, name: String, commands: ArrayList<Command>, params: HashMap<String, Any>) : this(id, name, commands) {
+    constructor(
+        id: Long = 0,
+        name: String,
+        commands: List<Command>,
+        params: HashMap<String, Any>
+    ) : this(id, name, commands) {
         this.variables.putAll(params)
     }
 

@@ -10,7 +10,7 @@ import ru.frozenpriest.taskautomaton.program.commands.Command
 data class ProgramEntity(
     @PrimaryKey(autoGenerate = true)
     @SerialName("id")
-    val id: Long,
+    val id: Long = 0,
     @ColumnInfo(name = "name")
     val name: String,
     @ColumnInfo(name = "commands")
