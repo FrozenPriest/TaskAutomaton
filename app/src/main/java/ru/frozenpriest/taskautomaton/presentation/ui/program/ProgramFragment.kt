@@ -1,6 +1,5 @@
 package ru.frozenpriest.taskautomaton.presentation.ui.program
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -12,13 +11,14 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.appbar.MaterialToolbar
+import dagger.hilt.android.AndroidEntryPoint
 import ru.frozenpriest.taskautomaton.R
 import ru.frozenpriest.taskautomaton.program.Program
-import ru.frozenpriest.taskautomaton.program.service.MyService
 import ru.frozenpriest.taskautomaton.utils.CustomItemTouchHelper
 import ru.frozenpriest.taskautomaton.utils.ItemTouchHelperAdapter
 
-
+@AndroidEntryPoint
 class ProgramFragment : Fragment(R.layout.fragment_program) {
 
     private val viewModel: ProgramViewModel by viewModels()
@@ -28,7 +28,7 @@ class ProgramFragment : Fragment(R.layout.fragment_program) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.getLong("programId")?.let { programId ->
-            println("Got program id")
+            viewModel.loadProgram(programId)
         }
 
     }
@@ -38,22 +38,18 @@ class ProgramFragment : Fragment(R.layout.fragment_program) {
 
         setupRecyclerView()
         setupToolbar()
+        viewModel.program.observe(viewLifecycleOwner, {
+            (rvProgram.adapter as CommandItemAdapter).bind(it)
+            it.listener = rvProgram.adapter as CommandItemAdapter
 
-        (rvProgram.adapter as CommandItemAdapter).bind(viewModel.program.value)
-//       todo remake as viewmodel command
-        viewModel.program.value.listener = rvProgram.adapter as CommandItemAdapter
+            val toolbar = view.findViewById<MaterialToolbar>(R.id.toolbar)
+            toolbar.title = it.name
+        })
 
-        context?.let {
-            val intent = Intent(it, MyService::class.java)
-            intent.putExtra("ProgramId", "id") //todo when have database
-            it.stopService(intent) //todo for debug purposes, remove later
-            it.startService(intent)
-        }
     }
 
     private fun setupToolbar() {
         activity?.apply {
-
             val buttonStart: ActionMenuItemView = findViewById(R.id.imageButtonPlay)
             buttonStart.setOnClickListener { onButtonStart() }
 
@@ -71,7 +67,10 @@ class ProgramFragment : Fragment(R.layout.fragment_program) {
             rvProgram.apply {
                 layoutManager =
                     LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-                adapter = CommandItemAdapter(context = context, program = Program(1, "emptynaem", emptyList()))
+                adapter = CommandItemAdapter(
+                    context = context,
+                    program = Program(1, "emptynaem", emptyList())
+                )
 
                 val dividerItemDecoration = DividerItemDecoration(context, RecyclerView.VERTICAL)
                 AppCompatResources.getDrawable(context, R.drawable.divider_drawable)?.let {
@@ -91,7 +90,7 @@ class ProgramFragment : Fragment(R.layout.fragment_program) {
 
     private fun onButtonStart() {
         context?.let {
-            if (viewModel.program.value.isSyntaxValid)
+            if (viewModel.isSyntaxValid())
                 viewModel.executeCommands(it)
             else
                 showProgramErrorToast()

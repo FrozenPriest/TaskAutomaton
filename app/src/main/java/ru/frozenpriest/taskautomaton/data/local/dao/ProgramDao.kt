@@ -10,7 +10,7 @@ interface ProgramDao {
     fun getProgramByName(name: String): LiveData<ProgramEntity>
 
     @Query("select * from table_programs where id=:id")
-    fun getProgramById(id: Int): LiveData<ProgramEntity>
+    fun getProgramById(id: Long): LiveData<ProgramEntity>
 
     @Query("select * from table_programs order by id Desc")
     fun getAllPrograms(): LiveData<List<ProgramEntity>>

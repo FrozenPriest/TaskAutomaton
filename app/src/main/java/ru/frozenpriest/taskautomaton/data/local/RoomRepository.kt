@@ -1,5 +1,6 @@
 package ru.frozenpriest.taskautomaton.data.local
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.map
 import ru.frozenpriest.taskautomaton.data.local.dao.ProgramDao
 import ru.frozenpriest.taskautomaton.data.local.dao.TriggerDao
@@ -33,6 +34,10 @@ class RoomRepository(private val programDao: ProgramDao, private val triggerDao:
 
     suspend fun deleteProgram(program: Program) {
         programDao.delete(program.toEntity())
+    }
+
+    fun getProgram(id: Long): LiveData<Program> {
+        return programDao.getProgramById(id).map {programEntity -> programEntity.toProgram() }
     }
 }
 
