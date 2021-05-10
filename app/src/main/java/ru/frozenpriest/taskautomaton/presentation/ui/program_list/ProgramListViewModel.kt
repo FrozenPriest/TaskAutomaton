@@ -27,4 +27,12 @@ class ProgramListViewModel @Inject constructor(
             )
         )
     }
+
+    fun updateProgram(program: Program) = viewModelScope.launch {
+        repository.updateProgram(program)
+    }
+
+    fun deleteProgram(program: Program) = viewModelScope.launch {
+        repository.deleteProgram(program)
+    }
 }

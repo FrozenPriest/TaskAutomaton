@@ -6,7 +6,7 @@ import ru.frozenpriest.taskautomaton.program.commands.Command
 import ru.frozenpriest.taskautomaton.program.commands.logic.*
 
 
-class Program(val id: Long = 0, val name: String, var commands: List<Command>) {
+class Program(val id: Long = 0, var name: String, var commands: List<Command>) {
     var listener: OnCommandRunListener? = null
     var isSyntaxValid = false
 

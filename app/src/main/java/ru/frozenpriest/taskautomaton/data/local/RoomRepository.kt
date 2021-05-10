@@ -11,7 +11,6 @@ import ru.frozenpriest.taskautomaton.utils.toProgram
 class RoomRepository(private val programDao: ProgramDao, private val triggerDao: TriggerDao) {
 
     val allPrograms = programDao.getAllPrograms().map { list ->
-        println("Gotcha!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         list.map {
             it.toProgram()
         }
@@ -24,8 +23,16 @@ class RoomRepository(private val programDao: ProgramDao, private val triggerDao:
         programDao.insert(program.toEntity())
     }
 
+    suspend fun updateProgram(program: Program) {
+        programDao.update(program.toEntity())
+    }
+
     suspend fun insertTrigger(trigger: Trigger) {
         //TODO
+    }
+
+    suspend fun deleteProgram(program: Program) {
+        programDao.delete(program.toEntity())
     }
 }
 

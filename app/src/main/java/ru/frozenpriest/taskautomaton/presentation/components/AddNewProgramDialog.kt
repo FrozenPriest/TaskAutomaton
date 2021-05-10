@@ -23,7 +23,7 @@ fun AddNewProgramDialog(
             onDismissRequest = {
             },
             title = {
-                Text("New program")
+                Text("Program")
             },
             confirmButton = {
                 Button(

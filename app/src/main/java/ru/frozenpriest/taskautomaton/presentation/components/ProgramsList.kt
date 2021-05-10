@@ -9,8 +9,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.NavigateNext
-import androidx.compose.material.icons.filled.Stop
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -21,17 +19,20 @@ import ru.frozenpriest.taskautomaton.program.Program
 @Preview
 @Composable
 fun ProgramListPreview() {
-    ProgramList(listOf(Program(0, "name", emptyList())), {}) {}
+    ProgramList(listOf(Program(0, "name", emptyList())), {}, {}, {}) {}
 }
 
 @Composable
 fun ProgramList(
     programs: List<Program>,
     onNavigateToDetailsScreen: (programId: Long) -> Unit,
-    onAddNewProgram: (name: String) -> Unit
+    onAddNewProgram: (name: String) -> Unit,
+    onRenameProgram: (program: Program) -> Unit,
+    onDeleteProgram: (program: Program) -> Unit
 ) {
     val (showAddDialog, setShowAddDialog) = remember { mutableStateOf(false) }
-
+    val (showRenameDialog, setShowRenameDialog) = remember { mutableStateOf(false) }
+    val editableProgram = remember { mutableStateOf<Program?>(null) }
     Scaffold(
         topBar = {
             TopAppBar(
@@ -48,12 +49,6 @@ fun ProgramList(
                     }) {
                         Icon(imageVector = Icons.Filled.Add, contentDescription = "Add")
                     }
-                    IconButton(onClick = {}) {
-                        Icon(imageVector = Icons.Filled.NavigateNext, contentDescription = "Step")
-                    }
-                    IconButton(onClick = {}) {
-                        Icon(imageVector = Icons.Filled.Stop, contentDescription = "Stop")
-                    }
                 }
             }
         }
@@ -65,8 +60,11 @@ fun ProgramList(
                 ProgramItem(
                     program = item,
                     onClick = { onNavigateToDetailsScreen(item.id) },
-                    onClickEdit = {/*todo edit*/ },
-                    onClickDelete = {/*todo delete*/ }
+                    onClickEdit = {
+                        setShowRenameDialog(true)
+                        editableProgram.value = item
+                    },
+                    onClickDelete = { onDeleteProgram(item) }
                 )
             }
         }
@@ -76,5 +74,16 @@ fun ProgramList(
             text = "",
             onConfirm = onAddNewProgram
         )
+        editableProgram.value?.let {
+            AddNewProgramDialog(
+                showDialog = showRenameDialog,
+                setShowDialog = setShowRenameDialog,
+                text = it.name,
+                onConfirm = { name ->
+                    it.name = name
+                    onRenameProgram(it)
+                }
+            )
+        }
     }
 }

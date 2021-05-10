@@ -34,7 +34,9 @@ class ProgramListFragment : Fragment() {
                         }
                         findNavController().navigate(R.id.view_program_details, bundle)
                     },
-                    onAddNewProgram = { name -> viewModel.insertProgram(name) }
+                    onAddNewProgram = { name -> viewModel.insertProgram(name) },
+                    onRenameProgram = { program -> viewModel.updateProgram(program) },
+                    onDeleteProgram = { program -> viewModel.deleteProgram(program) }
                 )
             }
         }
