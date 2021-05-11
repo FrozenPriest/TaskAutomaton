@@ -12,9 +12,12 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import dagger.hilt.android.AndroidEntryPoint
 import ru.frozenpriest.taskautomaton.R
+import ru.frozenpriest.taskautomaton.presentation.ui.CommandsMenuFragment
 import ru.frozenpriest.taskautomaton.program.Program
+import ru.frozenpriest.taskautomaton.program.commands.Command
 import ru.frozenpriest.taskautomaton.utils.CustomItemTouchHelper
 import ru.frozenpriest.taskautomaton.utils.ItemTouchHelperAdapter
 
@@ -42,10 +45,25 @@ class ProgramFragment : Fragment(R.layout.fragment_program) {
             (rvProgram.adapter as CommandItemAdapter).bind(it)
             it.listener = rvProgram.adapter as CommandItemAdapter
 
-            val toolbar = view.findViewById<MaterialToolbar>(R.id.toolbar)
+            val toolbar: MaterialToolbar = view.findViewById(R.id.toolbar)
             toolbar.title = it.name
+
+            val floatingButton: FloatingActionButton = view.findViewById(R.id.floatingActionButton)
+            floatingButton.setOnClickListener { showAddCommandDialog() }
         })
 
+    }
+
+    private fun showAddCommandDialog() {
+        context?.let {
+            val listener = object :
+                CommandsMenuFragment.CommandSelectionListener {
+                override fun onCommandSelected(command: List<Command>) {
+                    //todo add to program
+                }
+            }
+            CommandsMenuFragment(listener).show(parentFragmentManager, "TAGGGG")
+        }
     }
 
     private fun setupToolbar() {
@@ -72,7 +90,8 @@ class ProgramFragment : Fragment(R.layout.fragment_program) {
                     program = Program(1, "emptynaem", emptyList())
                 )
 
-                val dividerItemDecoration = DividerItemDecoration(context, RecyclerView.VERTICAL)
+                val dividerItemDecoration =
+                    DividerItemDecoration(context, RecyclerView.VERTICAL)
                 AppCompatResources.getDrawable(context, R.drawable.divider_drawable)?.let {
                     dividerItemDecoration.setDrawable(it)
                 }

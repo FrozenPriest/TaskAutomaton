@@ -8,6 +8,7 @@ import ru.frozenpriest.taskautomaton.App
 import ru.frozenpriest.taskautomaton.R
 import ru.frozenpriest.taskautomaton.program.Program
 import ru.frozenpriest.taskautomaton.program.commands.Command
+import ru.frozenpriest.taskautomaton.program.commands.CommandType
 import java.util.*
 
 @JsonTypeName("UseTts")
@@ -15,13 +16,14 @@ class UseTts(
     @JsonProperty("stringToShow")
     val stringToShow: String,
     @JsonProperty("args")
-    val args: Array<String>,
+    val args: List<String>,
     @JsonProperty("language")
     val language: Locale
 ) : Command(
     name = "Speak text",
     description = "$stringToShow, lang = ${language.language}",
-    iconId = R.drawable.icon_sample
+    iconId = R.drawable.icon_sample,
+    commandType = CommandType.Output
 ) {
 
     override fun perform(program: Program, context: Context) {

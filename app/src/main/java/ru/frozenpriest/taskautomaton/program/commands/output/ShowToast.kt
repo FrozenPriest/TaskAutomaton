@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName
 import ru.frozenpriest.taskautomaton.R
 import ru.frozenpriest.taskautomaton.program.Program
 import ru.frozenpriest.taskautomaton.program.commands.Command
+import ru.frozenpriest.taskautomaton.program.commands.CommandType
 
 /**
  * Show toast with variables
@@ -18,7 +19,7 @@ class ShowToast(
     @JsonProperty("stringToShow")
     val stringToShow: String,
     @JsonProperty("args")
-    val args: Array<String>,
+    val args: List<String>,
     @JsonProperty("duration")
     val duration: Int
 ) : Command(
@@ -26,7 +27,8 @@ class ShowToast(
     description = "$stringToShow, duration = ${
         if (duration == Toast.LENGTH_LONG) "long" else "short"
     }",
-    iconId = R.drawable.icon_sample
+    iconId = R.drawable.icon_sample,
+    commandType = CommandType.Output
 ) {
 
     override fun perform(program: Program, context: Context) {

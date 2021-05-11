@@ -8,15 +8,17 @@ import ru.frozenpriest.taskautomaton.App
 import ru.frozenpriest.taskautomaton.R
 import ru.frozenpriest.taskautomaton.program.Program
 import ru.frozenpriest.taskautomaton.program.commands.Command
+import ru.frozenpriest.taskautomaton.program.commands.CommandType
 
 @JsonTypeName("VibrateWithPattern")
 class VibrateWithPattern(
     @JsonProperty("delays")
-    val delays: Array<Long>
+    val delays: List<Long>
 ) : Command(
     name = "Vibrate",
     description = "",
-    iconId = R.drawable.icon_sample
+    iconId = R.drawable.icon_sample,
+    commandType = CommandType.Output
 ) {
 
     override fun perform(program: Program, context: Context) {

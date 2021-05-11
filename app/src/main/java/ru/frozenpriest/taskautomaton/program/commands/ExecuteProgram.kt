@@ -15,7 +15,8 @@ class ExecuteProgram(
 ) : Command(
     name = "Execute $program with args",
     description = "",
-    iconId = R.drawable.icon_sample
+    iconId = R.drawable.icon_sample,
+    commandType = CommandType.Output
 ) {
 
     override fun perform(program: Program, context: Context) {

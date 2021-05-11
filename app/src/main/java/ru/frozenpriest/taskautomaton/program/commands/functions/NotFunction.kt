@@ -12,7 +12,7 @@ class NotFunction(
     @JsonProperty("function")
     val function: Function
 ) :
-    Function("Not", function.name, R.drawable.icon_sample) {
+    Function("Not", function.info.name, R.drawable.icon_sample) {
 
     override fun perform(program: Program, context: Context) {
         function.perform(program, context)

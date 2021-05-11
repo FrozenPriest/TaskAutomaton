@@ -62,14 +62,14 @@ class Program(val id: Long = 0, var name: String, var commands: List<Command>) {
         val brackets = Array(3) { 0 }
         var level = 0
         for (command in commands) {
-            command.level = level
+            command.info.level = level
             when (command) {
                 is IfCondition -> {
                     level++
                     brackets[0]++
                 }
                 is EndIf -> {
-                    command.level--
+                    command.info.level--
                     level--
                     brackets[0]--
                 }
@@ -78,7 +78,7 @@ class Program(val id: Long = 0, var name: String, var commands: List<Command>) {
                     brackets[1]++
                 }
                 is EndElse -> {
-                    command.level--
+                    command.info.level--
                     level--
                     brackets[1]--
                 }
@@ -87,7 +87,7 @@ class Program(val id: Long = 0, var name: String, var commands: List<Command>) {
                     brackets[2]++
                 }
                 is EndWhile -> {
-                    command.level--
+                    command.info.level--
                     level--
                     brackets[2]--
                 }

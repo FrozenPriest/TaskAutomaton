@@ -40,13 +40,13 @@ class CommandItemAdapter(
         val item = program.commands[position]
 
         val layoutParams = holder.ivIcon.layoutParams as ViewGroup.MarginLayoutParams
-        layoutParams.marginStart = item.level * 32 + 8
+        layoutParams.marginStart = item.info.level * 32 + 8
         holder.ivIcon.layoutParams = layoutParams
 
-        holder.ivIcon.setImageResource(item.iconId)
+        holder.ivIcon.setImageResource(item.info.iconId)
 
-        holder.commandName.text = item.name
-        holder.commandDesc.text = item.description
+        holder.commandName.text = item.info.name
+        holder.commandDesc.text = item.info.description
 
         if (program.commandPointer == position) holder.itemView.setBackgroundColor(Color.GREEN)
         else holder.itemView.setBackgroundColor(Color.WHITE)

@@ -31,9 +31,9 @@ class ConvertersTest : TestCase() {
             SetVar("f3", 0),
             SetVar("f4", 9),
             SetVar("f10", 10),
-            VibrateWithPattern(arrayOf(200, 100, 200, 100, 400, 200, 500)),
+            VibrateWithPattern(listOf(200, 100, 200, 100, 400, 200, 500)),
             WhileCondition(NotFunction(LowerVar("f10", "f3"))),
-            UseTts("Test is %s", arrayOf("f3"), Locale.ENGLISH),
+            UseTts("Test is %s", listOf("f3"), Locale.ENGLISH),
             IncVar("f3"),
             EndWhile(),
 
@@ -41,14 +41,14 @@ class ConvertersTest : TestCase() {
             IfCondition(CheckVar("funkyVar2")),
             ShowToast(
                 "Test test test",
-                arrayOf(),
+                listOf(),
                 Toast.LENGTH_LONG
             ),
             EndIf(),
             ElseCondition(),
             ShowToast(
                 "NOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO",
-                arrayOf(),
+                listOf(),
                 Toast.LENGTH_LONG
             ),
             EndElse(),
@@ -62,7 +62,7 @@ class ConvertersTest : TestCase() {
                         "</body>\n" +
                         "</html>\n",
                 duration = 15000,
-                args = arrayOf("funkyVar1", "funkyVar4"),
+                args = listOf("funkyVar1", "funkyVar4"),
                 textColor = Color.WHITE,
                 backgroundColor = Color.BLACK,
                 gravity = Gravity.START or Gravity.CENTER_VERTICAL
@@ -71,7 +71,7 @@ class ConvertersTest : TestCase() {
             ElseCondition(),
             ShowToast(
                 "New text %s, to go %s",
-                arrayOf("funkyVar1", "funkyVar2"),
+                listOf("funkyVar1", "funkyVar2"),
                 Toast.LENGTH_LONG
             ),
             EndElse()
@@ -88,9 +88,9 @@ class ConvertersTest : TestCase() {
             SetVar("f3", 0),
             SetVar("f4", 9),
             SetVar("f10", 10),
-            VibrateWithPattern(arrayOf(200, 100, 200, 100, 400, 200, 500)),
+            VibrateWithPattern(listOf(200, 100, 200, 100, 400, 200, 500)),
             WhileCondition(NotFunction(LowerVar("f10", "f3"))),
-            UseTts("Test is %s", arrayOf("f3"), Locale.ENGLISH),
+            UseTts("Test is %s", listOf("f3"), Locale.ENGLISH),
             IncVar("f3"),
             EndWhile(),
 
@@ -98,14 +98,14 @@ class ConvertersTest : TestCase() {
             IfCondition(CheckVar("funkyVar2")),
             ShowToast(
                 "Test test test",
-                arrayOf(),
+                listOf(),
                 Toast.LENGTH_LONG
             ),
             EndIf(),
             ElseCondition(),
             ShowToast(
                 "NOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO",
-                arrayOf(),
+                listOf(),
                 Toast.LENGTH_LONG
             ),
             EndElse(),
@@ -119,7 +119,7 @@ class ConvertersTest : TestCase() {
                         "</body>\n" +
                         "</html>\n",
                 duration = 15000,
-                args = arrayOf("funkyVar1", "funkyVar4"),
+                args = listOf("funkyVar1", "funkyVar4"),
                 textColor = Color.WHITE,
                 backgroundColor = Color.BLACK,
                 gravity = Gravity.START or Gravity.CENTER_VERTICAL
@@ -128,7 +128,7 @@ class ConvertersTest : TestCase() {
             ElseCondition(),
             ShowToast(
                 "New text %s, to go %s",
-                arrayOf("funkyVar1", "funkyVar2"),
+                listOf("funkyVar1", "funkyVar2"),
                 Toast.LENGTH_LONG
             ),
             EndElse()
