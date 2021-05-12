@@ -4,6 +4,7 @@ import android.content.Context
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonTypeName
 import ru.frozenpriest.taskautomaton.R
+import ru.frozenpriest.taskautomaton.presentation.commands.CommandBuilder
 import ru.frozenpriest.taskautomaton.program.Program
 import ru.frozenpriest.taskautomaton.program.commands.Command
 import ru.frozenpriest.taskautomaton.program.commands.CommandType
@@ -14,7 +15,7 @@ class IfCondition(
     @JsonProperty("condition")
     val condition: Function
 ) :
-    Command("If", condition.info.name, R.drawable.icon_sample, CommandType.Logic) {
+    Command("If", condition.info.name, R.drawable.icon_sample, CommandType.Logic, CommandBuilder.CommandClass.IfCondition) {
 
     override fun perform(program: Program, context: Context) {
         condition.perform(program, context)

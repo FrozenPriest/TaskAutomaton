@@ -4,6 +4,7 @@ import android.content.Context
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonTypeName
 import ru.frozenpriest.taskautomaton.R
+import ru.frozenpriest.taskautomaton.presentation.commands.CommandBuilder
 import ru.frozenpriest.taskautomaton.program.Program
 import ru.frozenpriest.taskautomaton.program.commands.Function
 
@@ -12,7 +13,7 @@ class CheckVar(
     @JsonProperty("varName")
     val varName: String
 ) :
-    Function("Check as boolean", varName, R.drawable.icon_sample) {
+    Function("Check as boolean", varName, R.drawable.icon_sample, CommandBuilder.CommandClass.CheckVar) {
 
 
     override fun perform(program: Program, context: Context) {

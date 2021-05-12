@@ -9,6 +9,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import ru.frozenpriest.taskautomaton.data.local.RoomRepository
 import ru.frozenpriest.taskautomaton.program.Program
+import ru.frozenpriest.taskautomaton.program.commands.Command
 import javax.inject.Inject
 
 @HiltViewModel
@@ -38,5 +39,18 @@ class ProgramViewModel @Inject constructor(
 
     fun executeCommands(context: Context) {
         program.value?.executeCommands(context)
+    }
+
+    fun updateProgram() = viewModelScope.launch {
+        program.value?.let {
+            repository.updateProgram(it)
+        }
+    }
+
+    fun addCommands(commands: List<Command>) = viewModelScope.launch {
+        program.value?.let {
+            (it.commands as MutableList).addAll(commands)
+            repository.updateProgram(it)
+        }
     }
 }

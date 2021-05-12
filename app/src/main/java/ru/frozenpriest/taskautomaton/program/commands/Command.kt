@@ -4,7 +4,7 @@ import android.content.Context
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
-import ru.frozenpriest.taskautomaton.presentation.commands.CommandInfo
+import ru.frozenpriest.taskautomaton.presentation.commands.CommandBuilder
 import ru.frozenpriest.taskautomaton.program.Program
 import ru.frozenpriest.taskautomaton.program.commands.functions.*
 import ru.frozenpriest.taskautomaton.program.commands.logic.*
@@ -53,11 +53,12 @@ abstract class Command(
     name: String,
     description: String,
     iconId: Int,
-    commandType: CommandType
+    commandType: CommandType,
+    commandClass: CommandBuilder.CommandClass
 ) : ICommand {
 
     @JsonIgnore
-    val info: CommandInfo = CommandInfo(name, description, iconId, commandType)
+    val info: CommandInfo = CommandInfo(name, description, iconId, commandType, commandClass)
 }
 
 
@@ -65,4 +66,13 @@ interface ICommand {
     fun perform(program: Program, context: Context)
 }
 
+data class CommandInfo(
+    val name: String,
+    val description: String,
+    val iconId: Int,
+    val commandType: CommandType,
+    val commandClass: CommandBuilder.CommandClass
+) {
+    var level = 0
+}
 

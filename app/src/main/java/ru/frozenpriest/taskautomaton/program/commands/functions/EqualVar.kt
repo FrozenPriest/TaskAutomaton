@@ -4,6 +4,7 @@ import android.content.Context
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonTypeName
 import ru.frozenpriest.taskautomaton.R
+import ru.frozenpriest.taskautomaton.presentation.commands.CommandBuilder
 import ru.frozenpriest.taskautomaton.program.Program
 import ru.frozenpriest.taskautomaton.program.commands.Function
 
@@ -14,7 +15,7 @@ class EqualVar(
     @JsonProperty("var2")
     val var2: String
 ) :
-    Function("Check equal", "$var1 == $var2", R.drawable.icon_sample) {
+    Function("Check equal", "$var1 == $var2", R.drawable.icon_sample, CommandBuilder.CommandClass.EqualVar) {
 
 
     override fun perform(program: Program, context: Context) {

@@ -4,6 +4,7 @@ import android.content.Context
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonTypeName
 import ru.frozenpriest.taskautomaton.R
+import ru.frozenpriest.taskautomaton.presentation.commands.CommandBuilder
 import ru.frozenpriest.taskautomaton.program.Program
 import ru.frozenpriest.taskautomaton.program.commands.Function
 
@@ -14,7 +15,7 @@ class GreaterVar(
     @JsonProperty("var2")
     val var2: String
 ) :
-    Function("Check greater", "$var1 > $var2", R.drawable.icon_sample) {
+    Function("Check greater", "$var1 > $var2", R.drawable.icon_sample, CommandBuilder.CommandClass.GreaterVar) {
 
     override fun perform(program: Program, context: Context) {
         val var1Value = program.variables[var1] as Number

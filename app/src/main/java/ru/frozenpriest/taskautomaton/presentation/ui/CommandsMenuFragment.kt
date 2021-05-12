@@ -28,7 +28,7 @@ import ru.frozenpriest.taskautomaton.program.commands.CommandType
 
 class CommandsMenuFragment(private val listener: CommandSelectionListener) : DialogFragment() {
     interface CommandSelectionListener {
-        fun onCommandSelected(command: List<Command>)
+        fun onCommandSelected(commands: List<Command>)
     }
 
     override fun onCreateView(
@@ -99,7 +99,7 @@ fun GridMenu(
                                 painter = painterResource(id = it.iconId),
                                 contentDescription = "icon"
                             )
-                            Text(text = it.name)
+                            Text(text = it.className.name)
                         }
                     }
                 }
@@ -107,12 +107,17 @@ fun GridMenu(
         }
     } else {
         commandInfoToAdd.value?.let { commandInfo ->
+            val preparedParams = remember {
+                mutableMapOf<CommandBuilder.ParamWithType, Any>()
+            }
             CommandBuilderComposable(
                 info = commandInfo,
-                build = {params ->
-                    add(commandInfo, params)
+                preparedParams = preparedParams,
+                build = {
+                    add(commandInfo, preparedParams)
                 },
-                cancel = { dismiss() })
+                cancel = { dismiss() }
+            )
         }
     }
 }

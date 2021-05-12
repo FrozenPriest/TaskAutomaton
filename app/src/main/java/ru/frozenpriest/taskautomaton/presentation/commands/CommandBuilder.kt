@@ -1,30 +1,222 @@
 package ru.frozenpriest.taskautomaton.presentation.commands
 
 
+import android.widget.Toast
 import ru.frozenpriest.taskautomaton.R
 import ru.frozenpriest.taskautomaton.program.commands.Command
 import ru.frozenpriest.taskautomaton.program.commands.CommandType
-import ru.frozenpriest.taskautomaton.program.commands.ExecuteProgram
+import ru.frozenpriest.taskautomaton.program.commands.Function
 import ru.frozenpriest.taskautomaton.program.commands.functions.*
-import ru.frozenpriest.taskautomaton.program.commands.logic.IfCondition
-import ru.frozenpriest.taskautomaton.program.commands.logic.WhileCondition
+import ru.frozenpriest.taskautomaton.program.commands.logic.*
 import ru.frozenpriest.taskautomaton.program.commands.output.ShowHtml
 import ru.frozenpriest.taskautomaton.program.commands.output.ShowToast
 import ru.frozenpriest.taskautomaton.program.commands.output.UseTts
 import ru.frozenpriest.taskautomaton.program.commands.output.VibrateWithPattern
 import ru.frozenpriest.taskautomaton.program.commands.variables.*
-import kotlin.reflect.KClass
+import ru.frozenpriest.taskautomaton.utils.GravityRestriction
+import java.util.*
 
-class CommandBuilder(val commandInfo: CommandInfoShort, val params: Map<ParamWithType, Any>) {
+class CommandBuilder(private val commandInfo: CommandInfoShort, private val params: Map<ParamWithType, Any>) {
 
     fun build(): List<Command> {
-        TODO()
+        val list = mutableListOf<Command>()
+        val params = params.mapValues{param ->
+            param.key.getParametrized(param.value)
+        }
+        when (commandInfo.className) {
+            CommandClass.CheckVar -> {
+                list.add(CheckVar(params[commandInfo.params[0]] as String))
+            }
+            CommandClass.EqualVar -> {
+                list.add(
+                    EqualVar(
+                        params[commandInfo.params[0]] as String,
+                        params[commandInfo.params[1]] as String
+                    )
+                )
+            }
+            CommandClass.ExistVar -> {
+                list.add(
+                    ExistVar(
+                        params[commandInfo.params[0]] as String,
+                    )
+                )
+            }
+            CommandClass.GreaterVar -> {
+                list.add(
+                    GreaterVar(
+                        params[commandInfo.params[0]] as String,
+                        params[commandInfo.params[1]] as String
+                    )
+                )
+            }
+            CommandClass.LowerVar -> {
+                list.add(
+                    LowerVar(
+                        params[commandInfo.params[0]] as String,
+                        params[commandInfo.params[1]] as String
+                    )
+                )
+            }
+            CommandClass.NotFunction -> {
+                list.add(
+                    NotFunction(
+                        params[commandInfo.params[0]] as Function,
+                    )
+                )
+            }
+            CommandClass.IfCondition -> {
+                list.addAll(
+                    listOf(
+                        IfCondition(
+                            params[commandInfo.params[0]] as Function,
+                        ),
+                        EndIf(),
+                    )
+                )
+                if (params[commandInfo.params[1]] as Boolean) {
+                    list.addAll(
+                        listOf(
+                            ElseCondition(),
+                            EndElse()
+                        )
+                    )
+                }
+            }
+            CommandClass.WhileCondition -> {
+                list.addAll(
+                    listOf(
+                        WhileCondition(
+                            params[commandInfo.params[0]] as Function,
+                        ),
+                        EndWhile(),
+                    )
+                )
+            }
+            CommandClass.ShowHtml -> {
+                list.add(
+                    ShowHtml(
+                        params[commandInfo.params[0]] as String,
+                        (params[commandInfo.params[1]] as String).split(",").map { it.trim() },
+                        (params[commandInfo.params[2]] as Int),
+                        (params[commandInfo.params[3]] as Int),
+                        (params[commandInfo.params[4]] as Int),
+                        (params[commandInfo.params[5]] as Long),
+                    )
+                )
+            }
+            CommandClass.ShowToast -> {
+                list.add(
+                    ShowToast(
+                        params[commandInfo.params[0]] as String,
+                        (params[commandInfo.params[1]] as String).split(",").map { it.trim() },
+                        (params[commandInfo.params[2]] as Int),
+                    )
+                )
+            }
+            CommandClass.UseTts -> {
+                list.add(
+                    UseTts(
+                        params[commandInfo.params[0]] as String,
+                        (params[commandInfo.params[1]] as String).split(",").map { it.trim() },
+                        (params[commandInfo.params[2]] as Locale)
+                    )
+                )
+            }
+            CommandClass.VibrateWithPattern -> {
+                list.add(
+                    VibrateWithPattern(
+                        (params[commandInfo.params[1]] as String).split(",").map { it.toLong()},
+                    )
+                )
+            }
+            CommandClass.DivVar -> {
+                list.add(
+                    DivVar(
+                        params[commandInfo.params[0]] as String,
+                        params[commandInfo.params[1]] as String,
+                        params[commandInfo.params[2]] as String
+                    )
+                )
+            }
+            CommandClass.IncVar -> {
+                list.add(
+                    IncVar(
+                        params[commandInfo.params[0]] as String
+                    )
+                )
+            }
+            CommandClass.MulVar -> {
+                list.add(
+                    MulVar(
+                        params[commandInfo.params[0]] as String,
+                        params[commandInfo.params[1]] as String,
+                        params[commandInfo.params[2]] as String
+                    )
+                )
+            }
+            CommandClass.SetVar -> {
+                list.add(
+                    SetVar(
+                        params[commandInfo.params[0]] as String,
+                        params[commandInfo.params[1]] as String
+                    )
+                )
+            }
+            CommandClass.SubVar -> {
+                list.add(
+                    SubVar(
+                        params[commandInfo.params[0]] as String,
+                        params[commandInfo.params[1]] as String,
+                        params[commandInfo.params[2]] as String
+                    )
+                )
+            }
+            CommandClass.SumVar -> {
+                list.add(
+                    SumVar(
+                        params[commandInfo.params[0]] as String,
+                        params[commandInfo.params[1]] as String,
+                        params[commandInfo.params[2]] as String
+                    )
+                )
+            }
+            CommandClass.ExecuteProgram -> {
+                TODO()
+            }
+            //else -> throw NotImplementedError("Command not supported")
+        }
+        return list
     }
 
+    enum class CommandClass {
+        CheckVar,
+        EqualVar,
+        ExistVar,
+        GreaterVar,
+        LowerVar,
+        NotFunction,
+        ElseCondition,
+        EndElse,
+        EndIf,
+        EndWhile,
+        IfCondition,
+        WhileCondition,
+        ShowHtml,
+        ShowToast,
+        UseTts,
+        VibrateWithPattern,
+        DivVar,
+        IncVar,
+        MulVar,
+        SetVar,
+        SubVar,
+        SumVar,
+        ExecuteProgram
+    }
 
     data class CommandInfoShort(
-        val className: KClass<out Command>,
-        val name: String,
+        val className: CommandClass,
         val commandType: CommandType,
         val iconId: Int,
         val params: List<ParamWithType>
@@ -33,15 +225,45 @@ class CommandBuilder(val commandInfo: CommandInfoShort, val params: Map<ParamWit
     data class ParamWithType(
         val name: String,
         val type: ParamType
-    )
+    ) {
+        fun getParametrized(value: Any): Any {
+            return type.getParametrized(value)
+        }
+    }
 
     enum class ParamType {
         String,
         Gravity,
-        Duration,
+        DurationToast,
+        DurationExpire,
         Function,
         Color,
-        Language
+        Language,
+        Boolean;
+
+        /**
+         * returns casted value. Still need to use as later
+         */
+        fun getParametrized(value: Any): Any {
+            return when (this) {
+                String -> return value
+                Gravity -> {
+                    when (GravityRestriction.valueOf(value as kotlin.String)) {
+                        GravityRestriction.Center -> android.view.Gravity.CENTER
+                        GravityRestriction.Top -> android.view.Gravity.TOP
+                        GravityRestriction.Bottom -> android.view.Gravity.BOTTOM
+                        GravityRestriction.Start -> android.view.Gravity.START
+                        GravityRestriction.End -> android.view.Gravity.END
+                    }
+                }
+                DurationToast -> if (value == "Long") Toast.LENGTH_LONG else Toast.LENGTH_SHORT
+                DurationExpire -> (value as kotlin.String).toLong()
+                Function -> TODO()
+                Color -> android.graphics.Color.valueOf((value as kotlin.String).toInt())
+                Language -> Locale(value as kotlin.String)
+                Boolean -> (value as kotlin.String).toBoolean()
+            }
+        }
     }
 
 
@@ -49,15 +271,13 @@ class CommandBuilder(val commandInfo: CommandInfoShort, val params: Map<ParamWit
         //todo move to some non static maybe
         val commandToInfo: List<CommandInfoShort> = listOf(
             CommandInfoShort(
-                CheckVar::class,
-                "CheckVar",
+                CommandClass.CheckVar,
                 CommandType.Variables,
                 R.drawable.icon_sample,
                 listOf(ParamWithType("Variable", ParamType.String))
             ),
             CommandInfoShort(
-                EqualVar::class,
-                "EqualVar",
+                CommandClass.EqualVar,
                 CommandType.Variables,
                 R.drawable.icon_sample,
                 listOf(
@@ -66,15 +286,13 @@ class CommandBuilder(val commandInfo: CommandInfoShort, val params: Map<ParamWit
                 )
             ),
             CommandInfoShort(
-                ExistVar::class,
-                "ExistVar",
+                CommandClass.ExistVar,
                 CommandType.Variables,
                 R.drawable.icon_sample,
                 listOf(ParamWithType("Variable", ParamType.String))
             ),
             CommandInfoShort(
-                GreaterVar::class,
-                "GreaterVar",
+                CommandClass.GreaterVar,
                 CommandType.Variables,
                 R.drawable.icon_sample,
                 listOf(
@@ -83,8 +301,7 @@ class CommandBuilder(val commandInfo: CommandInfoShort, val params: Map<ParamWit
                 )
             ),
             CommandInfoShort(
-                LowerVar::class,
-                "LowerVar",
+                CommandClass.LowerVar,
                 CommandType.Variables,
                 R.drawable.icon_sample,
                 listOf(
@@ -93,29 +310,28 @@ class CommandBuilder(val commandInfo: CommandInfoShort, val params: Map<ParamWit
                 )
             ),
             CommandInfoShort(
-                NotFunction::class,
-                "NotFunction",
-                CommandType.Variables,
-                R.drawable.icon_sample,
-                listOf(ParamWithType("Function", ParamType.Function)) //todo can be inner function
-            ),
-            CommandInfoShort(
-                IfCondition::class,
-                "If",
+                CommandClass.NotFunction,
                 CommandType.Variables,
                 R.drawable.icon_sample,
                 listOf(ParamWithType("Function", ParamType.Function))
             ),
             CommandInfoShort(
-                WhileCondition::class,
-                "While",
+                CommandClass.IfCondition,
+                CommandType.Variables,
+                R.drawable.icon_sample,
+                listOf(
+                    ParamWithType("Function", ParamType.Function),
+                    ParamWithType("Else", ParamType.Boolean)
+                )
+            ),
+            CommandInfoShort(
+                CommandClass.WhileCondition,
                 CommandType.Variables,
                 R.drawable.icon_sample,
                 listOf(ParamWithType("Function", ParamType.Function))
             ),
             CommandInfoShort(//name, args, backColor, textColor, gravity, duration
-                ShowHtml::class,
-                "ShowHtml",
+                CommandClass.ShowHtml,
                 CommandType.Variables,
                 R.drawable.icon_sample,
                 listOf(
@@ -124,23 +340,21 @@ class CommandBuilder(val commandInfo: CommandInfoShort, val params: Map<ParamWit
                     ParamWithType("Background", ParamType.Color),
                     ParamWithType("TextColor", ParamType.Color),
                     ParamWithType("Gravity", ParamType.Gravity),
-                    ParamWithType("Duration", ParamType.Duration)
+                    ParamWithType("Duration", ParamType.DurationExpire)
                 )
             ),
             CommandInfoShort(
-                ShowToast::class,
-                "ShowToast",
+                CommandClass.ShowToast,
                 CommandType.Variables,
                 R.drawable.icon_sample,
                 listOf(
                     ParamWithType("Text", ParamType.String),
                     ParamWithType("Args", ParamType.String),
-                    ParamWithType("Duration", ParamType.Duration)
+                    ParamWithType("Duration", ParamType.DurationToast)
                 )
             ),
             CommandInfoShort(
-                UseTts::class,
-                "UseTts",
+                CommandClass.UseTts,
                 CommandType.Variables,
                 R.drawable.icon_sample,
                 listOf(
@@ -150,8 +364,7 @@ class CommandBuilder(val commandInfo: CommandInfoShort, val params: Map<ParamWit
                 )
             ),
             CommandInfoShort(
-                VibrateWithPattern::class,
-                "Vibrate",
+                CommandClass.VibrateWithPattern,
                 CommandType.Variables,
                 R.drawable.icon_sample,
                 listOf(
@@ -159,8 +372,7 @@ class CommandBuilder(val commandInfo: CommandInfoShort, val params: Map<ParamWit
                 )
             ),
             CommandInfoShort(
-                SumVar::class,
-                "SumVar",
+                CommandClass.SumVar,
                 CommandType.Variables,
                 R.drawable.icon_sample,
                 listOf(
@@ -170,8 +382,7 @@ class CommandBuilder(val commandInfo: CommandInfoShort, val params: Map<ParamWit
                 )
             ),
             CommandInfoShort(
-                DivVar::class,
-                "DivVar",
+                CommandClass.DivVar,
                 CommandType.Variables,
                 R.drawable.icon_sample,
                 listOf(
@@ -181,8 +392,7 @@ class CommandBuilder(val commandInfo: CommandInfoShort, val params: Map<ParamWit
                 )
             ),
             CommandInfoShort(
-                IncVar::class,
-                "IncVar",
+                CommandClass.IncVar,
                 CommandType.Variables,
                 R.drawable.icon_sample,
                 listOf(
@@ -190,8 +400,7 @@ class CommandBuilder(val commandInfo: CommandInfoShort, val params: Map<ParamWit
                 )
             ),
             CommandInfoShort(
-                MulVar::class,
-                "MulVar",
+                CommandClass.MulVar,
                 CommandType.Variables,
                 R.drawable.icon_sample,
                 listOf(
@@ -201,17 +410,16 @@ class CommandBuilder(val commandInfo: CommandInfoShort, val params: Map<ParamWit
                 )
             ),
             CommandInfoShort(
-                SetVar::class,
-                "SetVar",
+                CommandClass.SetVar,
                 CommandType.Variables,
                 R.drawable.icon_sample,
                 listOf(
                     ParamWithType("Variable", ParamType.String),
+                    ParamWithType("Value", ParamType.String),
                 )
             ),
             CommandInfoShort(
-                SubVar::class,
-                "SubVar",
+                CommandClass.SubVar,
                 CommandType.Variables,
                 R.drawable.icon_sample,
                 listOf(
@@ -221,8 +429,7 @@ class CommandBuilder(val commandInfo: CommandInfoShort, val params: Map<ParamWit
                 )
             ),
             CommandInfoShort(
-                ExecuteProgram::class,
-                "Execute",
+                CommandClass.ExecuteProgram,
                 CommandType.Variables,
                 R.drawable.icon_sample,
                 listOf(

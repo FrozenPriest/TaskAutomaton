@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import ru.frozenpriest.taskautomaton.program.commands.Command
 import ru.frozenpriest.taskautomaton.program.commands.logic.*
+import kotlin.math.abs
 
 
 class Program(val id: Long = 0, var name: String, var commands: List<Command>) {
@@ -108,6 +109,61 @@ class Program(val id: Long = 0, var name: String, var commands: List<Command>) {
             }
         }
         isSyntaxValid = true
+    }
+
+    fun removeCommandAt(adapterPosition: Int): List<Int> {
+        val list = mutableListOf<Int>()
+        val command = commands[adapterPosition]
+        list.add(adapterPosition)
+        if (command is IfCondition) {
+            var endIfIndex = -1
+            var elseIndex = -1
+            var endElseIndex = -1
+            val level = command.info.level
+            for (i in adapterPosition until commands.size) {
+                val current = commands[i]
+                if (current.info.level != level)
+                    continue
+                if (endIfIndex == -1 && current is EndIf)
+                    endIfIndex = i
+                if (elseIndex == -1 && current is ElseCondition && abs(i - endIfIndex) == 1)
+                    elseIndex = i
+                if (current is EndElse && elseIndex != -1)
+                    endElseIndex = i
+
+                if (endElseIndex != -1 || current.info.level < level) break
+            }
+
+            list.add(endIfIndex)
+            if (elseIndex != -1) {
+                list.add(elseIndex)
+                list.add(endElseIndex)
+            }
+        }
+        if (command is WhileCondition) {
+            var endWhile = -1
+            val level = command.info.level
+
+            for (i in adapterPosition until commands.size) {
+                val current = commands[i]
+                if (current.info.level != level)
+                    continue
+                if (current is EndWhile) {
+                    endWhile = i
+                    break
+                }
+
+            }
+
+            list.add(endWhile)
+        }
+
+        val mutableCommands = commands.toMutableList()
+        for ((correction, i) in list.withIndex()) {
+            mutableCommands.removeAt(i-correction)
+        }
+        commands = mutableCommands
+        return list
     }
 }
 

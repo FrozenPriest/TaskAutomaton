@@ -18,6 +18,9 @@ interface ProgramDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(entity: ProgramEntity)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(entity: List<ProgramEntity>)
+
 
     @Update
     suspend fun update(entity: ProgramEntity)

@@ -16,7 +16,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import dagger.hilt.android.AndroidEntryPoint
 import ru.frozenpriest.taskautomaton.R
 import ru.frozenpriest.taskautomaton.presentation.ui.CommandsMenuFragment
-import ru.frozenpriest.taskautomaton.program.Program
 import ru.frozenpriest.taskautomaton.program.commands.Command
 import ru.frozenpriest.taskautomaton.utils.CustomItemTouchHelper
 import ru.frozenpriest.taskautomaton.utils.ItemTouchHelperAdapter
@@ -39,16 +38,27 @@ class ProgramFragment : Fragment(R.layout.fragment_program) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupRecyclerView()
         setupToolbar()
+        setupRecyclerView()
+        val toolbar: MaterialToolbar = view.findViewById(R.id.toolbar)
+        val floatingButton: FloatingActionButton = view.findViewById(R.id.floatingActionButton)
+
         viewModel.program.observe(viewLifecycleOwner, {
-            (rvProgram.adapter as CommandItemAdapter).bind(it)
-            it.listener = rvProgram.adapter as CommandItemAdapter
-
-            val toolbar: MaterialToolbar = view.findViewById(R.id.toolbar)
             toolbar.title = it.name
+            if (rvProgram.adapter == null) {
+                rvProgram.adapter = context?.let { context ->
+                    CommandItemAdapter(
+                        context = context,
+                        viewModel = viewModel
+                    )
+                }
+                val callback: ItemTouchHelper.Callback =
+                    CustomItemTouchHelper(rvProgram.adapter as ItemTouchHelperAdapter)
+                val touchHelper = ItemTouchHelper(callback)
+                touchHelper.attachToRecyclerView(rvProgram)
+            }
+            (rvProgram.adapter as CommandItemAdapter).bind(it)
 
-            val floatingButton: FloatingActionButton = view.findViewById(R.id.floatingActionButton)
             floatingButton.setOnClickListener { showAddCommandDialog() }
         })
 
@@ -58,11 +68,11 @@ class ProgramFragment : Fragment(R.layout.fragment_program) {
         context?.let {
             val listener = object :
                 CommandsMenuFragment.CommandSelectionListener {
-                override fun onCommandSelected(command: List<Command>) {
-                    //todo add to program
+                override fun onCommandSelected(commands: List<Command>) {
+                    viewModel.addCommands(commands)
                 }
             }
-            CommandsMenuFragment(listener).show(parentFragmentManager, "TAGGGG")
+            CommandsMenuFragment(listener).show(parentFragmentManager, "menuTag")
         }
     }
 
@@ -85,10 +95,6 @@ class ProgramFragment : Fragment(R.layout.fragment_program) {
             rvProgram.apply {
                 layoutManager =
                     LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-                adapter = CommandItemAdapter(
-                    context = context,
-                    program = Program(1, "emptynaem", emptyList())
-                )
 
                 val dividerItemDecoration =
                     DividerItemDecoration(context, RecyclerView.VERTICAL)
@@ -98,10 +104,7 @@ class ProgramFragment : Fragment(R.layout.fragment_program) {
 
                 addItemDecoration(dividerItemDecoration)
 
-                val callback: ItemTouchHelper.Callback =
-                    CustomItemTouchHelper(adapter as ItemTouchHelperAdapter)
-                val touchHelper = ItemTouchHelper(callback)
-                touchHelper.attachToRecyclerView(rvProgram)
+
             }
 
         }

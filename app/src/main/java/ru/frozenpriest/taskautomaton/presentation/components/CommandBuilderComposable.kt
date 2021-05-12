@@ -13,24 +13,25 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ru.frozenpriest.taskautomaton.presentation.commands.CommandBuilder
-import ru.frozenpriest.taskautomaton.utils.Gravity
+import ru.frozenpriest.taskautomaton.utils.GravityRestriction
 import java.util.*
 
 @Composable
 @Preview(showBackground = true)
 fun CommandBuilderPreview() {
-    CommandBuilderComposable(CommandBuilder.commandToInfo[8], {}, {})
+    val preparedParams = remember {
+        mutableMapOf<CommandBuilder.ParamWithType, Any>()
+    }
+    CommandBuilderComposable(CommandBuilder.commandToInfo[8], preparedParams, {}, {})
 }
 
 @Composable
 fun CommandBuilderComposable(
     info: CommandBuilder.CommandInfoShort,
-    build: (params: Map<CommandBuilder.ParamWithType, Any>) -> Unit,
+    preparedParams: MutableMap<CommandBuilder.ParamWithType, Any>,
+    build: () -> Unit,
     cancel: () -> Unit
 ) {
-    val preparedParams = remember {
-        mutableMapOf<CommandBuilder.ParamWithType, Any>()
-    }
     Column {
         info.params.forEach { param ->
             Row(
@@ -62,32 +63,63 @@ fun CommandBuilderComposable(
                     }
                     CommandBuilder.ParamType.Gravity -> {
                         Selector(
-                            possibleValues = Gravity.values().map { it.toString() },
+                            possibleValues = GravityRestriction.values().map { it.toString() },
                             modifier = Modifier.weight(0.6f, true),
                             onItemSelected = { itemValue -> preparedParams[param] = itemValue }
                         )
                     }
-                    CommandBuilder.ParamType.Duration -> {
+                    CommandBuilder.ParamType.DurationToast -> {
                         Selector(
                             possibleValues = listOf("Long", "Short"),
                             modifier = Modifier.weight(0.6f, true),
                             onItemSelected = { itemValue -> preparedParams[param] = itemValue }
                         )
                     }
+                    CommandBuilder.ParamType.DurationExpire -> {
+                        val (textField, setText) = remember { mutableStateOf(TextFieldValue()) }
+
+                        TextField(
+                            value = textField,
+                            onValueChange = {
+                                if (it.text.toIntOrNull() != null) {
+                                    setText(it)
+                                    preparedParams[param] = it.text
+                                }
+                            },
+                            modifier = Modifier
+                                .padding(start = 8.dp, end = 8.dp, top = 4.dp, bottom = 4.dp)
+                                .weight(0.6f, true)
+                                .padding(all = 8.dp),
+                        )
+                    }
                     CommandBuilder.ParamType.Function -> {
                         //TODO()
                     }
-                    CommandBuilder.ParamType.Color -> {
+                    CommandBuilder.ParamType.Boolean -> {
                         Selector(
                             possibleValues = listOf(
-                                "Red",
-                                "Green",
-                                "Blue"
+                                "True",
+                                "False",
                             ),
                             modifier = Modifier.weight(0.6f, true),
                             onItemSelected = { itemValue -> preparedParams[param] = itemValue }
+                        )
+                    }
+                    CommandBuilder.ParamType.Color -> {
+                        val (textField, setText) = remember { mutableStateOf(TextFieldValue()) }
 
-
+                        TextField(
+                            value = textField,
+                            onValueChange = {
+                                if (it.text.toIntOrNull() != null) {
+                                    setText(it)
+                                    preparedParams[param] = it.text
+                                }
+                            },
+                            modifier = Modifier
+                                .padding(start = 8.dp, end = 8.dp, top = 4.dp, bottom = 4.dp)
+                                .weight(0.6f, true)
+                                .padding(all = 8.dp),
                         )//todo fill more or add colorpicker
                     }
                     CommandBuilder.ParamType.Language -> {
@@ -110,7 +142,7 @@ fun CommandBuilderComposable(
         ) {
             Button(onClick = {
                 if (preparedParams.size == info.params.size)
-                    build(preparedParams)
+                    build()
             }) {
                 Text("Add")
             }
