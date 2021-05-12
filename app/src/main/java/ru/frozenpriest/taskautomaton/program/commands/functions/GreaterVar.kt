@@ -15,11 +15,23 @@ class GreaterVar(
     @JsonProperty("var2")
     val var2: String
 ) :
-    Function("Check greater", "$var1 > $var2", R.drawable.icon_sample, CommandBuilder.CommandClass.GreaterVar) {
+    Function(
+        "Check greater",
+        "$var1 > $var2",
+        R.drawable.icon_sample,
+        CommandBuilder.CommandClass.GreaterVar
+    ) {
 
     override fun perform(program: Program, context: Context) {
-        val var1Value = program.variables[var1] as Number
-        val var2Value = program.variables[var2] as Number
-        functionResult = var1Value.toDouble() > var2Value.toDouble()
+        functionResult = try {
+            val var1Value = program.variables[var1] as String
+            val var2Value = program.variables[var2] as String
+            var1Value.toDouble() > var2Value.toDouble()
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+        println(functionResult)
     }
 }

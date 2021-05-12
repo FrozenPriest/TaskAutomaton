@@ -271,51 +271,6 @@ class CommandBuilder(private val commandInfo: CommandInfoShort, private val para
         //todo move to some non static maybe
         val commandToInfo: List<CommandInfoShort> = listOf(
             CommandInfoShort(
-                CommandClass.CheckVar,
-                CommandType.Variables,
-                R.drawable.icon_sample,
-                listOf(ParamWithType("Variable", ParamType.String))
-            ),
-            CommandInfoShort(
-                CommandClass.EqualVar,
-                CommandType.Variables,
-                R.drawable.icon_sample,
-                listOf(
-                    ParamWithType("Var1", ParamType.String),
-                    ParamWithType("Var2", ParamType.String)
-                )
-            ),
-            CommandInfoShort(
-                CommandClass.ExistVar,
-                CommandType.Variables,
-                R.drawable.icon_sample,
-                listOf(ParamWithType("Variable", ParamType.String))
-            ),
-            CommandInfoShort(
-                CommandClass.GreaterVar,
-                CommandType.Variables,
-                R.drawable.icon_sample,
-                listOf(
-                    ParamWithType("Var1", ParamType.String),
-                    ParamWithType("Var2", ParamType.String)
-                )
-            ),
-            CommandInfoShort(
-                CommandClass.LowerVar,
-                CommandType.Variables,
-                R.drawable.icon_sample,
-                listOf(
-                    ParamWithType("Var1", ParamType.String),
-                    ParamWithType("Var2", ParamType.String)
-                )
-            ),
-            CommandInfoShort(
-                CommandClass.NotFunction,
-                CommandType.Variables,
-                R.drawable.icon_sample,
-                listOf(ParamWithType("Function", ParamType.Function))
-            ),
-            CommandInfoShort(
                 CommandClass.IfCondition,
                 CommandType.Variables,
                 R.drawable.icon_sample,
@@ -436,6 +391,53 @@ class CommandBuilder(private val commandInfo: CommandInfoShort, private val para
                     ParamWithType("Var1", ParamType.String),//TODO doesnt work yet anyway
                     ParamWithType("Var2", ParamType.String)
                 )
+            ),
+        )
+        val functionsOnly = listOf(
+            CommandInfoShort(
+                CommandClass.CheckVar,
+                CommandType.Functions,
+                R.drawable.icon_sample,
+                listOf(ParamWithType("Variable", ParamType.String))
+            ),
+            CommandInfoShort(
+                CommandClass.EqualVar,
+                CommandType.Functions,
+                R.drawable.icon_sample,
+                listOf(
+                    ParamWithType("Var1", ParamType.String),
+                    ParamWithType("Var2", ParamType.String)
+                )
+            ),
+            CommandInfoShort(
+                CommandClass.ExistVar,
+                CommandType.Functions,
+                R.drawable.icon_sample,
+                listOf(ParamWithType("Variable", ParamType.String))
+            ),
+            CommandInfoShort(
+                CommandClass.GreaterVar,
+                CommandType.Functions,
+                R.drawable.icon_sample,
+                listOf(
+                    ParamWithType("Var1", ParamType.String),
+                    ParamWithType("Var2", ParamType.String)
+                )
+            ),
+            CommandInfoShort(
+                CommandClass.LowerVar,
+                CommandType.Functions,
+                R.drawable.icon_sample,
+                listOf(
+                    ParamWithType("Var1", ParamType.String),
+                    ParamWithType("Var2", ParamType.String)
+                )
+            ),
+            CommandInfoShort(
+                CommandClass.NotFunction,
+                CommandType.Functions,
+                R.drawable.icon_sample,
+                listOf(ParamWithType("Function", ParamType.Function))
             ),
         )
     }

@@ -15,12 +15,21 @@ class EqualVar(
     @JsonProperty("var2")
     val var2: String
 ) :
-    Function("Check equal", "$var1 == $var2", R.drawable.icon_sample, CommandBuilder.CommandClass.EqualVar) {
+    Function(
+        "Check equal",
+        "$var1 == $var2",
+        R.drawable.icon_sample,
+        CommandBuilder.CommandClass.EqualVar
+    ) {
 
 
     override fun perform(program: Program, context: Context) {
-        val var1Value = program.variables[var1].toString()
-        val var2Value = program.variables[var2].toString()
-        functionResult = var1Value == var2Value
+        functionResult = try {
+            val var1Value = program.variables[var1].toString()
+            val var2Value = program.variables[var2].toString()
+            var1Value == var2Value
+        } catch (e: Exception) {
+            false
+        }
     }
 }

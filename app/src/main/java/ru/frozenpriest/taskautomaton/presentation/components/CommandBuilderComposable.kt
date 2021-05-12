@@ -13,6 +13,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ru.frozenpriest.taskautomaton.presentation.commands.CommandBuilder
+import ru.frozenpriest.taskautomaton.program.commands.Function
 import ru.frozenpriest.taskautomaton.utils.GravityRestriction
 import java.util.*
 
@@ -32,7 +33,44 @@ fun CommandBuilderComposable(
     build: () -> Unit,
     cancel: () -> Unit
 ) {
+    // val setFunction
     Column {
+        CommandBuilderMain(
+            info,
+            preparedParams,
+        )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 8.dp, end = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Button(onClick = {
+                if (preparedParams.size == info.params.size)
+                    build()
+            }) {
+                Text("Add")
+            }
+            Button(onClick = { cancel() }) {
+                Text("Cancel")
+            }
+        }
+    }
+}
+
+@Composable
+fun CommandBuilderMain(
+    info: CommandBuilder.CommandInfoShort,
+    preparedParams: MutableMap<CommandBuilder.ParamWithType, Any>,
+    modifier: Modifier = Modifier,
+    onReady: () -> Unit = {}
+) {
+    val checkReady = remember {
+        { if (preparedParams.size == info.params.size) onReady() }
+    }
+    Column(modifier = modifier) {
+
         info.params.forEach { param ->
             Row(
                 modifier = Modifier
@@ -54,6 +92,7 @@ fun CommandBuilderComposable(
                             onValueChange = {
                                 setText(it)
                                 preparedParams[param] = it.text
+                                checkReady()
                             },
                             modifier = Modifier
                                 .padding(start = 8.dp, end = 8.dp, top = 4.dp, bottom = 4.dp)
@@ -65,14 +104,20 @@ fun CommandBuilderComposable(
                         Selector(
                             possibleValues = GravityRestriction.values().map { it.toString() },
                             modifier = Modifier.weight(0.6f, true),
-                            onItemSelected = { itemValue -> preparedParams[param] = itemValue }
+                            onItemSelected = { itemValue ->
+                                preparedParams[param] = itemValue
+                                checkReady()
+                            }
                         )
                     }
                     CommandBuilder.ParamType.DurationToast -> {
                         Selector(
                             possibleValues = listOf("Long", "Short"),
                             modifier = Modifier.weight(0.6f, true),
-                            onItemSelected = { itemValue -> preparedParams[param] = itemValue }
+                            onItemSelected = { itemValue ->
+                                preparedParams[param] = itemValue
+                                checkReady()
+                            }
                         )
                     }
                     CommandBuilder.ParamType.DurationExpire -> {
@@ -84,6 +129,7 @@ fun CommandBuilderComposable(
                                 if (it.text.toIntOrNull() != null) {
                                     setText(it)
                                     preparedParams[param] = it.text
+                                    checkReady()
                                 }
                             },
                             modifier = Modifier
@@ -93,11 +139,12 @@ fun CommandBuilderComposable(
                         )
                     }
                     CommandBuilder.ParamType.Function -> {
-                        Button(onClick = {
-
-                        }) {
-                            Text(text = "Add function")
-                        }
+                        FunctionSelector(
+                            onReady = { itemValue ->
+                                preparedParams[param] = itemValue
+                                checkReady()
+                            }
+                        )
                     }
                     CommandBuilder.ParamType.Boolean -> {
                         Selector(
@@ -106,7 +153,10 @@ fun CommandBuilderComposable(
                                 "False",
                             ),
                             modifier = Modifier.weight(0.6f, true),
-                            onItemSelected = { itemValue -> preparedParams[param] = itemValue }
+                            onItemSelected = { itemValue ->
+                                preparedParams[param] = itemValue
+                                checkReady()
+                            }
                         )
                     }
                     CommandBuilder.ParamType.Color -> {
@@ -118,6 +168,7 @@ fun CommandBuilderComposable(
                                 if (it.text.toIntOrNull() != null) {
                                     setText(it)
                                     preparedParams[param] = it.text
+                                    checkReady()
                                 }
                             },
                             modifier = Modifier
@@ -130,29 +181,56 @@ fun CommandBuilderComposable(
                         Selector(
                             possibleValues = Locale.getAvailableLocales().map { it.language },
                             modifier = Modifier.weight(0.6f, true),
-                            onItemSelected = { itemValue -> preparedParams[param] = itemValue }
+                            onItemSelected = { itemValue ->
+                                preparedParams[param] = itemValue
+                                checkReady()
+                            }
                         )
                     }
                 }
-
             }
         }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 8.dp, end = 8.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Button(onClick = {
-                if (preparedParams.size == info.params.size)
-                    build()
-            }) {
-                Text("Add")
+    }
+}
+
+@Composable
+fun FunctionSelector(
+    onReady: (Function) -> Unit
+) {
+    val selectedFunction = remember {
+        mutableStateOf<CommandBuilder.CommandInfoShort?>(null)
+    }
+    Column(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        val possibleValues = remember {
+            CommandBuilder.functionsOnly.map { it.className.toString() }
+        }
+        Selector(
+            possibleValues = possibleValues,
+            onItemSelected = { newString ->
+                selectedFunction.value =
+                    CommandBuilder.functionsOnly.find { it.className.toString() == newString }
+            },
+        )
+
+        if (selectedFunction.value != null) {
+            val newPreparedParams = remember {
+                mutableMapOf<CommandBuilder.ParamWithType, Any>()
             }
-            Button(onClick = { cancel() }) {
-                Text("Cancel")
-            }
+
+            CommandBuilderMain(
+                info = selectedFunction.value!!,
+                preparedParams = newPreparedParams,
+                onReady = {
+                    onReady(
+                        CommandBuilder(
+                            selectedFunction.value!!,
+                            newPreparedParams
+                        ).build()[0] as Function
+                    )
+                }
+            )
         }
     }
 }

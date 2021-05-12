@@ -15,7 +15,7 @@ class IfCondition(
     @JsonProperty("condition")
     val condition: Function
 ) :
-    Command("If", condition.info.name, R.drawable.icon_sample, CommandType.Logic, CommandBuilder.CommandClass.IfCondition) {
+    Command("If", condition.info.description, R.drawable.icon_sample, CommandType.Logic, CommandBuilder.CommandClass.IfCondition) {
 
     override fun perform(program: Program, context: Context) {
         condition.perform(program, context)

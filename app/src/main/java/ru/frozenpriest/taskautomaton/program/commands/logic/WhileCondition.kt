@@ -15,7 +15,7 @@ class WhileCondition(
     @JsonProperty("condition")
     val condition: Function
 ) :
-    Command("While", condition.info.name, R.drawable.icon_sample, CommandType.Logic, CommandBuilder.CommandClass.WhileCondition) {
+    Command("While", condition.info.description, R.drawable.icon_sample, CommandType.Logic, CommandBuilder.CommandClass.WhileCondition) {
 
     override fun perform(program: Program, context: Context) {
         condition.perform(program, context)

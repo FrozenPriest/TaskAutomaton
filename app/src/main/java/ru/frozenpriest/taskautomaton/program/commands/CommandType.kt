@@ -18,6 +18,7 @@ enum class CommandType(val icon: ImageVector) {
     Test5(Icons.Filled.Outbox),
     Test6(Icons.Filled.Outbox),
 
-    Uncategorized(Icons.Outlined.Stop)
+    Uncategorized(Icons.Outlined.Stop),
+    Functions(Icons.Outlined.Stop)
 }
 

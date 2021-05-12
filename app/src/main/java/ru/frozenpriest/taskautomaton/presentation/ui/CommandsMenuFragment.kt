@@ -1,5 +1,6 @@
 package ru.frozenpriest.taskautomaton.presentation.ui
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +13,7 @@ import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -40,7 +42,7 @@ class CommandsMenuFragment(private val listener: CommandSelectionListener) : Dia
             setContent {
                 GridMenu(
                     dismiss = { dismiss() },
-                    add = {info, params->
+                    add = { info, params ->
                         val command = CommandBuilder(info, params).build()
                         listener.onCommandSelected(command)
                         dismiss()
@@ -48,6 +50,10 @@ class CommandsMenuFragment(private val listener: CommandSelectionListener) : Dia
                 )
             }
         }
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        //do nothing
     }
 }
 
@@ -59,7 +65,8 @@ class CommandsMenuFragment(private val listener: CommandSelectionListener) : Dia
  * also contains categorisedCommands hashmap
  */
 
-val types = CommandType.values().filter { it != CommandType.Uncategorized }
+val types =
+    CommandType.values().filter { it != CommandType.Uncategorized && it != CommandType.Functions }
 val categorizedCommands = CommandBuilder.commandToInfo.groupBy { it.commandType }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -71,53 +78,55 @@ fun GridMenu(
 
     val selectedCategory = remember { mutableStateOf<CommandType?>(null) }
     val commandInfoToAdd = remember { mutableStateOf<CommandBuilder.CommandInfoShort?>(null) }
+    Surface() {
 
-    if (commandInfoToAdd.value == null) {
-        LazyVerticalGrid(cells = GridCells.Fixed(3)) {
-            if (selectedCategory.value == null) {
-                items(types) {
-                    IconButton(onClick = {
-                        selectedCategory.value = it
-                    }) {
-                        Column(
-                            modifier = Modifier.fillMaxSize(),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Icon(imageVector = it.icon, contentDescription = "icon")
-                            Text(text = it.name)
+        if (commandInfoToAdd.value == null) {
+            LazyVerticalGrid(cells = GridCells.Fixed(3)) {
+                if (selectedCategory.value == null) {
+                    items(types) {
+                        IconButton(onClick = {
+                            selectedCategory.value = it
+                        }) {
+                            Column(
+                                modifier = Modifier.fillMaxSize(),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Icon(imageVector = it.icon, contentDescription = "icon")
+                                Text(text = it.name)
+                            }
                         }
                     }
-                }
-            } else {
-                items(categorizedCommands[selectedCategory.value] ?: emptyList()) {
-                    IconButton(onClick = { commandInfoToAdd.value = it }) {
-                        Column(
-                            modifier = Modifier.fillMaxSize(),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Icon(
-                                painter = painterResource(id = it.iconId),
-                                contentDescription = "icon"
-                            )
-                            Text(text = it.className.name)
+                } else {
+                    items(categorizedCommands[selectedCategory.value] ?: emptyList()) {
+                        IconButton(onClick = { commandInfoToAdd.value = it }) {
+                            Column(
+                                modifier = Modifier.fillMaxSize(),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = it.iconId),
+                                    contentDescription = "icon"
+                                )
+                                Text(text = it.className.name)
+                            }
                         }
                     }
                 }
             }
-        }
-    } else {
-        commandInfoToAdd.value?.let { commandInfo ->
-            val preparedParams = remember {
-                mutableMapOf<CommandBuilder.ParamWithType, Any>()
+        } else {
+            commandInfoToAdd.value?.let { commandInfo ->
+                val preparedParams = remember {
+                    mutableMapOf<CommandBuilder.ParamWithType, Any>()
+                }
+                CommandBuilderComposable(
+                    info = commandInfo,
+                    preparedParams = preparedParams,
+                    build = {
+                        add(commandInfo, preparedParams)
+                    },
+                    cancel = { dismiss() },
+                )
             }
-            CommandBuilderComposable(
-                info = commandInfo,
-                preparedParams = preparedParams,
-                build = {
-                    add(commandInfo, preparedParams)
-                },
-                cancel = { dismiss() }
-            )
         }
     }
 }
