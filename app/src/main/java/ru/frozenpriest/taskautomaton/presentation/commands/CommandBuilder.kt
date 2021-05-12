@@ -5,6 +5,7 @@ import android.widget.Toast
 import ru.frozenpriest.taskautomaton.R
 import ru.frozenpriest.taskautomaton.program.commands.Command
 import ru.frozenpriest.taskautomaton.program.commands.CommandType
+import ru.frozenpriest.taskautomaton.program.commands.ExecuteProgram
 import ru.frozenpriest.taskautomaton.program.commands.Function
 import ru.frozenpriest.taskautomaton.program.commands.functions.*
 import ru.frozenpriest.taskautomaton.program.commands.logic.*
@@ -16,11 +17,14 @@ import ru.frozenpriest.taskautomaton.program.commands.variables.*
 import ru.frozenpriest.taskautomaton.utils.GravityRestriction
 import java.util.*
 
-class CommandBuilder(private val commandInfo: CommandInfoShort, private val params: Map<ParamWithType, Any>) {
+class CommandBuilder(
+    private val commandInfo: CommandInfoShort,
+    private val params: Map<ParamWithType, Any>
+) {
 
     fun build(): List<Command> {
         val list = mutableListOf<Command>()
-        val params = params.mapValues{param ->
+        val params = params.mapValues { param ->
             param.key.getParametrized(param.value)
         }
         when (commandInfo.className) {
@@ -126,7 +130,7 @@ class CommandBuilder(private val commandInfo: CommandInfoShort, private val para
             CommandClass.VibrateWithPattern -> {
                 list.add(
                     VibrateWithPattern(
-                        (params[commandInfo.params[1]] as String).split(",").map { it.toLong()},
+                        (params[commandInfo.params[0]] as String).split(",").map { it.toLong() },
                     )
                 )
             }
@@ -182,9 +186,13 @@ class CommandBuilder(private val commandInfo: CommandInfoShort, private val para
                 )
             }
             CommandClass.ExecuteProgram -> {
-                TODO()
+                list.add(
+                    ExecuteProgram(
+                        params[commandInfo.params[0]] as String
+                    )
+                )
             }
-            //else -> throw NotImplementedError("Command not supported")
+            else -> throw NotImplementedError("Command not supported")
         }
         return list
     }
@@ -268,11 +276,113 @@ class CommandBuilder(private val commandInfo: CommandInfoShort, private val para
 
 
     companion object {
+        fun populateParams(
+            command: Command?,
+            info: CommandInfoShort
+        ): MutableMap<ParamWithType, Any> {
+            val map = mutableMapOf<ParamWithType, Any>()
+            if (command == null) return map
+            when (command.info.commandClass) {
+                CommandClass.CheckVar -> {
+                    map[info.params[0]] = (command as CheckVar).varName
+                }
+                CommandClass.EqualVar -> {
+                    map[info.params[0]] = (command as EqualVar).var1
+                    map[info.params[1]] = command.var2
+                }
+                CommandClass.ExistVar -> {
+                    map[info.params[0]] = (command as ExistVar).varName
+                }
+                CommandClass.GreaterVar -> {
+                    map[info.params[0]] = (command as GreaterVar).var1
+                    map[info.params[1]] = command.var2
+                }
+                CommandClass.LowerVar -> {
+                    map[info.params[0]] = (command as LowerVar).var1
+                    map[info.params[1]] = command.var2
+                }
+                CommandClass.NotFunction -> {
+                    map[info.params[0]] = (command as NotFunction).function
+                }
+
+                CommandClass.IfCondition -> {
+                    map[info.params[0]] = (command as IfCondition).condition
+                }
+                CommandClass.WhileCondition -> {
+                    map[info.params[0]] = (command as WhileCondition).condition
+                }
+                CommandClass.ShowHtml -> {
+                    map[info.params[0]] = (command as ShowHtml).stringToShow
+                    map[info.params[1]] = command.args.joinToString(", ")
+                    map[info.params[2]] = command.backgroundColor
+                    map[info.params[3]] = command.textColor
+                    map[info.params[4]] = when (command.gravity) {
+                        android.view.Gravity.CENTER -> GravityRestriction.Center
+                        android.view.Gravity.TOP -> GravityRestriction.Top
+                        android.view.Gravity.BOTTOM -> GravityRestriction.Bottom
+                        android.view.Gravity.START -> GravityRestriction.Start
+                        android.view.Gravity.END -> GravityRestriction.End
+                        else -> GravityRestriction.Center
+                    }
+                    map[info.params[5]] = command.duration
+                }
+                CommandClass.ShowToast -> {
+                    map[info.params[0]] = (command as ShowToast).stringToShow
+                    map[info.params[1]] = command.args.joinToString(", ")
+                    map[info.params[2]] =
+                        if (command.duration == Toast.LENGTH_LONG) "Long" else "Short"
+
+                }
+                CommandClass.UseTts -> {
+                    map[info.params[0]] = (command as UseTts).stringToShow
+                    map[info.params[1]] = command.args.joinToString(", ")
+                    map[info.params[2]] = command.language.language
+                }
+                CommandClass.VibrateWithPattern -> {
+                    map[info.params[0]] = (command as VibrateWithPattern).delays.joinToString(", ")
+                }
+                CommandClass.DivVar -> {
+                    map[info.params[0]] = (command as DivVar).varRes
+                    map[info.params[1]] = command.varName1
+                    map[info.params[2]] = command.varName2
+                }
+                CommandClass.IncVar -> {
+                    map[info.params[0]] = (command as IncVar).varName
+                }
+                CommandClass.MulVar -> {
+                    map[info.params[0]] = (command as MulVar).varRes
+                    map[info.params[1]] = command.varName1
+                    map[info.params[2]] = command.varName2
+                }
+                CommandClass.SetVar -> {
+                    map[info.params[0]] = (command as SetVar).varName
+                    map[info.params[1]] = command.value
+                }
+                CommandClass.SubVar -> {
+                    map[info.params[0]] = (command as SubVar).varRes
+                    map[info.params[1]] = command.varName1
+                    map[info.params[2]] = command.varName2
+                }
+                CommandClass.SumVar -> {
+                    map[info.params[0]] = (command as SumVar).varRes
+                    map[info.params[1]] = command.varName1
+                    map[info.params[2]] = command.varName2
+                }
+                CommandClass.ExecuteProgram -> {
+                    TODO()
+                }
+                else -> {
+                    throw IllegalArgumentException("Not supported")
+                }
+            }
+            return map
+        }
+
         //todo move to some non static maybe
         val commandToInfo: List<CommandInfoShort> = listOf(
             CommandInfoShort(
                 CommandClass.IfCondition,
-                CommandType.Variables,
+                CommandType.Logic,
                 R.drawable.icon_sample,
                 listOf(
                     ParamWithType("Function", ParamType.Function),
@@ -281,13 +391,13 @@ class CommandBuilder(private val commandInfo: CommandInfoShort, private val para
             ),
             CommandInfoShort(
                 CommandClass.WhileCondition,
-                CommandType.Variables,
+                CommandType.Logic,
                 R.drawable.icon_sample,
                 listOf(ParamWithType("Function", ParamType.Function))
             ),
             CommandInfoShort(//name, args, backColor, textColor, gravity, duration
                 CommandClass.ShowHtml,
-                CommandType.Variables,
+                CommandType.Output,
                 R.drawable.icon_sample,
                 listOf(
                     ParamWithType("Text", ParamType.String),
@@ -300,7 +410,7 @@ class CommandBuilder(private val commandInfo: CommandInfoShort, private val para
             ),
             CommandInfoShort(
                 CommandClass.ShowToast,
-                CommandType.Variables,
+                CommandType.Output,
                 R.drawable.icon_sample,
                 listOf(
                     ParamWithType("Text", ParamType.String),
@@ -310,7 +420,7 @@ class CommandBuilder(private val commandInfo: CommandInfoShort, private val para
             ),
             CommandInfoShort(
                 CommandClass.UseTts,
-                CommandType.Variables,
+                CommandType.Output,
                 R.drawable.icon_sample,
                 listOf(
                     ParamWithType("Text", ParamType.String),
@@ -320,7 +430,7 @@ class CommandBuilder(private val commandInfo: CommandInfoShort, private val para
             ),
             CommandInfoShort(
                 CommandClass.VibrateWithPattern,
-                CommandType.Variables,
+                CommandType.Output,
                 R.drawable.icon_sample,
                 listOf(
                     ParamWithType("Vibration", ParamType.String),
@@ -385,11 +495,10 @@ class CommandBuilder(private val commandInfo: CommandInfoShort, private val para
             ),
             CommandInfoShort(
                 CommandClass.ExecuteProgram,
-                CommandType.Variables,
+                CommandType.Inner,
                 R.drawable.icon_sample,
                 listOf(
-                    ParamWithType("Var1", ParamType.String),//TODO doesnt work yet anyway
-                    ParamWithType("Var2", ParamType.String)
+                    ParamWithType("Name", ParamType.String)
                 )
             ),
         )

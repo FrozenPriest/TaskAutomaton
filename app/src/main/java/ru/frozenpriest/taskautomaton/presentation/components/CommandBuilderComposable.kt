@@ -85,7 +85,13 @@ fun CommandBuilderMain(
                 )
                 when (param.type) {
                     CommandBuilder.ParamType.String -> {
-                        val (textField, setText) = remember { mutableStateOf(TextFieldValue()) }
+                        val (textField, setText) = remember {
+                            mutableStateOf(
+                                TextFieldValue(
+                                    preparedParams.getOrDefault(param, "") as String
+                                )
+                            )
+                        }
 
                         TextField(
                             value = textField,
@@ -102,6 +108,7 @@ fun CommandBuilderMain(
                     }
                     CommandBuilder.ParamType.Gravity -> {
                         Selector(
+                            currentValue = preparedParams.getOrDefault(param, "") as String,
                             possibleValues = GravityRestriction.values().map { it.toString() },
                             modifier = Modifier.weight(0.6f, true),
                             onItemSelected = { itemValue ->
@@ -112,6 +119,7 @@ fun CommandBuilderMain(
                     }
                     CommandBuilder.ParamType.DurationToast -> {
                         Selector(
+                            currentValue = preparedParams.getOrDefault(param, "") as String,
                             possibleValues = listOf("Long", "Short"),
                             modifier = Modifier.weight(0.6f, true),
                             onItemSelected = { itemValue ->
@@ -121,7 +129,13 @@ fun CommandBuilderMain(
                         )
                     }
                     CommandBuilder.ParamType.DurationExpire -> {
-                        val (textField, setText) = remember { mutableStateOf(TextFieldValue()) }
+                        val (textField, setText) = remember {
+                            mutableStateOf(
+                                TextFieldValue(
+                                    preparedParams.getOrDefault(param, "") as String
+                                )
+                            )
+                        }
 
                         TextField(
                             value = textField,
@@ -140,6 +154,7 @@ fun CommandBuilderMain(
                     }
                     CommandBuilder.ParamType.Function -> {
                         FunctionSelector(
+                            initialFunction = preparedParams[param] as Function?,
                             onReady = { itemValue ->
                                 preparedParams[param] = itemValue
                                 checkReady()
@@ -148,6 +163,7 @@ fun CommandBuilderMain(
                     }
                     CommandBuilder.ParamType.Boolean -> {
                         Selector(
+                            currentValue = preparedParams.getOrDefault(param, "") as String,
                             possibleValues = listOf(
                                 "True",
                                 "False",
@@ -160,7 +176,13 @@ fun CommandBuilderMain(
                         )
                     }
                     CommandBuilder.ParamType.Color -> {
-                        val (textField, setText) = remember { mutableStateOf(TextFieldValue()) }
+                        val (textField, setText) = remember {
+                            mutableStateOf(
+                                TextFieldValue(
+                                    preparedParams.getOrDefault(param, "") as String,
+                                )
+                            )
+                        }
 
                         TextField(
                             value = textField,
@@ -179,6 +201,7 @@ fun CommandBuilderMain(
                     }
                     CommandBuilder.ParamType.Language -> {
                         Selector(
+                            currentValue = preparedParams.getOrDefault(param, "") as String,
                             possibleValues = Locale.getAvailableLocales().map { it.language },
                             modifier = Modifier.weight(0.6f, true),
                             onItemSelected = { itemValue ->
@@ -195,10 +218,11 @@ fun CommandBuilderMain(
 
 @Composable
 fun FunctionSelector(
+    initialFunction: Function?,
     onReady: (Function) -> Unit
 ) {
     val selectedFunction = remember {
-        mutableStateOf<CommandBuilder.CommandInfoShort?>(null)
+        mutableStateOf(CommandBuilder.functionsOnly.find { it.className.toString() == initialFunction?.info?.commandClass?.toString() })
     }
     Column(
         modifier = Modifier.fillMaxWidth()
@@ -207,6 +231,7 @@ fun FunctionSelector(
             CommandBuilder.functionsOnly.map { it.className.toString() }
         }
         Selector(
+            currentValue = initialFunction?.info?.commandClass?.toString() ?: "",
             possibleValues = possibleValues,
             onItemSelected = { newString ->
                 selectedFunction.value =
@@ -216,8 +241,9 @@ fun FunctionSelector(
 
         if (selectedFunction.value != null) {
             val newPreparedParams = remember {
-                mutableMapOf<CommandBuilder.ParamWithType, Any>()
+                CommandBuilder.populateParams(initialFunction, selectedFunction.value!!)
             }
+
 
             CommandBuilderMain(
                 info = selectedFunction.value!!,

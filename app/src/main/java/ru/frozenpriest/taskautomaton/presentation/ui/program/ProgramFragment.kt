@@ -49,6 +49,7 @@ class ProgramFragment : Fragment(R.layout.fragment_program) {
                 rvProgram.adapter = context?.let { context ->
                     CommandItemAdapter(
                         context = context,
+                        fragmentManager = parentFragmentManager,
                         viewModel = viewModel
                     )
                 }

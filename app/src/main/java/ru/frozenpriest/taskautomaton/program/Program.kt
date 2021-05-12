@@ -198,6 +198,12 @@ class Program(val id: Long = 0, var name: String, var commands: List<Command>) {
             mutableSet.add(endElseIndex)
         }
     }
+
+    fun editCommandAt(adapterPosition: Int, command: Command) {
+        val mutableCommands = commands.toMutableList()
+        mutableCommands[adapterPosition] = command
+        commands = mutableCommands
+    }
 }
 
 interface OnCommandRunListener {

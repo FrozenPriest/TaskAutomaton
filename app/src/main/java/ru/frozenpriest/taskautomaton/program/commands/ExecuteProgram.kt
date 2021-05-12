@@ -10,9 +10,7 @@ import ru.frozenpriest.taskautomaton.program.Program
 @JsonTypeName("ExecuteProgram")
 class ExecuteProgram(
     @JsonProperty("program")
-    val program: String,
-    @JsonProperty("args")
-    val args: HashMap<String, Any>
+    val program: String
 ) : Command(
     name = "Execute $program with args",
     description = "",

@@ -24,12 +24,13 @@ fun SelectorPreview() {
 
 @Composable
 fun Selector(
-    possibleValues: List<String>,
     modifier: Modifier = Modifier,
+    currentValue: String = "",
+    possibleValues: List<String>,
     onItemSelected: (item: String) -> Unit
 ) {
     val expanded = remember { mutableStateOf(false) }
-    val (selectedText, setText) = remember { mutableStateOf("") }
+    val (selectedText, setText) = remember { mutableStateOf(currentValue) }
 
     val icon = if (expanded.value)
         Icons.Filled.ArrowDropUp

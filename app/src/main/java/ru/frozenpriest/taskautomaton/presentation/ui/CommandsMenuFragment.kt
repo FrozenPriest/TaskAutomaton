@@ -1,6 +1,5 @@
 package ru.frozenpriest.taskautomaton.presentation.ui
 
-import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -50,10 +49,6 @@ class CommandsMenuFragment(private val listener: CommandSelectionListener) : Dia
                 )
             }
         }
-    }
-
-    override fun onDismiss(dialog: DialogInterface) {
-        //do nothing
     }
 }
 

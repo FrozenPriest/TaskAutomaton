@@ -11,7 +11,7 @@ enum class CommandType(val icon: ImageVector) {
     Output(Icons.Filled.Outbox),
     Logic(Icons.Filled.Mail),
     Variables(Icons.Filled.Map),
-    Test1(Icons.Filled.Outbox),
+    Inner(Icons.Filled.Outbox),
     Test2(Icons.Filled.Outbox),
     Test3(Icons.Filled.Outbox),
     Test4(Icons.Filled.Outbox),

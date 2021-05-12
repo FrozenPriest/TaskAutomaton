@@ -8,14 +8,19 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import ru.frozenpriest.taskautomaton.R
+import ru.frozenpriest.taskautomaton.presentation.commands.CommandBuilder.CommandClass.*
+import ru.frozenpriest.taskautomaton.presentation.ui.CommandsEditDialogFragment
 import ru.frozenpriest.taskautomaton.program.OnCommandRunListener
 import ru.frozenpriest.taskautomaton.program.Program
+import ru.frozenpriest.taskautomaton.program.commands.Command
 import ru.frozenpriest.taskautomaton.utils.ItemTouchHelperAdapter
 
 class CommandItemAdapter(
     private val context: Context,
+    private val fragmentManager: FragmentManager,
     val viewModel: ProgramViewModel
 ) :
     RecyclerView.Adapter<CommandItemAdapter.ViewHolder>(),
@@ -37,6 +42,23 @@ class CommandItemAdapter(
             button = view.findViewById(R.id.imageButtonDelete)
             button.setOnClickListener {
                 removeCommand(adapterPosition)
+            }
+            view.setOnClickListener {
+
+                CommandsEditDialogFragment(object : CommandsEditDialogFragment.CommandEditListener {
+                    override fun onCommandEdit(command: Command) {
+                        if (!listOf(
+                                EndWhile,
+                                EndIf,
+                                EndElse,
+                                ElseCondition
+                            ).contains(command.info.commandClass)
+                        )
+                            editCommand(adapterPosition, command)
+                    }
+
+                }, program.commands[adapterPosition]).show(fragmentManager, "menuTag")
+
             }
         }
     }
@@ -84,6 +106,17 @@ class CommandItemAdapter(
             removedIndexes.last() - removedIndexes.first() + 1 - removedIndexes.size
         )
     }
+
+    private fun editCommand(adapterPosition: Int, command: Command) {
+        if (adapterPosition == -1) return
+
+        program.editCommandAt(adapterPosition, command)
+
+        viewModel.updateProgram()
+
+        notifyItemChanged(adapterPosition)
+    }
+
 
     override fun onItemMove(fromPos: Int, toPos: Int) {
         val mutable = program.commands.toMutableList()
