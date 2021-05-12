@@ -246,7 +246,7 @@ class CommandBuilder(private val commandInfo: CommandInfoShort, private val para
          */
         fun getParametrized(value: Any): Any {
             return when (this) {
-                String -> return value
+                String -> value
                 Gravity -> {
                     when (GravityRestriction.valueOf(value as kotlin.String)) {
                         GravityRestriction.Center -> android.view.Gravity.CENTER
@@ -258,7 +258,7 @@ class CommandBuilder(private val commandInfo: CommandInfoShort, private val para
                 }
                 DurationToast -> if (value == "Long") Toast.LENGTH_LONG else Toast.LENGTH_SHORT
                 DurationExpire -> (value as kotlin.String).toLong()
-                Function -> TODO()
+                Function -> value
                 Color -> android.graphics.Color.valueOf((value as kotlin.String).toInt())
                 Language -> Locale(value as kotlin.String)
                 Boolean -> (value as kotlin.String).toBoolean()

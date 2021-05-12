@@ -112,34 +112,23 @@ class Program(val id: Long = 0, var name: String, var commands: List<Command>) {
     }
 
     fun removeCommandAt(adapterPosition: Int): List<Int> {
-        val list = mutableListOf<Int>()
+        val mutableSet = mutableSetOf<Int>()
         val command = commands[adapterPosition]
-        list.add(adapterPosition)
+        mutableSet.add(adapterPosition)
+
         if (command is IfCondition) {
-            var endIfIndex = -1
-            var elseIndex = -1
-            var endElseIndex = -1
-            val level = command.info.level
-            for (i in adapterPosition until commands.size) {
-                val current = commands[i]
-                if (current.info.level != level)
-                    continue
-                if (endIfIndex == -1 && current is EndIf)
-                    endIfIndex = i
-                if (elseIndex == -1 && current is ElseCondition && abs(i - endIfIndex) == 1)
-                    elseIndex = i
-                if (current is EndElse && elseIndex != -1)
-                    endElseIndex = i
-
-                if (endElseIndex != -1 || current.info.level < level) break
-            }
-
-            list.add(endIfIndex)
-            if (elseIndex != -1) {
-                list.add(elseIndex)
-                list.add(endElseIndex)
-            }
+            findFromIf(command, adapterPosition, mutableSet)
         }
+        if (command is EndIf || command is ElseCondition || command is EndElse) {
+            var index = -1
+            var pos = adapterPosition
+            while (index == -1) {
+                if (commands[--pos].info.level != command.info.level) continue
+                if (commands[pos] is IfCondition) index = pos
+            }
+            findFromIf(commands[index], index, mutableSet)
+        }
+
         if (command is WhileCondition) {
             var endWhile = -1
             val level = command.info.level
@@ -155,15 +144,59 @@ class Program(val id: Long = 0, var name: String, var commands: List<Command>) {
 
             }
 
-            list.add(endWhile)
+            mutableSet.add(endWhile)
         }
+        if (command is EndWhile) {
+            var index = -1
+            var pos = adapterPosition
+            while (index == -1) {
+                if (commands[--pos].info.level != command.info.level) continue
+                if (commands[pos] is WhileCondition) index = pos
+            }
+            mutableSet.add(index)
+        }
+
+        val list = mutableSet.toMutableList()
+        list.sort()
 
         val mutableCommands = commands.toMutableList()
         for ((correction, i) in list.withIndex()) {
-            mutableCommands.removeAt(i-correction)
+            println("Command: ${commands[i]}")
+            mutableCommands.removeAt(i - correction)
         }
         commands = mutableCommands
         return list
+    }
+
+    private fun findFromIf(
+        command: Command,
+        adapterPosition: Int,
+        mutableSet: MutableSet<Int>
+    ) {
+        mutableSet.add(adapterPosition) //this should be on IF
+        var endIfIndex = -1
+        var elseIndex = -1
+        var endElseIndex = -1
+        val level = command.info.level
+        for (i in adapterPosition until commands.size) {
+            val current = commands[i]
+            if (current.info.level != level)
+                continue
+            if (endIfIndex == -1 && current is EndIf)
+                endIfIndex = i
+            if (elseIndex == -1 && current is ElseCondition && abs(i - endIfIndex) == 1)
+                elseIndex = i
+            if (current is EndElse && elseIndex != -1)
+                endElseIndex = i
+
+            if (endElseIndex != -1 || current.info.level < level) break
+        }
+
+        mutableSet.add(endIfIndex)
+        if (elseIndex != -1) {
+            mutableSet.add(elseIndex)
+            mutableSet.add(endElseIndex)
+        }
     }
 }
 

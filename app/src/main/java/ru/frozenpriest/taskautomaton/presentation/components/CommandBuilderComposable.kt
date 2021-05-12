@@ -93,7 +93,11 @@ fun CommandBuilderComposable(
                         )
                     }
                     CommandBuilder.ParamType.Function -> {
-                        //TODO()
+                        Button(onClick = {
+
+                        }) {
+                            Text(text = "Add function")
+                        }
                     }
                     CommandBuilder.ParamType.Boolean -> {
                         Selector(

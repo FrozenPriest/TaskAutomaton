@@ -77,8 +77,12 @@ class CommandItemAdapter(
 
         program.setLevels()
         viewModel.updateProgram()
-        for (item in removedIndexes)
-            notifyItemRemoved(item)
+        for ((i, item) in removedIndexes.withIndex())
+            notifyItemRemoved(item - i)
+        notifyItemRangeChanged(
+            removedIndexes[0],
+            removedIndexes.last() - removedIndexes.first() + 1 - removedIndexes.size
+        )
     }
 
     override fun onItemMove(fromPos: Int, toPos: Int) {
