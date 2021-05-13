@@ -13,26 +13,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import ru.frozenpriest.taskautomaton.data.local.entities.TriggerEntity
 import ru.frozenpriest.taskautomaton.program.Program
 
-@Preview
-@Composable
-fun ProgramListPreview() {
-    ProgramList(listOf(Program(0, "name", emptyList())), {}, {}, {}) {}
-}
 
 @Composable
-fun ProgramList(
+fun TriggerList(
+    triggers: List<TriggerEntity>,
     programs: List<Program>,
-    onNavigateToDetailsScreen: (programId: Long) -> Unit,
-    onAddNewProgram: (name: String) -> Unit,
-    onRenameProgram: (program: Program) -> Unit,
-    onDeleteProgram: (program: Program) -> Unit
+    onNavigateToDetailsScreen: (triggerId: Long) -> Unit,
+    onSetTriggersProgram: (program: Program) -> Unit,
+    onAddNewTrigger: (name: String) -> Unit,
+    onRenameTrigger: (trigger: TriggerEntity) -> Unit,
+    onDeleteTrigger: (trigger: TriggerEntity) -> Unit
 ) {
     val (showAddDialog, setShowAddDialog) = remember { mutableStateOf(false) }
     val (showRenameDialog, setShowRenameDialog) = remember { mutableStateOf(false) }
-    val editableProgram = remember { mutableStateOf<Program?>(null) }
+    val editableTriggerEntity = remember { mutableStateOf<TriggerEntity?>(null) }
     Scaffold(
         topBar = {
             TopAppBar(
@@ -55,33 +52,36 @@ fun ProgramList(
     ) {
         LazyColumn {
             items(
-                items = programs
+                items = triggers
             ) { item ->
-                ProgramItem(
-                    program = item,
-                    onClick = { onNavigateToDetailsScreen(item.id) },
-                    onClickEdit = {
+                TriggerItem(
+                    trigger = item,
+                    programs = programs,
+                    setProgram = { onSetTriggersProgram(it) },
+                    openTrigger = { onNavigateToDetailsScreen(item.id) },
+                    editTrigger = {
                         setShowRenameDialog(true)
-                        editableProgram.value = item
+                        editableTriggerEntity.value = item
                     },
-                    onClickDelete = { onDeleteProgram(item) }
+                    deleteTrigger = { onDeleteTrigger(item) }
                 )
+
             }
         }
         AddNewDialog(
             showDialog = showAddDialog,
             setShowDialog = setShowAddDialog,
             text = "",
-            onConfirm = onAddNewProgram
+            onConfirm = onAddNewTrigger
         )
-        editableProgram.value?.let {
+        editableTriggerEntity.value?.let {
             AddNewDialog(
                 showDialog = showRenameDialog,
                 setShowDialog = setShowRenameDialog,
                 text = it.name,
                 onConfirm = { name ->
                     it.name = name
-                    onRenameProgram(it)
+                    onRenameTrigger(it)
                 }
             )
         }

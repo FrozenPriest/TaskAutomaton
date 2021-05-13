@@ -16,7 +16,7 @@ import ru.frozenpriest.taskautomaton.data.local.RoomRepository
 import ru.frozenpriest.taskautomaton.data.local.TaskRoomDatabase
 import ru.frozenpriest.taskautomaton.data.local.dao.ProgramDao
 import ru.frozenpriest.taskautomaton.data.local.dao.TriggerDao
-import ru.frozenpriest.taskautomaton.utils.ProgramGenerator
+import ru.frozenpriest.taskautomaton.utils.DataGenerator
 import ru.frozenpriest.taskautomaton.utils.toEntity
 import javax.inject.Provider
 import javax.inject.Singleton
@@ -38,7 +38,11 @@ object RepositoryModule {
 
     @Singleton
     @Provides
-    fun provideDatabase(@ApplicationContext app: Context, programDao: Provider<ProgramDao>) =
+    fun provideDatabase(
+        @ApplicationContext app: Context,
+        programDao: Provider<ProgramDao>,
+        triggerDao: Provider<TriggerDao>
+    ) =
         Room.databaseBuilder(
             app,
             TaskRoomDatabase::class.java,
@@ -49,8 +53,9 @@ object RepositoryModule {
                     super.onCreate(db)
                     CoroutineScope(Dispatchers.IO).launch {
                         programDao.get()
-                            .insertAll(ProgramGenerator.getPrograms().map { it.toEntity() })
-
+                            .insertAll(DataGenerator.getPrograms().map { it.toEntity() })
+                        triggerDao.get()
+                            .insertAll(DataGenerator.getTriggers())
                     }
                 }
             }

@@ -110,6 +110,7 @@ fun CommandBuilderMain(
                         Selector(
                             currentValue = preparedParams.getOrDefault(param, "") as String,
                             possibleValues = GravityRestriction.values().map { it.toString() },
+                            showAsString = {it}, //TODO(change to work with <>)
                             modifier = Modifier.weight(0.6f, true),
                             onItemSelected = { itemValue ->
                                 preparedParams[param] = itemValue
@@ -121,6 +122,7 @@ fun CommandBuilderMain(
                         Selector(
                             currentValue = preparedParams.getOrDefault(param, "") as String,
                             possibleValues = listOf("Long", "Short"),
+                            showAsString = {it}, //TODO(change to work with <>)
                             modifier = Modifier.weight(0.6f, true),
                             onItemSelected = { itemValue ->
                                 preparedParams[param] = itemValue
@@ -169,6 +171,7 @@ fun CommandBuilderMain(
                                 "False",
                             ),
                             modifier = Modifier.weight(0.6f, true),
+                            showAsString = {it}, //TODO(change to work with <>)
                             onItemSelected = { itemValue ->
                                 preparedParams[param] = itemValue
                                 checkReady()
@@ -203,6 +206,7 @@ fun CommandBuilderMain(
                         Selector(
                             currentValue = preparedParams.getOrDefault(param, "") as String,
                             possibleValues = Locale.getAvailableLocales().map { it.language },
+                            showAsString = {it}, //TODO(change to work with <>)
                             modifier = Modifier.weight(0.6f, true),
                             onItemSelected = { itemValue ->
                                 preparedParams[param] = itemValue
@@ -233,6 +237,7 @@ fun FunctionSelector(
         Selector(
             currentValue = initialFunction?.info?.commandClass?.toString() ?: "",
             possibleValues = possibleValues,
+            showAsString = {it}, //TODO(change to work with <>)
             onItemSelected = { newString ->
                 selectedFunction.value =
                     CommandBuilder.functionsOnly.find { it.className.toString() == newString }

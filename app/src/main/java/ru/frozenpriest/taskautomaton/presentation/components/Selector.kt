@@ -19,15 +19,19 @@ import androidx.compose.ui.unit.dp
 @Preview
 @Composable
 fun SelectorPreview() {
-    Selector(possibleValues = listOf("Item1", "Item2", "Item3"), onItemSelected = {})
+    Selector(
+        possibleValues = listOf("Item1", "Item2", "Item3"),
+        showAsString = { it },
+        onItemSelected = {})
 }
 
 @Composable
-fun Selector(
+fun <T> Selector(
     modifier: Modifier = Modifier,
     currentValue: String = "",
-    possibleValues: List<String>,
-    onItemSelected: (item: String) -> Unit
+    possibleValues: List<T>,
+    showAsString: (T) -> String,
+    onItemSelected: (item: T) -> Unit
 ) {
     val expanded = remember { mutableStateOf(false) }
     val (selectedText, setText) = remember { mutableStateOf(currentValue) }
@@ -68,14 +72,20 @@ fun Selector(
         DropdownMenu(
             expanded = expanded.value,
             onDismissRequest = { expanded.value = false },
+            modifier = Modifier.fillMaxWidth()
         ) {
-            possibleValues.forEach { label ->
-                DropdownMenuItem(onClick = {
-                    setText(label)
-                    onItemSelected(label)
-                    expanded.value = false
-                }) {
-                    Text(text = label)
+            //todo check in next composable version for lazyColumn/scrollable
+            Column(
+                modifier = Modifier
+            ) {
+                possibleValues.forEach { item ->
+                    DropdownMenuItem(onClick = {
+                        setText(showAsString(item))
+                        onItemSelected(item)
+                        expanded.value = false
+                    }) {
+                        Text(text = showAsString(item))
+                    }
                 }
             }
         }

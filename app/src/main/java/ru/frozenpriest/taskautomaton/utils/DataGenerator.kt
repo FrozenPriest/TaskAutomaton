@@ -3,6 +3,7 @@ package ru.frozenpriest.taskautomaton.utils
 import android.graphics.Color
 import android.view.Gravity
 import android.widget.Toast
+import ru.frozenpriest.taskautomaton.data.local.entities.TriggerEntity
 import ru.frozenpriest.taskautomaton.program.Program
 import ru.frozenpriest.taskautomaton.program.commands.functions.CheckVar
 import ru.frozenpriest.taskautomaton.program.commands.functions.LowerVar
@@ -14,9 +15,15 @@ import ru.frozenpriest.taskautomaton.program.commands.output.UseTts
 import ru.frozenpriest.taskautomaton.program.commands.output.VibrateWithPattern
 import ru.frozenpriest.taskautomaton.program.commands.variables.IncVar
 import ru.frozenpriest.taskautomaton.program.commands.variables.SetVar
+import ru.frozenpriest.taskautomaton.program.service.LocationState
+import ru.frozenpriest.taskautomaton.program.triggers.LocationTrigger
+import ru.frozenpriest.taskautomaton.program.triggers.LocationTriggerType
+import ru.frozenpriest.taskautomaton.program.triggers.TimeTrigger
+import java.time.DayOfWeek
 import java.util.*
+import kotlin.random.Random
 
-object ProgramGenerator {
+object DataGenerator {
     fun getPrograms(): List<Program> {
         val result = mutableListOf<Program>()
 
@@ -73,6 +80,35 @@ object ProgramGenerator {
                 EndElse()
             )
             result.add(Program(name = "Program $i", commands = list))
+        }
+        return result
+    }
+
+    fun getTriggers(): List<TriggerEntity> {
+        val result = mutableListOf<TriggerEntity>()
+        val random = Random.Default
+        for (i in 1..10) {
+            result.add(
+                TriggerEntity(
+                    connectedProgramId = 1,
+                    name = "testName $i",
+                    trigger = if (random.nextBoolean())
+                        LocationTrigger(
+                            random.nextDouble(),
+                            random.nextDouble(),
+                            random.nextDouble(100.0),
+                            LocationState.Undefined,
+                            LocationTriggerType.values()[random.nextInt(3)]
+                        )
+                    else
+                        TimeTrigger(
+                            random.nextInt(24),
+                            random.nextInt(60),
+                            listOf(DayOfWeek.MONDAY, DayOfWeek.FRIDAY, DayOfWeek.SUNDAY)
+                        ),
+                    enabled = random.nextBoolean()
+                )
+            )
         }
         return result
     }

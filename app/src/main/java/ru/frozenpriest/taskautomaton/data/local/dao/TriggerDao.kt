@@ -12,6 +12,8 @@ interface TriggerDao {
     @Query("select * from table_triggers order by id ASC")
     fun getAllTriggers(): LiveData<List<TriggerEntity>>
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(triggers: List<TriggerEntity>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(entity: TriggerEntity)

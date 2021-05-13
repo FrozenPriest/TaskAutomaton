@@ -10,7 +10,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.text.input.TextFieldValue
 
 @Composable
-fun AddNewProgramDialog(
+fun AddNewDialog(
     showDialog: Boolean,
     setShowDialog: (Boolean) -> Unit,
     text: String,

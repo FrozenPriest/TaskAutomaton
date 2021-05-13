@@ -15,7 +15,7 @@ class MyLocationListener(private val triggerActivationListener: TriggerActivatio
         listOf(
             TriggerWithState(
                 TriggerEntity(
-                    id = 1,
+                    name = "namw",
                     connectedProgramId = 1L,
                     enabled = true,
                     trigger = LocationTrigger(

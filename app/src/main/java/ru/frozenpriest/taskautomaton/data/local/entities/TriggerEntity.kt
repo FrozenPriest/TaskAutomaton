@@ -20,6 +20,8 @@ data class TriggerEntity(
     @PrimaryKey(autoGenerate = true)
     @SerialName("id")
     val id: Long = 0,
+    @SerialName("name")
+    var name: String,
     @SerialName("programId")
     val connectedProgramId: Long,
     @JsonProperty("enabled")
