@@ -23,7 +23,7 @@ data class TriggerEntity(
     @SerialName("name")
     var name: String,
     @SerialName("programId")
-    val connectedProgramId: Long,
+    var connectedProgramId: Long = 0,
     @JsonProperty("enabled")
     var enabled: Boolean,
     @SerialName("trigger")

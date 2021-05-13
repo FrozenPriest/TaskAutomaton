@@ -15,15 +15,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import ru.frozenpriest.taskautomaton.data.local.entities.TriggerEntity
 import ru.frozenpriest.taskautomaton.program.Program
+import ru.frozenpriest.taskautomaton.program.triggers.Trigger
 
 
 @Composable
 fun TriggerList(
     triggers: List<TriggerEntity>,
     programs: List<Program>,
-    onNavigateToDetailsScreen: (triggerId: Long) -> Unit,
-    onSetTriggersProgram: (program: Program) -> Unit,
-    onAddNewTrigger: (name: String) -> Unit,
+    onNavigateToDetailsScreen: (trigger: TriggerEntity) -> Unit,
+    onSetTriggersProgram: (trigger: TriggerEntity, program: Program) -> Unit,
+    onAddNewTrigger: (name: String, trigger: Trigger) -> Unit,
     onRenameTrigger: (trigger: TriggerEntity) -> Unit,
     onDeleteTrigger: (trigger: TriggerEntity) -> Unit
 ) {
@@ -57,9 +58,10 @@ fun TriggerList(
                 TriggerItem(
                     trigger = item,
                     programs = programs,
-                    setProgram = { onSetTriggersProgram(it) },
-                    openTrigger = { onNavigateToDetailsScreen(item.id) },
-                    editTrigger = {
+                    setProgram = { onSetTriggersProgram(item, it) },
+                    openTrigger = { onNavigateToDetailsScreen(item) },
+                    updateTrigger = {onRenameTrigger(item)},
+                    openRenameTrigger = {
                         setShowRenameDialog(true)
                         editableTriggerEntity.value = item
                     },
@@ -72,7 +74,7 @@ fun TriggerList(
             showDialog = showAddDialog,
             setShowDialog = setShowAddDialog,
             text = "",
-            onConfirm = onAddNewTrigger
+            onConfirm = { /*onAddNewTrigger(it, ) todo add trigger*/ }
         )
         editableTriggerEntity.value?.let {
             AddNewDialog(

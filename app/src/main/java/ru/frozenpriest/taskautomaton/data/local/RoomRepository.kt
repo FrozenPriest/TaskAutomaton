@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.map
 import ru.frozenpriest.taskautomaton.data.local.dao.ProgramDao
 import ru.frozenpriest.taskautomaton.data.local.dao.TriggerDao
+import ru.frozenpriest.taskautomaton.data.local.entities.TriggerEntity
 import ru.frozenpriest.taskautomaton.program.Program
-import ru.frozenpriest.taskautomaton.program.triggers.Trigger
 import ru.frozenpriest.taskautomaton.utils.toEntity
 import ru.frozenpriest.taskautomaton.utils.toProgram
 
@@ -28,8 +28,8 @@ class RoomRepository(private val programDao: ProgramDao, private val triggerDao:
         programDao.update(program.toEntity())
     }
 
-    suspend fun insertTrigger(trigger: Trigger) {
-        //TODO
+    suspend fun insertTrigger(trigger: TriggerEntity) {
+        triggerDao.insert(trigger)
     }
 
     suspend fun deleteProgram(program: Program) {
@@ -37,7 +37,15 @@ class RoomRepository(private val programDao: ProgramDao, private val triggerDao:
     }
 
     fun getProgram(id: Long): LiveData<Program> {
-        return programDao.getProgramById(id).map {programEntity -> programEntity.toProgram() }
+        return programDao.getProgramById(id).map { programEntity -> programEntity.toProgram() }
+    }
+
+    suspend fun updateTrigger(triggerEntity: TriggerEntity) {
+        triggerDao.update(triggerEntity)
+    }
+
+    suspend fun deleteTrigger(triggerEntity: TriggerEntity) {
+        triggerDao.delete(triggerEntity)
     }
 }
 

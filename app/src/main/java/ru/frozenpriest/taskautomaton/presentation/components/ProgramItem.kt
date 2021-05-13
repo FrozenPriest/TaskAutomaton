@@ -64,7 +64,7 @@ fun ProgramItem(
                     expanded.value = false
                 }
             ) {
-                Text("Edit")
+                Text("Rename")
             }
             DropdownMenuItem(
                 onClick = {

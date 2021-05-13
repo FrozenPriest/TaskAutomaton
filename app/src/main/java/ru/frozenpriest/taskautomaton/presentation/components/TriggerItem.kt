@@ -49,7 +49,8 @@ fun TriggerItemPreview() {
         programs = emptyList(),
         setProgram = {},
         openTrigger = { println("click") },
-        editTrigger = { println("edit") },
+        updateTrigger = {},
+        openRenameTrigger = { println("edit") },
         deleteTrigger = { println("delete") }
     )
 }
@@ -62,7 +63,8 @@ fun TriggerItem(
     programs: List<Program>,
     setProgram: (Program) -> Unit,
     openTrigger: () -> Unit,
-    editTrigger: () -> Unit,
+    updateTrigger: () -> Unit,
+    openRenameTrigger: () -> Unit,
     deleteTrigger: () -> Unit
 ) {
     val expanded = remember { mutableStateOf(false) }
@@ -95,6 +97,7 @@ fun TriggerItem(
                     onClick = {
                         enabled.value = !enabled.value
                         trigger.enabled = !trigger.enabled
+                        updateTrigger()
                     })
             }
             Row(
@@ -120,11 +123,11 @@ fun TriggerItem(
         ) {
             DropdownMenuItem(
                 onClick = {
-                    editTrigger()
+                    openRenameTrigger()
                     expanded.value = false
                 }
             ) {
-                Text("Edit")
+                Text("Rename")
             }
             DropdownMenuItem(
                 onClick = {

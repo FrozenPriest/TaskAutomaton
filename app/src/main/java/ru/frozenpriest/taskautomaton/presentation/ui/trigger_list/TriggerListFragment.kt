@@ -13,9 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
-import ru.frozenpriest.taskautomaton.R
 import ru.frozenpriest.taskautomaton.presentation.components.TriggerList
 import ru.frozenpriest.taskautomaton.presentation.ui.ActivityViewModel
 
@@ -44,16 +42,22 @@ class TriggerListFragment : Fragment() {
                     TriggerList(
                         triggers = triggers!!,
                         programs = programs!!,
-                        onNavigateToDetailsScreen = {
-                            val bundle = Bundle().apply {
-                                putLong("programId", it)
-                            }
-                            findNavController().navigate(R.id.view_program_details, bundle)
+                        onNavigateToDetailsScreen = { trigger ->
+                            //todo show composable edit trigger
+                            viewModel.updateTrigger(trigger)
                         },
-                        onSetTriggersProgram = {},
-                        onAddNewTrigger = { },
-                        onRenameTrigger = { },
-                        onDeleteTrigger = { }
+                        onSetTriggersProgram = { trigger, program ->
+                            trigger.connectedProgramId = program.id
+                        },
+                        onAddNewTrigger = { name, trigger ->
+                            viewModel.insertTrigger(name, trigger)
+                        },
+                        onRenameTrigger = { trigger ->
+                            viewModel.updateTrigger(trigger)
+                        },
+                        onDeleteTrigger = { trigger ->
+                            viewModel.deleteTrigger(trigger)
+                        }
                     )
                 }
             }
