@@ -5,6 +5,7 @@ import android.location.LocationListener
 import android.location.LocationManager
 import android.util.Log
 import com.fasterxml.jackson.annotation.JsonProperty
+import ru.frozenpriest.taskautomaton.data.local.entities.TriggerEntity
 import ru.frozenpriest.taskautomaton.program.triggers.LocationTrigger
 import ru.frozenpriest.taskautomaton.program.triggers.LocationTriggerType.*
 
@@ -13,14 +14,17 @@ class MyLocationListener(private val triggerActivationListener: TriggerActivatio
     private val triggers: List<TriggerWithState> =
         listOf(
             TriggerWithState(
-                LocationTrigger(
-                    59.991273981908556,
-                    30.3189792548688,
-                    50.0,
-                    LocationState.Outside,
-                    EnterOrExit,
-                    "test",
-                    true
+                TriggerEntity(
+                    id = 1,
+                    connectedProgramId = 1L,
+                    enabled = true,
+                    trigger = LocationTrigger(
+                        59.991273981908556,
+                        30.3189792548688,
+                        50.0,
+                        LocationState.Outside,
+                        EnterOrExit
+                    )
                 ),
                 LocationState.Undefined
             )
@@ -28,16 +32,17 @@ class MyLocationListener(private val triggerActivationListener: TriggerActivatio
 
     override fun onLocationChanged(location: Location) {
         triggers.onEach { entry ->
+            val locationTrigger = entry.locationTrigger.trigger as LocationTrigger
             val dest = Location(LocationManager.GPS_PROVIDER).apply {
-                latitude = entry.locationTrigger.latitude
-                longitude = entry.locationTrigger.longitude
+                latitude = locationTrigger.latitude
+                longitude = locationTrigger.longitude
             }
             val distance = location.distanceTo(dest)
             val prevState = entry.state
-            if (entry.locationTrigger.radius > distance) entry.state = LocationState.Inside
+            if (locationTrigger.radius > distance) entry.state = LocationState.Inside
             else entry.state = LocationState.Outside
             Log.e("LocationListener", "Entry is ${entry.state}, distance: $distance")
-            val triggerToStart = when (entry.locationTrigger.type) {
+            val triggerToStart = when (locationTrigger.type) {
                 Enter -> (prevState != LocationState.Inside) && (entry.state == LocationState.Inside)
                 Exit -> (prevState != LocationState.Outside) && (entry.state == LocationState.Outside)
                 EnterOrExit -> entry.state != prevState
@@ -45,7 +50,7 @@ class MyLocationListener(private val triggerActivationListener: TriggerActivatio
 
             Log.e("LocationListener", "Trigger? $triggerToStart")
             if (triggerToStart) {
-                triggerActivationListener.onTriggerLaunch(entry.locationTrigger.programName)
+                triggerActivationListener.onTriggerLaunch(entry.locationTrigger.connectedProgramId)
             }
         }
 
@@ -53,7 +58,7 @@ class MyLocationListener(private val triggerActivationListener: TriggerActivatio
 
 
     private data class TriggerWithState(
-        val locationTrigger: LocationTrigger,
+        val locationTrigger: TriggerEntity,
         var state: LocationState
     )
 }

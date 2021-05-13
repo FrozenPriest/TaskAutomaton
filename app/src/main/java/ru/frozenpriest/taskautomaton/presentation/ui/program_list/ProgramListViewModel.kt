@@ -11,7 +11,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProgramListViewModel @Inject constructor(
-    private val repository: RoomRepository,
+    val repository: RoomRepository,
 ) : ViewModel() {
     val allPrograms: LiveData<List<Program>> = repository.allPrograms
 

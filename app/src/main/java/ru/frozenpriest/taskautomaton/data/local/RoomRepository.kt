@@ -18,7 +18,7 @@ class RoomRepository(private val programDao: ProgramDao, private val triggerDao:
     }
 
 
-    val allTriggers = triggerDao.getAllTriggers()//todo map
+    val allTriggers = triggerDao.getAllTriggers()
 
     suspend fun insertProgram(program: Program) {
         programDao.insert(program.toEntity())

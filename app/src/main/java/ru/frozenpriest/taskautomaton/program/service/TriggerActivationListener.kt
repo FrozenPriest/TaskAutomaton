@@ -10,13 +10,13 @@ import ru.frozenpriest.taskautomaton.program.commands.variables.SetVar
 
 class TriggerActivationListener(val context: Context) {
 
-    fun onTriggerLaunch(name: String, vararg params: String) {
+    fun onTriggerLaunch(programId: Long) {
         /*todo
             find program with name
             load it with params
             launch it
          */
-        if(name == "test") {
+        if(programId == 1L) {
             val list = listOf(
                 SetVar("funkyVar1", true),
                 SetVar("funkyVar2", true),

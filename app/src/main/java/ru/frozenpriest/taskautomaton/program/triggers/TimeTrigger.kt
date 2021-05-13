@@ -12,10 +12,6 @@ class TimeTrigger(
     var minute: Int,
     @JsonProperty("activeDays")
     var activeDays: List<DayOfWeek>,
-    @JsonProperty("programName")
-    programName: String,
-    @JsonProperty("enabled")
-    enabled: Boolean
-) : Trigger(programName, enabled) {
+) : Trigger() {
 
 }

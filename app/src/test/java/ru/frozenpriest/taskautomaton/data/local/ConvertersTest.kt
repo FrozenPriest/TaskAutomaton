@@ -141,46 +141,40 @@ class ConvertersTest : TestCase() {
 
     fun testFromTrigger() {
         val trigger = LocationTrigger(
-            1.0, 2.0, 3.0, LocationState.Undefined, LocationTriggerType.Enter, "test1", true
+            1.0, 2.0, 3.0, LocationState.Undefined, LocationTriggerType.Enter
         )
         val expected =
-            "{\"type\":\"LocationTrigger\",\"latitude\":1.0,\"longitude\":2.0,\"radius\":3.0,\"currentState\":\"Undefined\",\"type\":\"Enter\",\"programName\":\"test1\",\"enabled\":true}"
+            "{\"type\":\"LocationTrigger\",\"latitude\":1.0,\"longitude\":2.0,\"radius\":3.0,\"currentState\":\"Undefined\",\"type\":\"Enter\"}"
         val json = Converters.fromTrigger(trigger)
         assertEquals(expected, json)
     }
 
     fun testToTriggerLocation() {
         val json =
-            "{\"type\":\"LocationTrigger\",\"latitude\":1.0,\"longitude\":2.0,\"radius\":3.0,\"currentState\":\"Undefined\",\"type\":\"Enter\",\"programName\":\"test1\",\"enabled\":true}"
+            "{\"type\":\"LocationTrigger\",\"latitude\":1.0,\"longitude\":2.0,\"radius\":3.0,\"currentState\":\"Undefined\",\"type\":\"Enter\"}"
         val expected = LocationTrigger(
-            1.0, 2.0, 3.0, LocationState.Undefined, LocationTriggerType.Enter, "test1", true
+            1.0, 2.0, 3.0, LocationState.Undefined, LocationTriggerType.Enter
         )
         val result = Converters.toTrigger(json) as LocationTrigger
 
         assertEquals(expected.type, result.type)
         assertEquals(expected.latitude, result.latitude)
         assertEquals(expected.longitude, result.longitude)
-        assertEquals(expected.enabled, result.enabled)
-        assertEquals(expected.programName, result.programName)
         assertEquals(expected.radius, result.radius)
     }
 
     fun testToTriggerTime() {
         val json =
-            "{\"type\":\"TimeTrigger\",\"hour\":14,\"minute\":22,\"activeDays\":[\"MONDAY\",\"FRIDAY\",\"SUNDAY\"],\"programName\":\"another program\",\"enabled\":false}"
+            "{\"type\":\"TimeTrigger\",\"hour\":14,\"minute\":22,\"activeDays\":[\"MONDAY\",\"FRIDAY\",\"SUNDAY\"]}"
         val expected = TimeTrigger(
             14,
             22,
-            listOf(DayOfWeek.MONDAY, DayOfWeek.FRIDAY, DayOfWeek.SUNDAY),
-            "another program",
-            false
+            listOf(DayOfWeek.MONDAY, DayOfWeek.FRIDAY, DayOfWeek.SUNDAY)
         )
         val result = Converters.toTrigger(json) as TimeTrigger
 
         assertEquals(expected.hour, result.hour)
         assertEquals(expected.minute, result.minute)
         assertEquals(expected.activeDays, result.activeDays)
-        assertEquals(expected.enabled, result.enabled)
-        assertEquals(expected.programName, result.programName)
     }
 }

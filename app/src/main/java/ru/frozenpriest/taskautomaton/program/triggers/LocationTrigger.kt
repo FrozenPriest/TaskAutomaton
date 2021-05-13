@@ -16,11 +16,7 @@ class LocationTrigger(
     var currentState: LocationState,
     @JsonProperty("type")
     var type: LocationTriggerType,
-    @JsonProperty("programName")
-    programName: String,
-    @JsonProperty("enabled")
-    enabled: Boolean
-) : Trigger(programName, enabled)
+) : Trigger()
 
 enum class LocationTriggerType {
     @JsonProperty("Enter")
