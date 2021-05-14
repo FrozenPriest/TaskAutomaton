@@ -50,7 +50,11 @@ class MyLocationListener(private val triggerActivationListener: TriggerActivatio
 
             Log.e("LocationListener", "Trigger? $triggerToStart")
             if (triggerToStart) {
-                triggerActivationListener.onTriggerLaunch(entry.locationTrigger.connectedProgramId)
+                entry.locationTrigger.connectedProgramId?.let {
+                    triggerActivationListener.onTriggerLaunch(
+                        it
+                    )
+                }
             }
         }
 

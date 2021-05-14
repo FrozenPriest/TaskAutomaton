@@ -1,10 +1,9 @@
 package ru.frozenpriest.taskautomaton.data.local.entities
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import com.fasterxml.jackson.annotation.JsonProperty
-import kotlinx.serialization.SerialName
 import ru.frozenpriest.taskautomaton.program.triggers.Trigger
 
 @Entity(
@@ -12,20 +11,20 @@ import ru.frozenpriest.taskautomaton.program.triggers.Trigger
     foreignKeys = [ForeignKey(
         entity = ProgramEntity::class,
         parentColumns = arrayOf("id"),
-        childColumns = arrayOf("connectedProgramId"),
-        onDelete = ForeignKey.CASCADE
+        childColumns = arrayOf("programId"),
+        onDelete = ForeignKey.SET_DEFAULT
     )]
 )
 data class TriggerEntity(
     @PrimaryKey(autoGenerate = true)
-    @SerialName("id")
+    @ColumnInfo(name = "id")
     val id: Long = 0,
-    @SerialName("name")
+    @ColumnInfo(name = "name")
     var name: String,
-    @SerialName("programId")
-    var connectedProgramId: Long = 0,
-    @JsonProperty("enabled")
+    @ColumnInfo(name = "programId")
+    var connectedProgramId: Long? = null,
+    @ColumnInfo(name = "enabled")
     var enabled: Boolean,
-    @SerialName("trigger")
+    @ColumnInfo(name = "trigger")
     val trigger: Trigger
 )

@@ -47,7 +47,9 @@ class TriggerListFragment : Fragment() {
                             viewModel.updateTrigger(trigger)
                         },
                         onSetTriggersProgram = { trigger, program ->
+                            println("Setting program ${program.id} to trigger ${trigger.name}")
                             trigger.connectedProgramId = program.id
+                            viewModel.updateTrigger(trigger)
                         },
                         onAddNewTrigger = { name, trigger ->
                             viewModel.insertTrigger(name, trigger)

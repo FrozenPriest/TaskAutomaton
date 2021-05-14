@@ -46,6 +46,7 @@ fun TriggerItemPreview() {
                 ),
             enabled = random.nextBoolean()
         ),
+
         programs = emptyList(),
         setProgram = {},
         openTrigger = { println("click") },
@@ -60,6 +61,7 @@ fun TriggerItemPreview() {
 @Composable
 fun TriggerItem(
     trigger: TriggerEntity,
+    connectedProgram: Program? = null,
     programs: List<Program>,
     setProgram: (Program) -> Unit,
     openTrigger: () -> Unit,
@@ -69,6 +71,7 @@ fun TriggerItem(
 ) {
     val expanded = remember { mutableStateOf(false) }
     val enabled = remember { mutableStateOf(trigger.enabled) }
+
 
     Card(
         shape = MaterialTheme.shapes.small,
@@ -107,6 +110,7 @@ fun TriggerItem(
             ) {
 
                 Selector(
+                    currentValue = connectedProgram?.name ?: "",
                     possibleValues = programs,
                     showAsString = { it.name },
                     onItemSelected = {
