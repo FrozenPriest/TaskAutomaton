@@ -1,8 +1,7 @@
 package ru.frozenpriest.taskautomaton.presentation.ui.program
 
 import android.content.Context
-import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,16 +16,12 @@ class ProgramViewModel @Inject constructor(
     private val repository: RoomRepository,
 ) : ViewModel() {
 
-    lateinit var program: LiveData<Program>
-    val loading = mutableStateOf(false)
+
+    val program: MutableLiveData<Program> = MutableLiveData()
 
     fun isSyntaxValid() = program.value?.isSyntaxValid ?: false
     fun loadProgram(id: Long) = viewModelScope.launch {
-        loading.value = true
-
-        program = repository.getProgram(id)
-
-        loading.value = false
+        program.value = repository.getProgram(id)
     }
 
     fun stop() {

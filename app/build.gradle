@@ -39,7 +39,9 @@ android {
 
 dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.compose.ui:ui-tooling:1.0.0-beta05'
+    implementation 'androidx.compose.ui:ui-tooling:1.0.0-beta06'
+
+
     def navigation = "2.3.5"
     implementation "androidx.navigation:navigation-fragment-ktx:$navigation"
     implementation "androidx.navigation:navigation-ui-ktx:$navigation"
@@ -97,11 +99,13 @@ dependencies {
     implementation "com.fasterxml.jackson.core:jackson-core:$jackson"
     implementation "com.fasterxml.jackson.core:jackson-annotations:$jackson"
     implementation "com.fasterxml.jackson.core:jackson-databind:$jackson"
-
+    //dependency injection
     implementation "com.google.dagger:hilt-android:$hilt_version"
     kapt "com.google.dagger:hilt-compiler:$hilt_version"
     kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
     def hilt_lifecycle_view_model = "1.0.0-alpha03"
     implementation "androidx.hilt:hilt-lifecycle-viewmodel:$hilt_lifecycle_view_model"
     kapt "androidx.hilt:hilt-compiler:$hilt_lifecycle_view_model"
+
+    implementation "io.github.vanpra.compose-material-dialogs:datetime:0.4.0"
 }

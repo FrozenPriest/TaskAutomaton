@@ -17,7 +17,6 @@ import ru.frozenpriest.taskautomaton.program.commands.variables.IncVar
 import ru.frozenpriest.taskautomaton.program.commands.variables.SetVar
 import ru.frozenpriest.taskautomaton.program.service.LocationState
 import ru.frozenpriest.taskautomaton.program.triggers.LocationTrigger
-import ru.frozenpriest.taskautomaton.program.triggers.LocationTriggerType
 import ru.frozenpriest.taskautomaton.program.triggers.TimeTrigger
 import java.time.DayOfWeek
 import java.util.*
@@ -141,7 +140,7 @@ class ConvertersTest : TestCase() {
 
     fun testFromTrigger() {
         val trigger = LocationTrigger(
-            1.0, 2.0, 3.0, LocationState.Undefined, LocationTriggerType.Enter
+            1.0, 2.0, 3.0, LocationState.Undefined, LocationTrigger.Type.Enter
         )
         val expected =
             "{\"type\":\"LocationTrigger\",\"latitude\":1.0,\"longitude\":2.0,\"radius\":3.0,\"currentState\":\"Undefined\",\"type\":\"Enter\"}"
@@ -153,7 +152,7 @@ class ConvertersTest : TestCase() {
         val json =
             "{\"type\":\"LocationTrigger\",\"latitude\":1.0,\"longitude\":2.0,\"radius\":3.0,\"currentState\":\"Undefined\",\"type\":\"Enter\"}"
         val expected = LocationTrigger(
-            1.0, 2.0, 3.0, LocationState.Undefined, LocationTriggerType.Enter
+            1.0, 2.0, 3.0, LocationState.Undefined, LocationTrigger.Type.Enter
         )
         val result = Converters.toTrigger(json) as LocationTrigger
 
@@ -169,7 +168,7 @@ class ConvertersTest : TestCase() {
         val expected = TimeTrigger(
             14,
             22,
-            listOf(DayOfWeek.MONDAY, DayOfWeek.FRIDAY, DayOfWeek.SUNDAY)
+            mutableSetOf(DayOfWeek.MONDAY, DayOfWeek.FRIDAY, DayOfWeek.SUNDAY)
         )
         val result = Converters.toTrigger(json) as TimeTrigger
 

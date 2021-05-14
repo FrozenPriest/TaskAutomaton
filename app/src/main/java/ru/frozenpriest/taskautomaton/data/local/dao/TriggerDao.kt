@@ -7,7 +7,7 @@ import ru.frozenpriest.taskautomaton.data.local.entities.TriggerEntity
 @Dao
 interface TriggerDao {
     @Query("select * from table_triggers where id=:id")
-    fun getTriggerById(id: Int): LiveData<TriggerEntity>
+    fun getTriggerById(id: Long): LiveData<TriggerEntity>
 
     @Query("select * from table_triggers order by id ASC")
     fun getAllTriggers(): LiveData<List<TriggerEntity>>

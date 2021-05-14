@@ -17,7 +17,6 @@ import ru.frozenpriest.taskautomaton.program.commands.variables.IncVar
 import ru.frozenpriest.taskautomaton.program.commands.variables.SetVar
 import ru.frozenpriest.taskautomaton.program.service.LocationState
 import ru.frozenpriest.taskautomaton.program.triggers.LocationTrigger
-import ru.frozenpriest.taskautomaton.program.triggers.LocationTriggerType
 import ru.frozenpriest.taskautomaton.program.triggers.TimeTrigger
 import java.time.DayOfWeek
 import java.util.*
@@ -98,13 +97,13 @@ object DataGenerator {
                             random.nextDouble(),
                             random.nextDouble(100.0),
                             LocationState.Undefined,
-                            LocationTriggerType.values()[random.nextInt(3)]
+                            LocationTrigger.Type.values()[random.nextInt(3)]
                         )
                     else
                         TimeTrigger(
                             random.nextInt(24),
                             random.nextInt(60),
-                            listOf(DayOfWeek.MONDAY, DayOfWeek.FRIDAY, DayOfWeek.SUNDAY)
+                            mutableSetOf(DayOfWeek.MONDAY, DayOfWeek.FRIDAY, DayOfWeek.SUNDAY)
                         ),
                     enabled = random.nextBoolean()
                 )

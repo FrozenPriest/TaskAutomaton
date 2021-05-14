@@ -7,7 +7,7 @@ import android.util.Log
 import com.fasterxml.jackson.annotation.JsonProperty
 import ru.frozenpriest.taskautomaton.data.local.entities.TriggerEntity
 import ru.frozenpriest.taskautomaton.program.triggers.LocationTrigger
-import ru.frozenpriest.taskautomaton.program.triggers.LocationTriggerType.*
+import ru.frozenpriest.taskautomaton.program.triggers.LocationTrigger.Type.*
 
 class MyLocationListener(private val triggerActivationListener: TriggerActivationListener) :
     LocationListener {

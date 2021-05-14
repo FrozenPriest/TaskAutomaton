@@ -44,6 +44,7 @@ class ProgramFragment : Fragment(R.layout.fragment_program) {
         val floatingButton: FloatingActionButton = view.findViewById(R.id.floatingActionButton)
 
         viewModel.program.observe(viewLifecycleOwner, {
+            if(it == null) return@observe
             toolbar.title = it.name
             if (rvProgram.adapter == null) {
                 rvProgram.adapter = context?.let { context ->

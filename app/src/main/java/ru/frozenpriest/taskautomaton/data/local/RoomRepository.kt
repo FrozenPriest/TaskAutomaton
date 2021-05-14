@@ -2,6 +2,8 @@ package ru.frozenpriest.taskautomaton.data.local
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.map
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import ru.frozenpriest.taskautomaton.data.local.dao.ProgramDao
 import ru.frozenpriest.taskautomaton.data.local.dao.TriggerDao
 import ru.frozenpriest.taskautomaton.data.local.entities.TriggerEntity
@@ -20,32 +22,36 @@ class RoomRepository(private val programDao: ProgramDao, private val triggerDao:
 
     val allTriggers = triggerDao.getAllTriggers()
 
-    suspend fun insertProgram(program: Program) {
+    suspend fun insertProgram(program: Program) = withContext(Dispatchers.IO) {
         programDao.insert(program.toEntity())
     }
 
-    suspend fun updateProgram(program: Program) {
+    suspend fun updateProgram(program: Program) = withContext(Dispatchers.IO) {
         programDao.update(program.toEntity())
     }
 
-    suspend fun insertTrigger(trigger: TriggerEntity) {
+    suspend fun insertTrigger(trigger: TriggerEntity) = withContext(Dispatchers.IO) {
         triggerDao.insert(trigger)
     }
 
-    suspend fun deleteProgram(program: Program) {
+    suspend fun deleteProgram(program: Program) = withContext(Dispatchers.IO) {
         programDao.delete(program.toEntity())
     }
 
-    fun getProgram(id: Long): LiveData<Program> {
-        return programDao.getProgramById(id).map { programEntity -> programEntity.toProgram() }
+    suspend fun getProgram(id: Long): Program = withContext(Dispatchers.IO) {
+        return@withContext programDao.getProgramById(id).toProgram()
     }
 
-    suspend fun updateTrigger(triggerEntity: TriggerEntity) {
+    suspend fun updateTrigger(triggerEntity: TriggerEntity) = withContext(Dispatchers.IO) {
         triggerDao.update(triggerEntity)
     }
 
-    suspend fun deleteTrigger(triggerEntity: TriggerEntity) {
+    suspend fun deleteTrigger(triggerEntity: TriggerEntity) = withContext(Dispatchers.IO) {
         triggerDao.delete(triggerEntity)
+    }
+
+    suspend fun getTrigger(id: Long): LiveData<TriggerEntity> = withContext(Dispatchers.IO) {
+        triggerDao.getTriggerById(id)
     }
 }
 

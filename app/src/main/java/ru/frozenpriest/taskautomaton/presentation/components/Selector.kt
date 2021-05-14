@@ -47,7 +47,7 @@ fun <T> Selector(
             modifier = Modifier
                 .padding(all = 8.dp)
                 .defaultMinSize(
-                    minWidth = TextFieldDefaults.MinWidth,
+                    minWidth = TextFieldDefaults.MinWidth/2,
                     minHeight = TextFieldDefaults.MinHeight
                 )
                 .border(

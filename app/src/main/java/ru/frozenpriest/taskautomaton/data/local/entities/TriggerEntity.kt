@@ -21,7 +21,7 @@ data class TriggerEntity(
     val id: Long = 0,
     @ColumnInfo(name = "name")
     var name: String,
-    @ColumnInfo(name = "programId")
+    @ColumnInfo(name = "programId", index = true)
     var connectedProgramId: Long? = null,
     @ColumnInfo(name = "enabled")
     var enabled: Boolean,
