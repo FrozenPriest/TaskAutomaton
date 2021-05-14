@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material.CircularProgressIndicator
@@ -27,6 +28,7 @@ import ru.frozenpriest.taskautomaton.presentation.ui.ActivityViewModel
 class TriggerListFragment : Fragment() {
     private val viewModel: ActivityViewModel by activityViewModels()
 
+    @ExperimentalFoundationApi
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -36,7 +38,7 @@ class TriggerListFragment : Fragment() {
             setContent {
                 val triggers by viewModel.allTriggers.observeAsState()
                 val programs by viewModel.allPrograms.observeAsState()
-                var showDialog by remember { mutableStateOf(false) }
+                var showEditDialog by remember { mutableStateOf(false) }
                 var selectedTrigger by remember { mutableStateOf<TriggerEntity?>(null) }
 
                 if (triggers == null || programs == null) {
@@ -47,20 +49,21 @@ class TriggerListFragment : Fragment() {
                         CircularProgressIndicator()
                     }
                 } else {
+
                     TriggerList(
                         triggers = triggers!!,
                         programs = programs!!,
                         onNavigateToDetailsScreen = { trigger ->
                             selectedTrigger = trigger
-                            showDialog = true
+                            showEditDialog = true
                         },
                         onSetTriggersProgram = { trigger, program ->
                             println("Setting program ${program.id} to trigger ${trigger.name}")
                             trigger.connectedProgramId = program.id
                             viewModel.updateTrigger(trigger)
                         },
-                        onAddNewTrigger = { name, trigger ->
-                            viewModel.insertTrigger(name, trigger)
+                        onAddNewTrigger = { trigger ->
+                            viewModel.insertTrigger(trigger)
                         },
                         onRenameTrigger = { trigger ->
                             viewModel.updateTrigger(trigger)
@@ -69,18 +72,19 @@ class TriggerListFragment : Fragment() {
                             viewModel.deleteTrigger(trigger)
                         }
                     )
+
                 }
-                if (showDialog) {
+                if (showEditDialog) {
                     selectedTrigger?.let {
                         Dialog(
-                            onDismissRequest = { showDialog = false }
+                            onDismissRequest = { showEditDialog = false }
                         ) {
                             TriggerEditor(
                                 trigger = it.trigger,
                                 submit = {
                                     viewModel.updateTrigger(it)
                                     selectedTrigger = null
-                                    showDialog = false
+                                    showEditDialog = false
                                 }
                             )
                         }

@@ -8,7 +8,6 @@ import kotlinx.coroutines.launch
 import ru.frozenpriest.taskautomaton.data.local.RoomRepository
 import ru.frozenpriest.taskautomaton.data.local.entities.TriggerEntity
 import ru.frozenpriest.taskautomaton.program.Program
-import ru.frozenpriest.taskautomaton.program.triggers.Trigger
 import javax.inject.Inject
 
 @HiltViewModel
@@ -39,14 +38,8 @@ class ActivityViewModel @Inject constructor(
         repository.deleteProgram(program)
     }
 
-    fun insertTrigger(name: String, trigger: Trigger) = viewModelScope.launch {
-        repository.insertTrigger(
-            TriggerEntity(
-                name = name,
-                enabled = false,
-                trigger = trigger
-            )
-        )
+    fun insertTrigger(trigger: TriggerEntity) = viewModelScope.launch {
+        repository.insertTrigger(trigger)
     }
 
     fun updateTrigger(triggerEntity: TriggerEntity) = viewModelScope.launch {

@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.buttons
 import com.vanpra.composematerialdialogs.datetime.timepicker.timepicker
+import ru.frozenpriest.taskautomaton.data.local.entities.TriggerEntity
 import ru.frozenpriest.taskautomaton.program.service.LocationState
 import ru.frozenpriest.taskautomaton.program.triggers.LocationTrigger
 import ru.frozenpriest.taskautomaton.program.triggers.TimeTrigger
@@ -30,24 +31,20 @@ import java.util.*
 @Composable
 @Preview(showBackground = true)
 fun TriggerBuilderPreview() {
-    TriggerBuilder(trigger = TimeTrigger(0, 0, mutableSetOf()), build = { /*TODO*/ }) {
-
-    }
+    TriggerEditor(trigger = TimeTrigger(0, 0, mutableSetOf()), submit = { })
 }
 
 @Composable
 @Preview(showBackground = true)
 fun TriggerBuilderLocationPreview() {
-    TriggerBuilder(
+    TriggerEditor(
         trigger = LocationTrigger(
             59.972,
             30.3237,
             10.0,
             LocationState.Undefined,
             LocationTrigger.Type.Enter
-        ), build = { /*TODO*/ }) {
-
-    }
+        ), submit = {})
 }
 
 @Composable
@@ -81,7 +78,7 @@ fun TriggerEditor(
 
 @Composable
 fun TriggerBuilder(
-    trigger: Trigger,
+    trigger: TriggerEntity,
     build: () -> Unit,
     cancel: () -> Unit
 ) {
@@ -92,7 +89,38 @@ fun TriggerBuilder(
                 .padding(top = 16.dp, bottom = 16.dp),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            TriggerBuilderCore(trigger = trigger)
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 8.dp, end = 8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = "Name",
+                    modifier = Modifier.weight(0.4f, false)
+                )
+                val (triggerName, setTriggerName) = remember {
+                    mutableStateOf(
+                        TextFieldValue(trigger.name)
+                    )
+                }
+
+                TextField(
+                    value = triggerName,
+                    onValueChange = {
+                        setTriggerName(it)
+                        trigger.name = it.text
+                    },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    modifier = Modifier
+                        .padding(start = 8.dp, end = 8.dp, top = 4.dp, bottom = 4.dp)
+                        .weight(0.6f, true)
+                        .padding(all = 8.dp),
+                )
+            }
+
+            TriggerBuilderCore(trigger = trigger.trigger)
 
             Row(
                 modifier = Modifier
