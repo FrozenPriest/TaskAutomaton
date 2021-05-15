@@ -4,18 +4,25 @@ import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.NotificationManager.IMPORTANCE_LOW
-import android.app.Service
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.LocationManager
-import android.os.IBinder
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
+import androidx.lifecycle.LifecycleService
+import androidx.lifecycle.lifecycleScope
+import dagger.hilt.android.AndroidEntryPoint
 import ru.frozenpriest.taskautomaton.R
+import ru.frozenpriest.taskautomaton.data.local.RoomRepository
+import ru.frozenpriest.taskautomaton.program.triggers.LocationTrigger
+import ru.frozenpriest.taskautomaton.program.triggers.TimeTrigger
+import javax.inject.Inject
 
+@AndroidEntryPoint
+class MyService : LifecycleService() {
 
-class MyService : Service() {
+    @Inject
+    lateinit var repository: RoomRepository
 
     /*
     todo
@@ -35,16 +42,29 @@ class MyService : Service() {
     private lateinit var triggerActivationListener: TriggerActivationListener
     private lateinit var locationListener: MyLocationListener
 
-    override fun onBind(intent: Intent?): IBinder? {
-        return null
-    }
 
     override fun onCreate() {
         super.onCreate()
         startForegroundService()
         triggerActivationListener = TriggerActivationListener(applicationContext)
-        locationListener = MyLocationListener(triggerActivationListener)
+        locationListener = MyLocationListener(triggerActivationListener, repository, lifecycleScope)
+
         createLocationManager()
+
+        repository.allTriggers.observe(this, { triggers ->
+            triggers.filter { it.enabled }.groupBy { it.trigger::class }.forEach {
+                when (it.key) {
+                    LocationTrigger::class -> {
+                        locationListener.triggers = it.value
+                    }
+                    TimeTrigger::class -> {
+
+                    }
+                    else -> throw NotImplementedError("Trigger not handled")
+                }
+            }
+
+        })
     }
 
     private fun createLocationManager() {
@@ -66,6 +86,7 @@ class MyService : Service() {
 
     override fun onDestroy() {
         locationManager.removeUpdates(locationListener)
+        super.onDestroy()
     }
 
 
