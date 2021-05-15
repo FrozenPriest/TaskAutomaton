@@ -5,6 +5,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.NotificationManager.IMPORTANCE_LOW
 import android.content.Context
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.location.LocationManager
 import androidx.core.app.ActivityCompat
@@ -40,25 +41,30 @@ class MyService : LifecycleService() {
     private lateinit var locationManager: LocationManager
 
     private lateinit var triggerActivationListener: TriggerActivationListener
+
     private lateinit var locationListener: MyLocationListener
+    private lateinit var timeListener: MyTimeListener
 
 
     override fun onCreate() {
         super.onCreate()
         startForegroundService()
-        triggerActivationListener = TriggerActivationListener(applicationContext, repository, lifecycleScope)
+        triggerActivationListener =
+            TriggerActivationListener(applicationContext, repository, lifecycleScope)
         locationListener = MyLocationListener(triggerActivationListener, repository, lifecycleScope)
 
+        timeListener = MyTimeListener(applicationContext, triggerActivationListener)
+        registerReceiver(timeListener, IntentFilter(INTENT_ACTION_ALARM))
         createLocationManager()
 
         repository.allTriggers.observe(this, { triggers ->
-            triggers.filter { it.enabled }.groupBy { it.trigger::class }.forEach {
-                when (it.key) {
+            triggers.groupBy { it.trigger::class }.forEach { entry ->
+                when (entry.key) {
                     LocationTrigger::class -> {
-                        locationListener.triggers = it.value
+                        locationListener.triggers = entry.value.filter { it.enabled }
                     }
                     TimeTrigger::class -> {
-
+                        timeListener.updateTriggers(entry.value.filter { it.enabled && (it.trigger as TimeTrigger).activeDays.isNotEmpty() })
                     }
                     else -> throw NotImplementedError("Trigger not handled")
                 }
@@ -86,6 +92,7 @@ class MyService : LifecycleService() {
 
     override fun onDestroy() {
         locationManager.removeUpdates(locationListener)
+        unregisterReceiver(timeListener)
         super.onDestroy()
     }
 
@@ -118,6 +125,7 @@ class MyService : LifecycleService() {
         const val NOTIFICATION_CHANNEL_ID = "service_channel"
         const val NOTIFICATION_CHANNEL_NAME = "Service channel"
         const val NOTIFICATION_ID = 13
+        const val INTENT_ACTION_ALARM = "MY_TIME_INTENT_FILTER"
 
     }
 }

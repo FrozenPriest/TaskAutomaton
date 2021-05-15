@@ -25,13 +25,14 @@ import ru.frozenpriest.taskautomaton.program.triggers.LocationTrigger
 import ru.frozenpriest.taskautomaton.program.triggers.TimeTrigger
 import ru.frozenpriest.taskautomaton.program.triggers.Trigger
 import java.time.DayOfWeek
+import java.time.LocalTime
 import java.time.format.TextStyle
 import java.util.*
 
 @Composable
 @Preview(showBackground = true)
 fun TriggerBuilderPreview() {
-    TriggerEditor(trigger = TimeTrigger(0, 0, mutableSetOf()), submit = { })
+    TriggerEditor(trigger = TimeTrigger(0, 0, mutableListOf()), submit = { })
 }
 
 @Composable
@@ -171,7 +172,8 @@ fun TimeTriggerBuilder(
     val dialog = remember { MaterialDialog() }
     dialog.build {
         timepicker(
-            is24HourClock = true
+            is24HourClock = true,
+            initialTime = LocalTime.of(hour.value, minute.value)
         ) { time ->
             trigger.hour = time.hour
             trigger.minute = time.minute

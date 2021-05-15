@@ -151,7 +151,7 @@ object DataGenerator {
                     trigger = TimeTrigger(
                         random.nextInt(24),
                         random.nextInt(60),
-                        mutableSetOf(DayOfWeek.MONDAY, DayOfWeek.FRIDAY, DayOfWeek.SUNDAY)
+                        mutableListOf(DayOfWeek.MONDAY, DayOfWeek.FRIDAY, DayOfWeek.SUNDAY)
                     ),
                     enabled = random.nextBoolean()
                 )

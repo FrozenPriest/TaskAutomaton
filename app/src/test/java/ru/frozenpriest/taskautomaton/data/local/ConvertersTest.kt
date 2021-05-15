@@ -168,7 +168,7 @@ class ConvertersTest : TestCase() {
         val expected = TimeTrigger(
             14,
             22,
-            mutableSetOf(DayOfWeek.MONDAY, DayOfWeek.FRIDAY, DayOfWeek.SUNDAY)
+            mutableListOf(DayOfWeek.MONDAY, DayOfWeek.FRIDAY, DayOfWeek.SUNDAY)
         )
         val result = Converters.toTrigger(json) as TimeTrigger
 

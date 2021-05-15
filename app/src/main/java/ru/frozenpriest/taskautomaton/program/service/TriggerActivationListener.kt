@@ -11,6 +11,7 @@ class TriggerActivationListener(
     val lifecycleCoroutineScope: LifecycleCoroutineScope
 ) {
     fun onTriggerLaunch(programId: Long) = lifecycleCoroutineScope.launch{
+        if(programId == -1L) return@launch
         repository.getProgram(programId).executeCommands(context)
 
     }

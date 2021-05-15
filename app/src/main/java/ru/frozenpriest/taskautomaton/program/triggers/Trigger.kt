@@ -51,5 +51,5 @@ class TimeTrigger(
     @JsonProperty("minute")
     var minute: Int,
     @JsonProperty("activeDays")
-    var activeDays: MutableSet<DayOfWeek>,
+    var activeDays: MutableList<DayOfWeek>,
 ) : Trigger()

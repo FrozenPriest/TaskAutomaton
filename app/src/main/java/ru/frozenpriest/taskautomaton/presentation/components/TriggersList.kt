@@ -153,7 +153,7 @@ fun TriggerSelector(
                                         trigger = TimeTrigger(
                                             10,
                                             0,
-                                            mutableSetOf()
+                                            mutableListOf()
                                         )
                                     )
                                 })
