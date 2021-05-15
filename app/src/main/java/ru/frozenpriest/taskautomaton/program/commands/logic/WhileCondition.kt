@@ -19,6 +19,7 @@ class WhileCondition(
 
     override fun perform(program: Program, context: Context) {
         condition.perform(program, context)
+        println("While result: ${condition.functionResult}")
         if (!condition.functionResult) {
             val endWhileIndex = program.commands.indices.firstOrNull {
                 (it > program.commandPointer)

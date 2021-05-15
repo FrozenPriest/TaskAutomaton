@@ -30,9 +30,9 @@ object DataGenerator {
             val list = listOf(
                 SetVar("funkyVar1", true),
                 SetVar("funkyVar2", true),
-                SetVar("f3", 0),
-                SetVar("f4", 9),
-                SetVar("f10", 10),
+                SetVar("f3", "0"),
+                SetVar("f4", "9"),
+                SetVar("f10", "10"),
                 VibrateWithPattern(listOf(200, 100, 200, 100, 400, 200, 500)),
                 WhileCondition(NotFunction(LowerVar("f10", "f3"))),
                 UseTts("Test is %s", listOf("f3"), Locale.ENGLISH),
@@ -83,32 +83,81 @@ object DataGenerator {
         return result
     }
 
+    val random = Random.Default
+    val locations = listOf(
+        TriggerEntity(
+            connectedProgramId = 1,
+            name = "Obshaga",
+            trigger =
+            LocationTrigger(
+                59.991169214292725,
+                30.318787827400214,
+                100.0,
+                LocationState.Undefined,
+                LocationTrigger.Type.values()[random.nextInt(3)]
+            ),
+            enabled = random.nextBoolean()
+        ),
+        TriggerEntity(
+            connectedProgramId = 1,
+            name = "LETI",
+            trigger =
+            LocationTrigger(
+                59.971047,
+                30.31978,
+                100.0,
+                LocationState.Undefined,
+                LocationTrigger.Type.values()[random.nextInt(3)]
+            ),
+            enabled = random.nextBoolean()
+        ),
+        TriggerEntity(
+            connectedProgramId = 1,
+            name = "Obshaga Shell",
+            trigger =
+            LocationTrigger(
+                59.991603,
+                30.320078,
+                100.0,
+                LocationState.Undefined,
+                LocationTrigger.Type.values()[random.nextInt(3)]
+            ),
+            enabled = random.nextBoolean()
+        ),
+        TriggerEntity(
+            connectedProgramId = 1,
+            name = "Metro",
+            trigger =
+            LocationTrigger(
+                59.98557,
+                30.300962,
+                100.0,
+                LocationState.Undefined,
+                LocationTrigger.Type.values()[random.nextInt(3)]
+            ),
+            enabled = random.nextBoolean()
+        ),
+    )
+
     fun getTriggers(): List<TriggerEntity> {
         val result = mutableListOf<TriggerEntity>()
         val random = Random.Default
-        for (i in 1..10) {
+        result.addAll(locations)
+        for (i in 1..5) {
             result.add(
                 TriggerEntity(
                     connectedProgramId = 1,
                     name = "testName $i",
-                    trigger = if (random.nextBoolean())
-                        LocationTrigger(
-                            random.nextDouble(),
-                            random.nextDouble(),
-                            random.nextDouble(100.0),
-                            LocationState.Undefined,
-                            LocationTrigger.Type.values()[random.nextInt(3)]
-                        )
-                    else
-                        TimeTrigger(
-                            random.nextInt(24),
-                            random.nextInt(60),
-                            mutableSetOf(DayOfWeek.MONDAY, DayOfWeek.FRIDAY, DayOfWeek.SUNDAY)
-                        ),
+                    trigger = TimeTrigger(
+                        random.nextInt(24),
+                        random.nextInt(60),
+                        mutableSetOf(DayOfWeek.MONDAY, DayOfWeek.FRIDAY, DayOfWeek.SUNDAY)
+                    ),
                     enabled = random.nextBoolean()
                 )
             )
         }
+
         return result
     }
 }

@@ -46,7 +46,7 @@ class MyService : LifecycleService() {
     override fun onCreate() {
         super.onCreate()
         startForegroundService()
-        triggerActivationListener = TriggerActivationListener(applicationContext)
+        triggerActivationListener = TriggerActivationListener(applicationContext, repository, lifecycleScope)
         locationListener = MyLocationListener(triggerActivationListener, repository, lifecycleScope)
 
         createLocationManager()

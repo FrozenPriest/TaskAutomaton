@@ -22,9 +22,9 @@ class IncVar(
 ) {
 
     override fun perform(program: Program, context: Context) {
-        var variable = program.variables[varName] as Int
+        var variable = (program.variables[varName] as String).toInt()
         variable++
-        program.variables[varName] = variable
+        program.variables[varName] = variable.toString()
 
     }
 }

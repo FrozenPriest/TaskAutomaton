@@ -29,7 +29,7 @@ class SetVar(
             program.variables[varName] = value.functionResult
 
         } else {
-            program.variables[varName] = value
+            program.variables[varName] = value.toString()
         }
     }
 }

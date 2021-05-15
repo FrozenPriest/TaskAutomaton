@@ -30,13 +30,16 @@ class DivVar(
 
     override fun perform(program: Program, context: Context) {
 
-        val a = program.variables[varName1]
-        val b = program.variables[varName2]
+        var a = program.variables[varName1]
+        var b = program.variables[varName2]
+        if(a is String) a = a.toDouble()
+        if(b is String) b = b.toDouble()
+
         if (a is Number && b is Number) {
             if (a is Double || b is Double || a is Float || b is Float) {
-                program.variables[varRes] = (a.toDouble() / b.toDouble())
+                program.variables[varRes] = (a.toDouble() / b.toDouble()).toString()
             } else {
-                program.variables[varRes] = (a.toLong() / b.toLong())
+                program.variables[varRes] = (a.toLong() / b.toLong()).toString()
             }
         }
 

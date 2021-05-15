@@ -274,7 +274,8 @@ fun LocationTriggerBuilder(
                 value = latitudeText,
                 onValueChange = {
                     setLatitudeText(it)
-                    trigger.latitude = it.text.toDouble()
+                    if (it.text != "")
+                        trigger.latitude = it.text.toDouble()
                 },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier
@@ -306,7 +307,8 @@ fun LocationTriggerBuilder(
                 value = longitudeText,
                 onValueChange = {
                     setLongitudeText(it)
-                    trigger.longitude = it.text.toDouble()
+                    if (it.text != "")
+                        trigger.longitude = it.text.toDouble()
                 },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier

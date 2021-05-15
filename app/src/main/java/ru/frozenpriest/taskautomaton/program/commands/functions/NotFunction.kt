@@ -13,7 +13,7 @@ class NotFunction(
     @JsonProperty("function")
     val function: Function
 ) :
-    Function("Not", function.info.description, R.drawable.icon_sample, CommandBuilder.CommandClass.NotFunction) {
+    Function("Not", "!(${function.info.description})", R.drawable.icon_sample, CommandBuilder.CommandClass.NotFunction) {
 
     override fun perform(program: Program, context: Context) {
         function.perform(program, context)
