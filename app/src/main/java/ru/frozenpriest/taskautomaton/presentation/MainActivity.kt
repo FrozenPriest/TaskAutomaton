@@ -45,7 +45,6 @@ class MainActivity : FragmentActivity() {
 
 
         val intent = Intent(this, MyService::class.java)
-        intent.putExtra("ProgramId", "id") //todo when have database
         stopService(intent) //todo for debug purposes, remove later
         startService(intent)
 
