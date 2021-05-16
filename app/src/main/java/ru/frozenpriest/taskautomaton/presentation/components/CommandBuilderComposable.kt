@@ -40,7 +40,7 @@ fun CommandBuilderComposable(
         CommandBuilderMain(
             info,
             preparedParams,
-            buttons =  {
+            buttons = {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -73,6 +73,9 @@ fun CommandBuilderMain(
 ) {
     val checkReady = remember {
         { if (preparedParams.size == info.params.size) onReady() }
+    }
+    if (info.params.isEmpty()) {
+        Text("Command doesn't have parameters", modifier = Modifier.padding(4.dp))
     }
     LazyColumn(modifier = modifier) {
         items(items = info.params) { param ->

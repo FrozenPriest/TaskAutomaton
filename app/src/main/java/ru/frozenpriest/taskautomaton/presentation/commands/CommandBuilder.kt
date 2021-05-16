@@ -9,10 +9,7 @@ import ru.frozenpriest.taskautomaton.program.commands.ExecuteProgram
 import ru.frozenpriest.taskautomaton.program.commands.Function
 import ru.frozenpriest.taskautomaton.program.commands.functions.*
 import ru.frozenpriest.taskautomaton.program.commands.logic.*
-import ru.frozenpriest.taskautomaton.program.commands.output.ShowHtml
-import ru.frozenpriest.taskautomaton.program.commands.output.ShowToast
-import ru.frozenpriest.taskautomaton.program.commands.output.UseTts
-import ru.frozenpriest.taskautomaton.program.commands.output.VibrateWithPattern
+import ru.frozenpriest.taskautomaton.program.commands.output.*
 import ru.frozenpriest.taskautomaton.program.commands.system.DateToVarText
 import ru.frozenpriest.taskautomaton.program.commands.system.TimeToVar
 import ru.frozenpriest.taskautomaton.program.commands.system.TimeToVarText
@@ -218,6 +215,9 @@ class CommandBuilder(
                     )
                 )
             }
+            CommandClass.ShowVariables -> {
+                list.add(ShowAllVariables())
+            }
             else -> throw NotImplementedError("Command not supported")
         }
         return list
@@ -250,7 +250,9 @@ class CommandBuilder(
 
         TimeToVar,
         TimeToVarText,
-        DateToVarText
+        DateToVarText,
+
+        ShowVariables
     }
 
     data class CommandInfoShort(
@@ -297,7 +299,7 @@ class CommandBuilder(
                 DurationToast -> if (value == "Long") Toast.LENGTH_LONG else Toast.LENGTH_SHORT
                 DurationExpire -> (value as kotlin.String).toLong()
                 Function -> value
-                Color -> android.graphics.Color.valueOf((value as kotlin.String).toInt())
+                Color -> (value as kotlin.String).toInt()
                 Language -> Locale(value as kotlin.String)
                 Boolean -> (value as kotlin.String).toBoolean()
             }
@@ -344,8 +346,8 @@ class CommandBuilder(
                 CommandClass.ShowHtml -> {
                     map[info.params[0]] = (command as ShowHtml).stringToShow
                     map[info.params[1]] = command.args.joinToString(", ")
-                    map[info.params[2]] = command.backgroundColor
-                    map[info.params[3]] = command.textColor
+                    map[info.params[2]] = command.backgroundColor.toString()
+                    map[info.params[3]] = command.textColor.toString()
                     map[info.params[4]] = when (command.gravity) {
                         android.view.Gravity.CENTER -> GravityRestriction.Center
                         android.view.Gravity.TOP -> GravityRestriction.Top
@@ -353,8 +355,8 @@ class CommandBuilder(
                         android.view.Gravity.START -> GravityRestriction.Start
                         android.view.Gravity.END -> GravityRestriction.End
                         else -> GravityRestriction.Center
-                    }
-                    map[info.params[5]] = command.duration
+                    }.toString()
+                    map[info.params[5]] = command.duration.toString()
                 }
                 CommandClass.ShowToast -> {
                     map[info.params[0]] = (command as ShowToast).stringToShow
@@ -411,6 +413,10 @@ class CommandBuilder(
                 CommandClass.DateToVarText -> {
                     map[info.params[0]] = (command as DateToVarText).varRes
                     map[info.params[1]] = command.varTime
+                }
+
+                CommandClass.ShowVariables -> {
+                    //No args
                 }
                 else -> {
                     throw IllegalArgumentException("Not supported")
@@ -569,6 +575,12 @@ class CommandBuilder(
                     ParamWithType("Time", ParamType.String)
                 )
             ),
+            CommandInfoShort(
+                CommandClass.ShowVariables,
+                CommandType.Output,
+                R.drawable.icon_sample,
+                listOf()
+            ),
         )
         val functionsOnly = listOf(
             CommandInfoShort(
@@ -617,7 +629,7 @@ class CommandBuilder(
                 listOf(ParamWithType("Function", ParamType.Function))
             ),
 
-        )
+            )
     }
 }
 

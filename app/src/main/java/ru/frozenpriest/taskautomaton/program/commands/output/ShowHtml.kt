@@ -38,7 +38,7 @@ class ShowHtml( //name, args, backColor, textColor, gravity, duration
     override fun perform(program: Program, context: Context) {
         val vars = args.map { program.variables[it] }.toTypedArray()
         val fixedHTML = String.format(stringToShow, *vars)
-
+Color.BLACK
         val builder = HtmlViewBuilder(context)
             .setBackgroundColor(backgroundColor)
             .setTextColor(textColor)
