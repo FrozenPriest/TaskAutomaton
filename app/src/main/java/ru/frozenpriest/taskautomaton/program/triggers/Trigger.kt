@@ -1,6 +1,7 @@
 package ru.frozenpriest.taskautomaton.program.triggers
 
 import android.content.Intent
+import android.media.AudioManager
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
@@ -79,6 +80,28 @@ class SimpleEventTrigger(
 
         @JsonProperty("ACTION_BATTERY_OKAY")
         BatteryOkay("Battery is okay", Intent.ACTION_BATTERY_OKAY),
+
+        @JsonProperty("ACTION_CAMERA_BUTTON")
+        CameraButtonPressed("Camera button pressed", Intent.ACTION_CAMERA_BUTTON),
+
+        @JsonProperty("ACTION_CONFIGURATION_CHANGED")
+        ConfigurationChanged("Configuration changed", Intent.ACTION_CONFIGURATION_CHANGED),
+
+        @JsonProperty("ACTION_DOCK_EVENT")
+        DockEvent("Dock state changed", Intent.ACTION_DOCK_EVENT),
+
+        @JsonProperty("ACTION_HEADSET_PLUG")
+        HeadsetPlugged("Headset (dis)connected", AudioManager.ACTION_HEADSET_PLUG),
+
+        @JsonProperty("ACTION_PROVIDER_CHANGED")
+        ProviderChanged("Provider changed", Intent.ACTION_PROVIDER_CHANGED),
+
+        @JsonProperty("ACTION_SCREEN_ON")
+        ScreenOn("Screen on", Intent.ACTION_SCREEN_ON),
+
+        @JsonProperty("ACTION_SCREEN_OFF")
+        ScreenOff("Screen off", Intent.ACTION_SCREEN_OFF),
+
 
         @JsonProperty
         Unspecified("Unspecified", "");

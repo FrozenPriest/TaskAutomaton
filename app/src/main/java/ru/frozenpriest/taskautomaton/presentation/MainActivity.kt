@@ -45,7 +45,7 @@ class MainActivity : FragmentActivity() {
 
 
         val intent = Intent(this, MyService::class.java)
-        stopService(intent) //todo for debug purposes, remove later
+  //      stopService(intent) //todo for debug purposes, remove later
         startService(intent)
 
 

@@ -5,7 +5,6 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.NotificationManager.IMPORTANCE_LOW
 import android.content.Context
-import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.location.LocationManager
@@ -65,12 +64,13 @@ class MyService : LifecycleService() {
 
         simpleEventListener = SimpleEventListener(applicationContext, triggerActivationListener)
         registerReceiver(simpleEventListener, IntentFilter().apply {
-            addAction(Intent.ACTION_POWER_CONNECTED)
-            addAction(Intent.ACTION_POWER_DISCONNECTED)
-            addAction(Intent.ACTION_AIRPLANE_MODE_CHANGED)
-            addAction(Intent.ACTION_BATTERY_LOW)
-            addAction(Intent.ACTION_BATTERY_OKAY)
-        })
+            SimpleEventTrigger.Event.values()
+                .filter { it != SimpleEventTrigger.Event.Unspecified }.map { it.intent }
+                .forEach {
+                    addAction(it)
+                }
+        }
+        )
 
         repository.allTriggers.observe(this, { triggers ->
             triggers.groupBy { it.trigger::class }.forEach { entry ->
@@ -82,7 +82,7 @@ class MyService : LifecycleService() {
                         timeListener.updateTriggers(entry.value.filter { it.enabled && (it.trigger as TimeTrigger).activeDays.isNotEmpty() })
                     }
                     SimpleEventTrigger::class -> {
-                        simpleEventListener.triggers = entry.value.filter {it.enabled}
+                        simpleEventListener.triggers = entry.value.filter { it.enabled }
                     }
                     else -> throw NotImplementedError("Trigger not handled")
                 }

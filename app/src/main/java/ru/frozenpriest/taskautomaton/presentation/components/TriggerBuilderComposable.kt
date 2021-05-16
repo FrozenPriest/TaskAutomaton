@@ -114,7 +114,6 @@ fun TriggerBuilder(
                         setTriggerName(it)
                         trigger.name = it.text
                     },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     modifier = Modifier
                         .padding(start = 8.dp, end = 8.dp, top = 4.dp, bottom = 4.dp)
                         .weight(0.6f, true)
