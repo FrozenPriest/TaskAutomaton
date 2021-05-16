@@ -12,6 +12,9 @@ import ru.frozenpriest.taskautomaton.program.commands.output.ShowHtml
 import ru.frozenpriest.taskautomaton.program.commands.output.ShowToast
 import ru.frozenpriest.taskautomaton.program.commands.output.UseTts
 import ru.frozenpriest.taskautomaton.program.commands.output.VibrateWithPattern
+import ru.frozenpriest.taskautomaton.program.commands.system.DateToVarText
+import ru.frozenpriest.taskautomaton.program.commands.system.TimeToVar
+import ru.frozenpriest.taskautomaton.program.commands.system.TimeToVarText
 import ru.frozenpriest.taskautomaton.program.commands.variables.*
 
 @JsonTypeInfo(
@@ -47,6 +50,10 @@ import ru.frozenpriest.taskautomaton.program.commands.variables.*
     JsonSubTypes.Type(value = SubVar::class, name = "SubVar"),
 
     JsonSubTypes.Type(value = ExecuteProgram::class, name = "ExecuteProgram"),
+
+    JsonSubTypes.Type(value = TimeToVar::class, name = "TimeToVar"),
+    JsonSubTypes.Type(value = TimeToVarText::class, name = "TimeToVarText"),
+    JsonSubTypes.Type(value = DateToVarText::class, name = "DateToVarText"),
 
     )
 abstract class Command(

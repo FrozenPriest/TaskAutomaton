@@ -13,6 +13,9 @@ import ru.frozenpriest.taskautomaton.program.commands.output.ShowHtml
 import ru.frozenpriest.taskautomaton.program.commands.output.ShowToast
 import ru.frozenpriest.taskautomaton.program.commands.output.UseTts
 import ru.frozenpriest.taskautomaton.program.commands.output.VibrateWithPattern
+import ru.frozenpriest.taskautomaton.program.commands.system.DateToVarText
+import ru.frozenpriest.taskautomaton.program.commands.system.TimeToVar
+import ru.frozenpriest.taskautomaton.program.commands.system.TimeToVarText
 import ru.frozenpriest.taskautomaton.program.commands.variables.*
 import ru.frozenpriest.taskautomaton.utils.GravityRestriction
 import java.util.*
@@ -192,6 +195,29 @@ class CommandBuilder(
                     )
                 )
             }
+            CommandClass.TimeToVar -> {
+                list.add(
+                    TimeToVar(
+                        params[commandInfo.params[0]] as String
+                    )
+                )
+            }
+            CommandClass.TimeToVarText -> {
+                list.add(
+                    TimeToVarText(
+                        params[commandInfo.params[0]] as String,
+                        params[commandInfo.params[1]] as String
+                    )
+                )
+            }
+            CommandClass.DateToVarText -> {
+                list.add(
+                    DateToVarText(
+                        params[commandInfo.params[0]] as String,
+                        params[commandInfo.params[1]] as String
+                    )
+                )
+            }
             else -> throw NotImplementedError("Command not supported")
         }
         return list
@@ -220,7 +246,11 @@ class CommandBuilder(
         SetVar,
         SubVar,
         SumVar,
-        ExecuteProgram
+        ExecuteProgram,
+
+        TimeToVar,
+        TimeToVarText,
+        DateToVarText
     }
 
     data class CommandInfoShort(
@@ -371,6 +401,17 @@ class CommandBuilder(
                 CommandClass.ExecuteProgram -> {
                     TODO()
                 }
+                CommandClass.TimeToVar -> {
+                    map[info.params[0]] = (command as TimeToVar).varRes
+                }
+                CommandClass.TimeToVarText -> {
+                    map[info.params[0]] = (command as TimeToVarText).varRes
+                    map[info.params[1]] = command.varTime
+                }
+                CommandClass.DateToVarText -> {
+                    map[info.params[0]] = (command as DateToVarText).varRes
+                    map[info.params[1]] = command.varTime
+                }
                 else -> {
                     throw IllegalArgumentException("Not supported")
                 }
@@ -501,6 +542,33 @@ class CommandBuilder(
                     ParamWithType("Name", ParamType.String)
                 )
             ),
+
+            CommandInfoShort(
+                CommandClass.TimeToVar,
+                CommandType.DateTime,
+                R.drawable.icon_sample,
+                listOf(ParamWithType("Variable", ParamType.String))
+            ),
+
+            CommandInfoShort(
+                CommandClass.TimeToVarText,
+                CommandType.DateTime,
+                R.drawable.icon_sample,
+                listOf(
+                    ParamWithType("Variable", ParamType.String),
+                    ParamWithType("Time", ParamType.String)
+                )
+            ),
+
+            CommandInfoShort(
+                CommandClass.DateToVarText,
+                CommandType.DateTime,
+                R.drawable.icon_sample,
+                listOf(
+                    ParamWithType("Variable", ParamType.String),
+                    ParamWithType("Time", ParamType.String)
+                )
+            ),
         )
         val functionsOnly = listOf(
             CommandInfoShort(
@@ -548,6 +616,7 @@ class CommandBuilder(
                 R.drawable.icon_sample,
                 listOf(ParamWithType("Function", ParamType.Function))
             ),
+
         )
     }
 }
