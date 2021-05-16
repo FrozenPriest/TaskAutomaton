@@ -28,13 +28,13 @@ fun SelectorPreview() {
 @Composable
 fun <T> Selector(
     modifier: Modifier = Modifier,
-    currentValue: String = "",
+    currentValue: T? = null,
     possibleValues: List<T>,
     showAsString: (T) -> String,
     onItemSelected: (item: T) -> Unit
 ) {
     val expanded = remember { mutableStateOf(false) }
-    val (selectedText, setText) = remember { mutableStateOf(currentValue) }
+    val (selectedText, setText) = remember { mutableStateOf(currentValue?.let { showAsString(currentValue) } ?: "") }
 
     val icon = if (expanded.value)
         Icons.Filled.ArrowDropUp
@@ -72,7 +72,7 @@ fun <T> Selector(
         DropdownMenu(
             expanded = expanded.value,
             onDismissRequest = { expanded.value = false },
-            modifier = Modifier.fillMaxWidth()
+            //modifier = Modifier.fillMaxWidth()
         ) {
             //todo check in next composable version for lazyColumn/scrollable
             Column(

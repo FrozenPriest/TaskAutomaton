@@ -15,7 +15,7 @@ import ru.frozenpriest.taskautomaton.program.commands.output.UseTts
 import ru.frozenpriest.taskautomaton.program.commands.output.VibrateWithPattern
 import ru.frozenpriest.taskautomaton.program.commands.variables.IncVar
 import ru.frozenpriest.taskautomaton.program.commands.variables.SetVar
-import ru.frozenpriest.taskautomaton.program.service.LocationState
+import ru.frozenpriest.taskautomaton.program.service.listeners.LocationState
 import ru.frozenpriest.taskautomaton.program.triggers.LocationTrigger
 import ru.frozenpriest.taskautomaton.program.triggers.TimeTrigger
 import java.time.DayOfWeek

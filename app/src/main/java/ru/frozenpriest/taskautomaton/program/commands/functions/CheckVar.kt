@@ -21,10 +21,8 @@ class CheckVar(
         ev.perform(program, context)
         if (ev.functionResult) {
             val variable = program.variables[varName]
-            if (variable is Boolean) {
-                functionResult = variable
+                functionResult = (variable as String).toBoolean()
                 return
-            }
         }
     }
 }

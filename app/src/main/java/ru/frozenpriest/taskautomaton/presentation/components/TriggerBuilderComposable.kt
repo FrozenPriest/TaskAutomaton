@@ -20,8 +20,9 @@ import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.buttons
 import com.vanpra.composematerialdialogs.datetime.timepicker.timepicker
 import ru.frozenpriest.taskautomaton.data.local.entities.TriggerEntity
-import ru.frozenpriest.taskautomaton.program.service.LocationState
+import ru.frozenpriest.taskautomaton.program.service.listeners.LocationState
 import ru.frozenpriest.taskautomaton.program.triggers.LocationTrigger
+import ru.frozenpriest.taskautomaton.program.triggers.SimpleEventTrigger
 import ru.frozenpriest.taskautomaton.program.triggers.TimeTrigger
 import ru.frozenpriest.taskautomaton.program.triggers.Trigger
 import java.time.DayOfWeek
@@ -158,8 +159,41 @@ private fun TriggerBuilderCore(
         is TimeTrigger -> {
             TimeTriggerBuilder(trigger)
         }
+        is SimpleEventTrigger -> SimpleEventTriggerBuilder(trigger)
     }
 
+}
+
+@Composable
+fun SimpleEventTriggerBuilder(trigger: SimpleEventTrigger) {
+    val event = remember { mutableStateOf(trigger.eventAction) }
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 8.dp, end = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = "Event",
+            modifier = Modifier.weight(0.4f, false)
+        )
+        Selector(
+            possibleValues = SimpleEventTrigger.Event.values()
+                .filter { it != SimpleEventTrigger.Event.Unspecified },
+            currentValue = event.value,
+            showAsString = { it.prettyString },
+            onItemSelected = {
+                event.value = it
+                trigger.eventAction = it
+            },
+            modifier = Modifier
+                .padding(start = 8.dp, end = 8.dp, top = 4.dp, bottom = 4.dp)
+                .weight(0.6f, true)
+                .padding(all = 8.dp),
+        )
+    }
 }
 
 @Composable
@@ -364,7 +398,7 @@ fun LocationTriggerBuilder(
             )
 
             Selector(
-                currentValue = trigger.type.toString(),
+                currentValue = trigger.type,
                 possibleValues = LocationTrigger.Type.values().toList(),
                 showAsString = { it.name },
                 onItemSelected = { trigger.type = it })

@@ -15,7 +15,7 @@ import ru.frozenpriest.taskautomaton.program.commands.output.UseTts
 import ru.frozenpriest.taskautomaton.program.commands.output.VibrateWithPattern
 import ru.frozenpriest.taskautomaton.program.commands.variables.IncVar
 import ru.frozenpriest.taskautomaton.program.commands.variables.SetVar
-import ru.frozenpriest.taskautomaton.program.service.LocationState
+import ru.frozenpriest.taskautomaton.program.service.listeners.LocationState
 import ru.frozenpriest.taskautomaton.program.triggers.LocationTrigger
 import ru.frozenpriest.taskautomaton.program.triggers.TimeTrigger
 import java.time.DayOfWeek
@@ -28,8 +28,8 @@ object DataGenerator {
 
         for (i in 1..10) {
             val list = listOf(
-                SetVar("funkyVar1", true),
-                SetVar("funkyVar2", true),
+                SetVar("funkyVar1", "true"),
+                SetVar("funkyVar2", "true"),
                 SetVar("f3", "0"),
                 SetVar("f4", "9"),
                 SetVar("f10", "10"),

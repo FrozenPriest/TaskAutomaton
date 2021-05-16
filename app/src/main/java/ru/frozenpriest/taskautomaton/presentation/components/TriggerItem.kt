@@ -13,7 +13,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ru.frozenpriest.taskautomaton.data.local.entities.TriggerEntity
 import ru.frozenpriest.taskautomaton.program.Program
-import ru.frozenpriest.taskautomaton.program.service.LocationState
+import ru.frozenpriest.taskautomaton.program.service.listeners.LocationState
 import ru.frozenpriest.taskautomaton.program.triggers.LocationTrigger
 import ru.frozenpriest.taskautomaton.program.triggers.TimeTrigger
 import java.time.DayOfWeek
@@ -109,7 +109,7 @@ fun TriggerItem(
             ) {
 
                 Selector(
-                    currentValue = connectedProgram?.name ?: "",
+                    currentValue = connectedProgram,
                     possibleValues = programs,
                     showAsString = { it.name },
                     onItemSelected = {

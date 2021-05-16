@@ -1,4 +1,4 @@
-package ru.frozenpriest.taskautomaton.program.service
+package ru.frozenpriest.taskautomaton.program.service.listeners
 
 import android.location.Location
 import android.location.LocationListener
@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import kotlinx.coroutines.launch
 import ru.frozenpriest.taskautomaton.data.local.RoomRepository
 import ru.frozenpriest.taskautomaton.data.local.entities.TriggerEntity
+import ru.frozenpriest.taskautomaton.program.service.TriggerActivationListener
 import ru.frozenpriest.taskautomaton.program.triggers.LocationTrigger
 import ru.frozenpriest.taskautomaton.program.triggers.LocationTrigger.Type.*
 

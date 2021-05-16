@@ -1,6 +1,8 @@
 package ru.frozenpriest.taskautomaton.presentation.components
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
@@ -38,24 +40,26 @@ fun CommandBuilderComposable(
         CommandBuilderMain(
             info,
             preparedParams,
+            buttons =  {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 8.dp, end = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Button(onClick = {
+                        if (preparedParams.size == info.params.size)
+                            build()
+                    }) {
+                        Text("Add")
+                    }
+                    Button(onClick = { cancel() }) {
+                        Text("Cancel")
+                    }
+                }
+            }
         )
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 8.dp, end = 8.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Button(onClick = {
-                if (preparedParams.size == info.params.size)
-                    build()
-            }) {
-                Text("Add")
-            }
-            Button(onClick = { cancel() }) {
-                Text("Cancel")
-            }
-        }
     }
 }
 
@@ -64,14 +68,14 @@ fun CommandBuilderMain(
     info: CommandBuilder.CommandInfoShort,
     preparedParams: MutableMap<CommandBuilder.ParamWithType, Any>,
     modifier: Modifier = Modifier,
-    onReady: () -> Unit = {}
+    onReady: () -> Unit = {},
+    buttons: @Composable () -> Unit = {}
 ) {
     val checkReady = remember {
         { if (preparedParams.size == info.params.size) onReady() }
     }
-    Column(modifier = modifier) {
-
-        info.params.forEach { param ->
+    LazyColumn(modifier = modifier) {
+        items(items = info.params) { param ->
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -88,7 +92,7 @@ fun CommandBuilderMain(
                         val (textField, setText) = remember {
                             mutableStateOf(
                                 TextFieldValue(
-                                    preparedParams.getOrDefault(param, "") as String
+                                    preparedParams.getOrDefault(param, "").toString()
                                 )
                             )
                         }
@@ -108,9 +112,9 @@ fun CommandBuilderMain(
                     }
                     CommandBuilder.ParamType.Gravity -> {
                         Selector(
-                            currentValue = preparedParams.getOrDefault(param, "") as String,
+                            currentValue = preparedParams.getOrDefault(param, "").toString(),
                             possibleValues = GravityRestriction.values().map { it.toString() },
-                            showAsString = {it}, //TODO(change to work with <>)
+                            showAsString = { it }, //TODO(change to work with <>)
                             modifier = Modifier.weight(0.6f, true),
                             onItemSelected = { itemValue ->
                                 preparedParams[param] = itemValue
@@ -120,9 +124,9 @@ fun CommandBuilderMain(
                     }
                     CommandBuilder.ParamType.DurationToast -> {
                         Selector(
-                            currentValue = preparedParams.getOrDefault(param, "") as String,
+                            currentValue = preparedParams.getOrDefault(param, "").toString(),
                             possibleValues = listOf("Long", "Short"),
-                            showAsString = {it}, //TODO(change to work with <>)
+                            showAsString = { it }, //TODO(change to work with <>)
                             modifier = Modifier.weight(0.6f, true),
                             onItemSelected = { itemValue ->
                                 preparedParams[param] = itemValue
@@ -134,7 +138,7 @@ fun CommandBuilderMain(
                         val (textField, setText) = remember {
                             mutableStateOf(
                                 TextFieldValue(
-                                    preparedParams.getOrDefault(param, "") as String
+                                    preparedParams.getOrDefault(param, "").toString()
                                 )
                             )
                         }
@@ -165,13 +169,13 @@ fun CommandBuilderMain(
                     }
                     CommandBuilder.ParamType.Boolean -> {
                         Selector(
-                            currentValue = preparedParams.getOrDefault(param, "") as String,
+                            currentValue = preparedParams.getOrDefault(param, "").toString(),
                             possibleValues = listOf(
                                 "True",
                                 "False",
                             ),
                             modifier = Modifier.weight(0.6f, true),
-                            showAsString = {it}, //TODO(change to work with <>)
+                            showAsString = { it }, //TODO(change to work with <>)
                             onItemSelected = { itemValue ->
                                 preparedParams[param] = itemValue
                                 checkReady()
@@ -182,7 +186,7 @@ fun CommandBuilderMain(
                         val (textField, setText) = remember {
                             mutableStateOf(
                                 TextFieldValue(
-                                    preparedParams.getOrDefault(param, "") as String,
+                                    preparedParams.getOrDefault(param, "").toString(),
                                 )
                             )
                         }
@@ -204,9 +208,9 @@ fun CommandBuilderMain(
                     }
                     CommandBuilder.ParamType.Language -> {
                         Selector(
-                            currentValue = preparedParams.getOrDefault(param, "") as String,
+                            currentValue = preparedParams.getOrDefault(param, "").toString(),
                             possibleValues = Locale.getAvailableLocales().map { it.language },
-                            showAsString = {it}, //TODO(change to work with <>)
+                            showAsString = { it }, //TODO(change to work with <>)
                             modifier = Modifier.weight(0.6f, true),
                             onItemSelected = { itemValue ->
                                 preparedParams[param] = itemValue
@@ -216,6 +220,10 @@ fun CommandBuilderMain(
                     }
                 }
             }
+        }
+        item {
+            buttons()
+            Spacer(modifier = Modifier.height(4.dp))
         }
     }
 }
@@ -228,16 +236,14 @@ fun FunctionSelector(
     val selectedFunction = remember {
         mutableStateOf(CommandBuilder.functionsOnly.find { it.className.toString() == initialFunction?.info?.commandClass?.toString() })
     }
-    Column(
-        modifier = Modifier.fillMaxWidth()
-    ) {
+    Column() {
         val possibleValues = remember {
             CommandBuilder.functionsOnly.map { it.className.toString() }
         }
         Selector(
             currentValue = initialFunction?.info?.commandClass?.toString() ?: "",
             possibleValues = possibleValues,
-            showAsString = {it}, //TODO(change to work with <>)
+            showAsString = { it }, //TODO(change to work with <>)
             onItemSelected = { newString ->
                 selectedFunction.value =
                     CommandBuilder.functionsOnly.find { it.className.toString() == newString }

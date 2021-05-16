@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Event
 import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.runtime.Composable
@@ -22,8 +23,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import ru.frozenpriest.taskautomaton.data.local.entities.TriggerEntity
 import ru.frozenpriest.taskautomaton.program.Program
-import ru.frozenpriest.taskautomaton.program.service.LocationState
+import ru.frozenpriest.taskautomaton.program.service.listeners.LocationState
 import ru.frozenpriest.taskautomaton.program.triggers.LocationTrigger
+import ru.frozenpriest.taskautomaton.program.triggers.SimpleEventTrigger
 import ru.frozenpriest.taskautomaton.program.triggers.TimeTrigger
 import ru.frozenpriest.taskautomaton.program.triggers.Trigger
 
@@ -157,6 +159,19 @@ fun TriggerSelector(
                                         )
                                     )
                                 })
+                            SimpleEventTrigger::class -> GridElement(
+                                icon = Icons.Filled.Event,
+                                title = "System Event",
+                                onSelect = {
+                                    selectedTrigger.value = TriggerEntity(
+                                        name = "",
+                                        enabled = false,
+                                        trigger = SimpleEventTrigger(
+                                            eventAction = SimpleEventTrigger.Event.Unspecified
+                                        )
+                                    )
+                                }
+                            )
                             else -> throw NotImplementedError("Not implemented")
                         }
 

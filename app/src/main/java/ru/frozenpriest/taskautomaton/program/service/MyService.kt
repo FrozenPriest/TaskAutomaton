@@ -5,6 +5,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.NotificationManager.IMPORTANCE_LOW
 import android.content.Context
+import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.location.LocationManager
@@ -15,7 +16,11 @@ import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
 import ru.frozenpriest.taskautomaton.R
 import ru.frozenpriest.taskautomaton.data.local.RoomRepository
+import ru.frozenpriest.taskautomaton.program.service.listeners.MyLocationListener
+import ru.frozenpriest.taskautomaton.program.service.listeners.MyTimeListener
+import ru.frozenpriest.taskautomaton.program.service.listeners.SimpleEventListener
 import ru.frozenpriest.taskautomaton.program.triggers.LocationTrigger
+import ru.frozenpriest.taskautomaton.program.triggers.SimpleEventTrigger
 import ru.frozenpriest.taskautomaton.program.triggers.TimeTrigger
 import javax.inject.Inject
 
@@ -44,6 +49,7 @@ class MyService : LifecycleService() {
 
     private lateinit var locationListener: MyLocationListener
     private lateinit var timeListener: MyTimeListener
+    private lateinit var simpleEventListener: SimpleEventListener
 
 
     override fun onCreate() {
@@ -57,6 +63,15 @@ class MyService : LifecycleService() {
         registerReceiver(timeListener, IntentFilter(INTENT_ACTION_ALARM))
         createLocationManager()
 
+        simpleEventListener = SimpleEventListener(applicationContext, triggerActivationListener)
+        registerReceiver(simpleEventListener, IntentFilter().apply {
+            addAction(Intent.ACTION_POWER_CONNECTED)
+            addAction(Intent.ACTION_POWER_DISCONNECTED)
+            addAction(Intent.ACTION_AIRPLANE_MODE_CHANGED)
+            addAction(Intent.ACTION_BATTERY_LOW)
+            addAction(Intent.ACTION_BATTERY_OKAY)
+        })
+
         repository.allTriggers.observe(this, { triggers ->
             triggers.groupBy { it.trigger::class }.forEach { entry ->
                 when (entry.key) {
@@ -65,6 +80,9 @@ class MyService : LifecycleService() {
                     }
                     TimeTrigger::class -> {
                         timeListener.updateTriggers(entry.value.filter { it.enabled && (it.trigger as TimeTrigger).activeDays.isNotEmpty() })
+                    }
+                    SimpleEventTrigger::class -> {
+                        simpleEventListener.triggers = entry.value.filter {it.enabled}
                     }
                     else -> throw NotImplementedError("Trigger not handled")
                 }
@@ -93,6 +111,7 @@ class MyService : LifecycleService() {
     override fun onDestroy() {
         locationManager.removeUpdates(locationListener)
         unregisterReceiver(timeListener)
+        unregisterReceiver(simpleEventListener)
         super.onDestroy()
     }
 

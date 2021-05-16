@@ -1,4 +1,4 @@
-package ru.frozenpriest.taskautomaton.program.service
+package ru.frozenpriest.taskautomaton.program.service.listeners
 
 import android.app.AlarmManager
 import android.app.PendingIntent
@@ -7,6 +7,8 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import ru.frozenpriest.taskautomaton.data.local.entities.TriggerEntity
+import ru.frozenpriest.taskautomaton.program.service.MyService
+import ru.frozenpriest.taskautomaton.program.service.TriggerActivationListener
 import ru.frozenpriest.taskautomaton.program.triggers.TimeTrigger
 import java.time.DayOfWeek
 import java.time.Instant
