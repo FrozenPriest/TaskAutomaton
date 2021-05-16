@@ -1,5 +1,8 @@
 package ru.frozenpriest.taskautomaton.presentation.components
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -11,11 +14,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ru.frozenpriest.taskautomaton.presentation.commands.CommandBuilder
 import ru.frozenpriest.taskautomaton.program.commands.Function
+import ru.frozenpriest.taskautomaton.utils.CopyInInternalStorage.copyFileToInternalStorage
 import ru.frozenpriest.taskautomaton.utils.GravityRestriction
 import java.util.*
 
@@ -169,6 +174,21 @@ fun CommandBuilderMain(
                                 checkReady()
                             }
                         )
+                    }
+                    CommandBuilder.ParamType.Music -> {
+                        val result = remember { mutableStateOf<Uri?>(null) }
+                        val launcher = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) {
+                            result.value = it
+                        }
+
+                        Button(onClick = { launcher.launch(arrayOf("audio/*")) }) {
+                            Text(text = "Select song")
+                        }
+
+                        result.value?.let { songURI ->
+                            val newURI = copyFileToInternalStorage(songURI, "music", LocalContext.current)
+                            preparedParams[param] = newURI.toString()
+                        }
                     }
                     CommandBuilder.ParamType.Boolean -> {
                         Selector(

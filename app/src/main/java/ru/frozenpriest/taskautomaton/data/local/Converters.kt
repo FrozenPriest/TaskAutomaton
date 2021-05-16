@@ -11,25 +11,33 @@ object Converters {
 
     @TypeConverter
     fun fromCommandList(commands: List<Command>): String {
-        val mapper = ObjectMapper()
+        val mapper = ObjectMapper().apply {
+//            addMixIn(Uri::class.java, UriMixIn::class.java)
+        }
         return mapper.writerFor(object : TypeReference<List<Command>>() {}).writeValueAsString(commands)
     }
 
     @TypeConverter
     fun toCommandList(commands: String): List<Command> {
-        val mapper = ObjectMapper()
+        val mapper = ObjectMapper().apply {
+//            addMixIn(Uri::class.java, UriMixIn::class.java)
+        }
         return mapper.readValue(commands, object : TypeReference<List<Command>>() {})
     }
 
     @TypeConverter
     fun fromTrigger(trigger: Trigger): String {
-        val mapper = ObjectMapper()
+        val mapper = ObjectMapper().apply {
+//            addMixIn(Uri::class.java, UriMixIn::class.java)
+        }
         return mapper.writerFor(object : TypeReference<Trigger>() {}).writeValueAsString(trigger)
     }
 
     @TypeConverter
     fun toTrigger(triggerString: String): Trigger {
-        val mapper = ObjectMapper()
+        val mapper = ObjectMapper().apply {
+//            addMixIn(Uri::class.java, UriMixIn::class.java)
+        }
         return mapper.readValue(triggerString, object : TypeReference<Trigger>() {})
     }
 }

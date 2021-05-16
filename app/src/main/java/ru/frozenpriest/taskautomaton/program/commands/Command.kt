@@ -53,6 +53,8 @@ import ru.frozenpriest.taskautomaton.program.commands.variables.*
     JsonSubTypes.Type(value = DateToVarText::class, name = "DateToVarText"),
 
     JsonSubTypes.Type(value = ShowAllVariables::class, name = "ShowAllVariables"),
+    JsonSubTypes.Type(value = PlayMusic::class, name = "PlayMusic"),
+    JsonSubTypes.Type(value = StopMusic::class, name = "StopMusic"),
 
     )
 abstract class Command(

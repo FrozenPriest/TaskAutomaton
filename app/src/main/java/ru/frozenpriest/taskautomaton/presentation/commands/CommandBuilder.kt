@@ -19,7 +19,7 @@ import java.util.*
 
 class CommandBuilder(
     private val commandInfo: CommandInfoShort,
-    private val params: Map<ParamWithType, Any>
+    private val params: Map<ParamWithType, Any>,
 ) {
 
     fun build(): List<Command> {
@@ -218,6 +218,14 @@ class CommandBuilder(
             CommandClass.ShowVariables -> {
                 list.add(ShowAllVariables())
             }
+            CommandClass.PlayMusic -> {
+                list.add(PlayMusic(
+                    params[commandInfo.params[0]] as String
+                ))
+            }
+            CommandClass.StopMusic -> {
+                list.add(StopMusic())
+            }
             else -> throw NotImplementedError("Command not supported")
         }
         return list
@@ -252,7 +260,9 @@ class CommandBuilder(
         TimeToVarText,
         DateToVarText,
 
-        ShowVariables
+        ShowVariables,
+        PlayMusic,
+        StopMusic
     }
 
     data class CommandInfoShort(
@@ -279,7 +289,8 @@ class CommandBuilder(
         Function,
         Color,
         Language,
-        Boolean;
+        Boolean,
+        Music;
 
         /**
          * returns casted value. Still need to use as later
@@ -302,6 +313,7 @@ class CommandBuilder(
                 Color -> (value as kotlin.String).toInt()
                 Language -> Locale(value as kotlin.String)
                 Boolean -> (value as kotlin.String).toBoolean()
+                Music -> (value as kotlin.String)
             }
         }
     }
@@ -416,6 +428,13 @@ class CommandBuilder(
                 }
 
                 CommandClass.ShowVariables -> {
+                    //No args
+                }
+                CommandClass.PlayMusic -> {
+                    map[info.params[0]] = (command as PlayMusic).songPath
+                }
+
+                CommandClass.StopMusic -> {
                     //No args
                 }
                 else -> {
@@ -577,6 +596,20 @@ class CommandBuilder(
             ),
             CommandInfoShort(
                 CommandClass.ShowVariables,
+                CommandType.Output,
+                R.drawable.icon_sample,
+                listOf()
+            ),
+            CommandInfoShort(
+                CommandClass.PlayMusic,
+                CommandType.Output,
+                R.drawable.icon_sample,
+                listOf(
+                    ParamWithType("Song", ParamType.Music)
+                )
+            ),
+            CommandInfoShort(
+                CommandClass.StopMusic,
                 CommandType.Output,
                 R.drawable.icon_sample,
                 listOf()
