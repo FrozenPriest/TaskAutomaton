@@ -1,4 +1,4 @@
-package ru.frozenpriest.taskautomaton.presentation
+package ru.frozenpriest.taskautomaton.presentation.ui.startup
 
 import android.app.Activity
 import android.content.Intent
