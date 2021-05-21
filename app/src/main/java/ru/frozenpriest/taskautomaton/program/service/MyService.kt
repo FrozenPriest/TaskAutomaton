@@ -59,9 +59,10 @@ class MyService : LifecycleService() {
         locationListener = MyLocationListener(triggerActivationListener, repository, lifecycleScope)
 
         timeListener = MyTimeListener(applicationContext, triggerActivationListener)
-        registerReceiver(timeListener, IntentFilter(INTENT_ACTION_ALARM))
-        createLocationManager()
 
+
+        createLocationManager()
+        registerReceiver(timeListener, IntentFilter(INTENT_ACTION_ALARM))
         simpleEventListener = SimpleEventListener(applicationContext, triggerActivationListener)
         registerReceiver(simpleEventListener, IntentFilter().apply {
             SimpleEventTrigger.Event.values()

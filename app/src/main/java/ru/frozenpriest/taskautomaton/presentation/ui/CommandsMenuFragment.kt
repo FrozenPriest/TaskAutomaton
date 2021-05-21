@@ -52,14 +52,6 @@ class CommandsMenuFragment(private val listener: CommandSelectionListener) : Dia
     }
 }
 
-/**
- * todo
- * remove commandType from command
- * class CommandContainer with commandType and fun(): Command
- * commandType enum moved here
- * also contains categorisedCommands hashmap
- */
-
 val types =
     CommandType.values().filter { it != CommandType.Uncategorized && it != CommandType.Functions }
 val categorizedCommands = CommandBuilder.commandToInfo.groupBy { it.commandType }

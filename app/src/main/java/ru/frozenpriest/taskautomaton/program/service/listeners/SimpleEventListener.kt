@@ -18,13 +18,14 @@ class SimpleEventListener(
 
     override fun onReceive(context: Context, intent: Intent) {
         intent.action?.let { action ->
-            val trigger = triggers.find {
-                (it.trigger as SimpleEventTrigger).eventAction == SimpleEventTrigger.Event.getEnum(action)
-            }
-            trigger?.let {
+            triggers.filter {
+                (it.trigger as SimpleEventTrigger).eventAction == SimpleEventTrigger.Event.getEnum(
+                    action
+                )
+            }.forEach { trigger ->
                 Log.e(
                     "SimpleEventListener",
-                    "Received event trigger ${trigger.name}, action: ${(it.trigger as SimpleEventTrigger).eventAction}"
+                    "Received event trigger ${trigger.name}, action: ${(trigger.trigger as SimpleEventTrigger).eventAction}"
                 )
                 trigger.connectedProgramId?.let { programId ->
                     triggerActivationListener.onTriggerLaunch(
