@@ -16,7 +16,7 @@ interface ProgramDao {
     fun getAllPrograms(): LiveData<List<ProgramEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(entity: ProgramEntity)
+    suspend fun insert(entity: ProgramEntity): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(entity: List<ProgramEntity>)

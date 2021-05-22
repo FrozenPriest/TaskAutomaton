@@ -68,8 +68,9 @@ fun TriggerList(
         LazyColumn(
         ) {
             items(
-                items = triggers
+                triggers
             ) { item ->
+                println("Item ${item.name}")
                 TriggerItem(
                     trigger = item,
                     connectedProgram = programs.find { it.id == item.connectedProgramId },
@@ -92,13 +93,6 @@ fun TriggerList(
             setShowDialog = setShowAddDialog,
             onAddNewTrigger = { onAddNewTrigger(it) }
         )
-//        AddNewDialog(
-//
-//            text = "",
-//            onConfirm = {
-//                //onAddNewTrigger(it, )
-//            }
-//        )
         editableTriggerEntity.value?.let {
             AddNewDialog(
                 showDialog = showRenameDialog,

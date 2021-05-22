@@ -17,4 +17,5 @@ import ru.frozenpriest.taskautomaton.data.local.entities.TriggerEntity
 abstract class TaskRoomDatabase: RoomDatabase() {
     abstract fun triggerDao(): TriggerDao
     abstract fun programDao(): ProgramDao
+
 }

@@ -16,7 +16,7 @@ interface TriggerDao {
     suspend fun insertAll(triggers: List<TriggerEntity>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(entity: TriggerEntity)
+    suspend fun insert(entity: TriggerEntity): Long
 
     @Update
     suspend fun update(entity: TriggerEntity)

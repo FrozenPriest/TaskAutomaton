@@ -2,9 +2,9 @@ buildscript {
     ext.kotlin_version = "1.4.32"
     repositories {
         google()
-        mavenCentral()
+        jcenter()
     }
-    ext.hilt_version = '2.35.1'
+    ext.hilt_version = '2.35'
 
     dependencies {
         def gradle = '7.0.0-beta02'
@@ -18,7 +18,7 @@ buildscript {
 allprojects {
     repositories {
         google()
-        mavenCentral()
+        jcenter()
     }
 }
 
