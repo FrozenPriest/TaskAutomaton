@@ -4,18 +4,30 @@ import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.NotificationManager.IMPORTANCE_LOW
-import android.app.Service
 import android.content.Context
-import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.location.LocationManager
-import android.os.IBinder
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
+import androidx.lifecycle.LifecycleService
+import androidx.lifecycle.lifecycleScope
+import dagger.hilt.android.AndroidEntryPoint
 import ru.frozenpriest.taskautomaton.R
+import ru.frozenpriest.taskautomaton.data.local.RoomRepository
+import ru.frozenpriest.taskautomaton.program.service.listeners.MyLocationListener
+import ru.frozenpriest.taskautomaton.program.service.listeners.MyTimeListener
+import ru.frozenpriest.taskautomaton.program.service.listeners.SimpleEventListener
+import ru.frozenpriest.taskautomaton.program.triggers.LocationTrigger
+import ru.frozenpriest.taskautomaton.program.triggers.SimpleEventTrigger
+import ru.frozenpriest.taskautomaton.program.triggers.TimeTrigger
+import javax.inject.Inject
 
+@AndroidEntryPoint
+class MyService : LifecycleService() {
 
-class MyService : Service() {
+    @Inject
+    lateinit var repository: RoomRepository
 
     /*
     todo
@@ -33,18 +45,51 @@ class MyService : Service() {
     private lateinit var locationManager: LocationManager
 
     private lateinit var triggerActivationListener: TriggerActivationListener
-    private lateinit var locationListener: MyLocationListener
 
-    override fun onBind(intent: Intent?): IBinder? {
-        return null
-    }
+    private lateinit var locationListener: MyLocationListener
+    private lateinit var timeListener: MyTimeListener
+    private lateinit var simpleEventListener: SimpleEventListener
+
 
     override fun onCreate() {
         super.onCreate()
         startForegroundService()
-        triggerActivationListener = TriggerActivationListener(applicationContext)
-        locationListener = MyLocationListener(triggerActivationListener)
+        triggerActivationListener =
+            TriggerActivationListener(applicationContext, repository, lifecycleScope)
+        locationListener = MyLocationListener(triggerActivationListener, repository, lifecycleScope)
+
+        timeListener = MyTimeListener(applicationContext, triggerActivationListener)
+
+
         createLocationManager()
+        registerReceiver(timeListener, IntentFilter(INTENT_ACTION_ALARM))
+        simpleEventListener = SimpleEventListener(applicationContext, triggerActivationListener)
+        registerReceiver(simpleEventListener, IntentFilter().apply {
+            SimpleEventTrigger.Event.values()
+                .filter { it != SimpleEventTrigger.Event.Unspecified }.map { it.intent }
+                .forEach {
+                    addAction(it)
+                }
+        }
+        )
+
+        repository.allTriggers.observe(this, { triggers ->
+            triggers.groupBy { it.trigger::class }.forEach { entry ->
+                when (entry.key) {
+                    LocationTrigger::class -> {
+                        locationListener.triggers = entry.value.filter { it.enabled }
+                    }
+                    TimeTrigger::class -> {
+                        timeListener.updateTriggers(entry.value.filter { it.enabled && (it.trigger as TimeTrigger).activeDays.isNotEmpty() })
+                    }
+                    SimpleEventTrigger::class -> {
+                        simpleEventListener.triggers = entry.value.filter { it.enabled }
+                    }
+                    else -> throw NotImplementedError("Trigger not handled")
+                }
+            }
+
+        })
     }
 
     private fun createLocationManager() {
@@ -66,6 +111,9 @@ class MyService : Service() {
 
     override fun onDestroy() {
         locationManager.removeUpdates(locationListener)
+        unregisterReceiver(timeListener)
+        unregisterReceiver(simpleEventListener)
+        super.onDestroy()
     }
 
 
@@ -97,6 +145,7 @@ class MyService : Service() {
         const val NOTIFICATION_CHANNEL_ID = "service_channel"
         const val NOTIFICATION_CHANNEL_NAME = "Service channel"
         const val NOTIFICATION_ID = 13
+        const val INTENT_ACTION_ALARM = "MY_TIME_INTENT_FILTER"
 
     }
 }

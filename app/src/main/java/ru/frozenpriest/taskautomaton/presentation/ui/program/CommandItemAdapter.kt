@@ -5,21 +5,28 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import ru.frozenpriest.taskautomaton.R
+import ru.frozenpriest.taskautomaton.presentation.commands.CommandBuilder.CommandClass.*
+import ru.frozenpriest.taskautomaton.presentation.ui.CommandsEditDialogFragment
 import ru.frozenpriest.taskautomaton.program.OnCommandRunListener
 import ru.frozenpriest.taskautomaton.program.Program
+import ru.frozenpriest.taskautomaton.program.commands.Command
 import ru.frozenpriest.taskautomaton.utils.ItemTouchHelperAdapter
 
 class CommandItemAdapter(
     private val context: Context,
-    var program: Program,
+    private val fragmentManager: FragmentManager,
+    val viewModel: ProgramViewModel
 ) :
     RecyclerView.Adapter<CommandItemAdapter.ViewHolder>(),
     ItemTouchHelperAdapter,
     OnCommandRunListener {
+    lateinit var program: Program
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -32,6 +39,27 @@ class CommandItemAdapter(
             ivIcon = view.findViewById(R.id.imageViewIcon)
             commandName = view.findViewById(R.id.textViewCommand)
             commandDesc = view.findViewById(R.id.textViewDescription)
+            button = view.findViewById(R.id.imageButtonDelete)
+            button.setOnClickListener {
+                removeCommand(adapterPosition)
+            }
+            view.setOnClickListener {
+
+                CommandsEditDialogFragment(object : CommandsEditDialogFragment.CommandEditListener {
+                    override fun onCommandEdit(command: Command) {
+                        if (!listOf(
+                                EndWhile,
+                                EndIf,
+                                EndElse,
+                                ElseCondition
+                            ).contains(command.info.commandClass)
+                        )
+                            editCommand(adapterPosition, command)
+                    }
+
+                }, program.commands[adapterPosition]).show(fragmentManager, "menuTag")
+
+            }
         }
     }
 
@@ -39,13 +67,13 @@ class CommandItemAdapter(
         val item = program.commands[position]
 
         val layoutParams = holder.ivIcon.layoutParams as ViewGroup.MarginLayoutParams
-        layoutParams.marginStart = item.level * 32 + 8
+        layoutParams.marginStart = item.info.level * 32 + 8
         holder.ivIcon.layoutParams = layoutParams
 
-        holder.ivIcon.setImageResource(item.iconId)
+        holder.ivIcon.setImageResource(item.info.iconId)
 
-        holder.commandName.text = item.commandName
-        holder.commandDesc.text = item.commandDescription
+        holder.commandName.text = item.info.name
+        holder.commandDesc.text = item.info.description
 
         if (program.commandPointer == position) holder.itemView.setBackgroundColor(Color.GREEN)
         else holder.itemView.setBackgroundColor(Color.WHITE)
@@ -56,17 +84,39 @@ class CommandItemAdapter(
         return program.commands.size
     }
 
-    fun bind(program: Program) {
-        this.program = program
-        notifyDataSetChanged()
-    }
-
-
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         lateinit var ivIcon: ImageView
         lateinit var commandName: TextView
         lateinit var commandDesc: TextView
+        lateinit var button: ImageButton
     }
+
+    private fun removeCommand(adapterPosition: Int) {
+        if (adapterPosition == -1) return
+
+        val removedIndexes = program.removeCommandAt(adapterPosition)
+
+
+        program.setLevels()
+        viewModel.updateProgram()
+        for ((i, item) in removedIndexes.withIndex())
+            notifyItemRemoved(item - i)
+        notifyItemRangeChanged(
+            removedIndexes[0],
+            removedIndexes.last() - removedIndexes.first() + 1 - removedIndexes.size
+        )
+    }
+
+    private fun editCommand(adapterPosition: Int, command: Command) {
+        if (adapterPosition == -1) return
+
+        program.editCommandAt(adapterPosition, command)
+
+        viewModel.updateProgram()
+
+        notifyItemChanged(adapterPosition)
+    }
+
 
     override fun onItemMove(fromPos: Int, toPos: Int) {
         val mutable = program.commands.toMutableList()
@@ -80,6 +130,7 @@ class CommandItemAdapter(
         program.commands = mutable.toList()
 
         program.setLevels()
+        viewModel.updateProgram()
 
 
         notifyItemMoved(fromPos, toPos)
@@ -88,7 +139,13 @@ class CommandItemAdapter(
     }
 
     override fun onCommandRun(commandPointerFrom: Int, commandPointerTo: Int) {
+        println("DDDDDDDDDDDDDDDDDDD $commandPointerFrom $commandPointerTo")
         notifyItemChanged(commandPointerTo)
         notifyItemChanged(commandPointerFrom)
+    }
+
+    fun bind(program: Program) {
+        this.program = program
+        program.listener = this
     }
 }

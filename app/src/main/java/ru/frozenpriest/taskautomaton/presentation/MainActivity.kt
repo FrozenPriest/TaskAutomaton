@@ -3,12 +3,17 @@ package ru.frozenpriest.taskautomaton.presentation
 import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
-import androidx.appcompat.app.AppCompatActivity
+import android.view.View
+import androidx.fragment.app.FragmentActivity
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import dagger.hilt.android.AndroidEntryPoint
 import ru.frozenpriest.taskautomaton.R
 import ru.frozenpriest.taskautomaton.program.service.MyService
 
-
-class MainActivity : AppCompatActivity() {
+@AndroidEntryPoint
+class MainActivity : FragmentActivity() {
     companion object {
         const val OVERLAY_PERMISSION_REQ_CODE = 1
 
@@ -18,19 +23,36 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        val navView: BottomNavigationView = findViewById(R.id.bottomNavigationView)
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.main_nav_host_fragment) as NavHostFragment
+        val navController = navHostFragment.navController
+        navView.setupWithNavController(navController)
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            when (destination.id) {
+                R.id.programFragment -> {
+                    navView.visibility = View.GONE
+                }
+                else -> {
+                    navView.visibility = View.VISIBLE
+                }
+            }
+        }
+
+
+
         checkPermissionOverlay()
 
 
         val intent = Intent(this, MyService::class.java)
-        intent.putExtra("ProgramId", "id") //todo when have database
-        stopService(intent) //todo for debug purposes, remove later
+  //      stopService(intent) //todo for debug purposes, remove later
         startService(intent)
 
 
     }
 
 
-    fun checkPermissionOverlay() {
+    private fun checkPermissionOverlay() {
         if (!Settings.canDrawOverlays(this)) {
             println("WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW")
             requestPermissions(

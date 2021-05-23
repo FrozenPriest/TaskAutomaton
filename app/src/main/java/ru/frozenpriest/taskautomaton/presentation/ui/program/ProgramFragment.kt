@@ -1,24 +1,26 @@
 package ru.frozenpriest.taskautomaton.presentation.ui.program
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.appcompat.view.menu.ActionMenuItemView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import dagger.hilt.android.AndroidEntryPoint
 import ru.frozenpriest.taskautomaton.R
-import ru.frozenpriest.taskautomaton.program.service.MyService
-import ru.frozenpriest.taskautomaton.program.Program
+import ru.frozenpriest.taskautomaton.presentation.ui.CommandsMenuFragment
+import ru.frozenpriest.taskautomaton.program.commands.Command
 import ru.frozenpriest.taskautomaton.utils.CustomItemTouchHelper
 import ru.frozenpriest.taskautomaton.utils.ItemTouchHelperAdapter
 
-
+@AndroidEntryPoint
 class ProgramFragment : Fragment(R.layout.fragment_program) {
 
     private val viewModel: ProgramViewModel by viewModels()
@@ -27,39 +29,64 @@ class ProgramFragment : Fragment(R.layout.fragment_program) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.getInt("programId")?.let { recipeId ->
-            //load program
+        arguments?.getLong("programId")?.let { programId ->
+            viewModel.loadProgram(programId)
         }
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupToolbar()
         setupRecyclerView()
-        setupButtons()
+        val toolbar: MaterialToolbar = view.findViewById(R.id.toolbar)
+        val floatingButton: FloatingActionButton = view.findViewById(R.id.floatingActionButton)
 
-        (rvProgram.adapter as CommandItemAdapter).bind(viewModel.program.value)
-//       todo remake as viewmodel command
-        viewModel.program.value.listener = rvProgram.adapter as CommandItemAdapter
+        viewModel.program.observe(viewLifecycleOwner, {
+            if(it == null) return@observe
+            toolbar.title = it.name
+            if (rvProgram.adapter == null) {
+                rvProgram.adapter = context?.let { context ->
+                    CommandItemAdapter(
+                        context = context,
+                        fragmentManager = parentFragmentManager,
+                        viewModel = viewModel
+                    )
+                }
+                val callback: ItemTouchHelper.Callback =
+                    CustomItemTouchHelper(rvProgram.adapter as ItemTouchHelperAdapter)
+                val touchHelper = ItemTouchHelper(callback)
+                touchHelper.attachToRecyclerView(rvProgram)
+            }
+            (rvProgram.adapter as CommandItemAdapter).bind(it)
 
+            floatingButton.setOnClickListener { showAddCommandDialog() }
+        })
+
+    }
+
+    private fun showAddCommandDialog() {
         context?.let {
-            val intent = Intent(it, MyService::class.java)
-            intent.putExtra("ProgramId", "id") //todo when have database
-            it.stopService(intent) //todo for debug purposes, remove later
-            it.startService(intent)
+            val listener = object :
+                CommandsMenuFragment.CommandSelectionListener {
+                override fun onCommandSelected(commands: List<Command>) {
+                    viewModel.addCommands(commands)
+                }
+            }
+            CommandsMenuFragment(listener).show(parentFragmentManager, "menuTag")
         }
     }
 
-    private fun setupButtons() {
+    private fun setupToolbar() {
         activity?.apply {
-
-            val buttonStart: ImageButton = findViewById(R.id.imageButtonPlay)
+            val buttonStart: ActionMenuItemView = findViewById(R.id.imageButtonPlay)
             buttonStart.setOnClickListener { onButtonStart() }
 
-            val buttonStep: ImageButton = findViewById(R.id.imageButtonStep)
+            val buttonStep: ActionMenuItemView = findViewById(R.id.imageButtonStep)
             buttonStep.setOnClickListener { onButtonStep() }
 
-            val buttonReset: ImageButton = findViewById(R.id.imageButtonStop)
+            val buttonReset: ActionMenuItemView = findViewById(R.id.imageButtonStop)
             buttonReset.setOnClickListener { onButtonReset() }
         }
     }
@@ -70,19 +97,16 @@ class ProgramFragment : Fragment(R.layout.fragment_program) {
             rvProgram.apply {
                 layoutManager =
                     LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-                adapter = CommandItemAdapter(context = context, program = Program(emptyList()))
 
-                val dividerItemDecoration = DividerItemDecoration(context, RecyclerView.VERTICAL)
+                val dividerItemDecoration =
+                    DividerItemDecoration(context, RecyclerView.VERTICAL)
                 AppCompatResources.getDrawable(context, R.drawable.divider_drawable)?.let {
                     dividerItemDecoration.setDrawable(it)
                 }
 
                 addItemDecoration(dividerItemDecoration)
 
-                val callback: ItemTouchHelper.Callback =
-                    CustomItemTouchHelper(adapter as ItemTouchHelperAdapter)
-                val touchHelper = ItemTouchHelper(callback)
-                touchHelper.attachToRecyclerView(rvProgram)
+
             }
 
         }
@@ -90,7 +114,7 @@ class ProgramFragment : Fragment(R.layout.fragment_program) {
 
     private fun onButtonStart() {
         context?.let {
-            if (viewModel.program.value.isSyntaxValid)
+            if (viewModel.isSyntaxValid())
                 viewModel.executeCommands(it)
             else
                 showProgramErrorToast()

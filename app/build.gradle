@@ -3,9 +3,10 @@ plugins {
     id 'kotlin-android'
     id 'kotlin-kapt'
     id 'kotlin-parcelize'
+    id 'dagger.hilt.android.plugin'
 
 }
-def compose_version = "1.0.0-beta05"
+def compose_version = "1.0.0-beta06"
 
 android {
     compileSdkVersion 30
@@ -38,7 +39,12 @@ android {
 
 dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.compose.ui:ui-tooling:1.0.0-beta05'
+    implementation 'androidx.compose.ui:ui-tooling:1.0.0-beta06'
+    implementation 'androidx.lifecycle:lifecycle-service:2.3.1'
+    implementation 'androidx.test.ext:junit-ktx:1.1.2'
+
+    androidTestImplementation "androidx.arch.core:core-testing:2.1.0"
+
     def navigation = "2.3.5"
     implementation "androidx.navigation:navigation-fragment-ktx:$navigation"
     implementation "androidx.navigation:navigation-ui-ktx:$navigation"
@@ -65,7 +71,6 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycleVersion"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion"
-    implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycleVersion"
 
     implementation 'androidx.fragment:fragment-ktx:1.3.3'
 
@@ -87,4 +92,24 @@ dependencies {
     implementation "androidx.compose.material:material:$compose_version"
     implementation "androidx.compose.material:material-icons-core:$compose_version"
     implementation "androidx.compose.material:material-icons-extended:$compose_version"
+    implementation "androidx.activity:activity-compose:1.3.0-alpha07"
+
+    implementation 'androidx.appcompat:appcompat:1.3.0-rc01'
+
+    implementation "org.jetbrains.kotlin:kotlin-reflect:1.4.32"
+
+
+    def jackson = "2.10.1"
+    implementation "com.fasterxml.jackson.core:jackson-core:$jackson"
+    implementation "com.fasterxml.jackson.core:jackson-annotations:$jackson"
+    implementation "com.fasterxml.jackson.core:jackson-databind:$jackson"
+    //dependency injection
+    implementation "com.google.dagger:hilt-android:$hilt_version"
+    kapt "com.google.dagger:hilt-compiler:$hilt_version"
+    kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
+    def hilt_lifecycle_view_model = "1.0.0-alpha03"
+    implementation "androidx.hilt:hilt-lifecycle-viewmodel:$hilt_lifecycle_view_model"
+    kapt "androidx.hilt:hilt-compiler:$hilt_lifecycle_view_model"
+
+    implementation "io.github.vanpra.compose-material-dialogs:datetime:0.4.0"
 }

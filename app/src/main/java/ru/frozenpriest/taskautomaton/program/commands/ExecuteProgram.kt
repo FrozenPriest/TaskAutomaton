@@ -1,17 +1,23 @@
 package ru.frozenpriest.taskautomaton.program.commands
 
 import android.content.Context
+import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.annotation.JsonTypeName
 import ru.frozenpriest.taskautomaton.R
-import ru.frozenpriest.taskautomaton.program.Command
+import ru.frozenpriest.taskautomaton.presentation.commands.CommandBuilder
 import ru.frozenpriest.taskautomaton.program.Program
 
-class ExecuteProgram(val program: String, val args: HashMap<String, Any>): Command() {
-    override val commandName: String
-        get() = "Execute $program with args"
-    override val commandDescription: String
-        get() = ""
-    override val iconId: Int
-        get() = R.drawable.icon_sample
+@JsonTypeName("ExecuteProgram")
+class ExecuteProgram(
+    @JsonProperty("program")
+    val program: String
+) : Command(
+    name = "Execute $program with args",
+    description = "",
+    iconId = R.drawable.icon_sample,
+    commandType = CommandType.Output,
+    commandClass = CommandBuilder.CommandClass.ExecuteProgram
+) {
 
     override fun perform(program: Program, context: Context) {
         //todo later

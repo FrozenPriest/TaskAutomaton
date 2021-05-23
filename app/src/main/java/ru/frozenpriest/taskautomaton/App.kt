@@ -6,9 +6,10 @@ import android.os.Vibrator
 import android.speech.tts.TextToSpeech
 import android.util.Log
 import android.view.WindowManager
+import dagger.hilt.android.HiltAndroidApp
 import java.util.*
 
-
+@HiltAndroidApp
 class App : Application(), TextToSpeech.OnInitListener {
     override fun onCreate() {
         super.onCreate()

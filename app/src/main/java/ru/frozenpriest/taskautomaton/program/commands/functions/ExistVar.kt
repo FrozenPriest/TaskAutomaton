@@ -1,21 +1,22 @@
 package ru.frozenpriest.taskautomaton.program.commands.functions
 
 import android.content.Context
+import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.annotation.JsonTypeName
 import ru.frozenpriest.taskautomaton.R
-import ru.frozenpriest.taskautomaton.program.commands.Function
+import ru.frozenpriest.taskautomaton.presentation.commands.CommandBuilder
 import ru.frozenpriest.taskautomaton.program.Program
+import ru.frozenpriest.taskautomaton.program.commands.Function
 
 /**
  * varResult = isExist(varName)
  */
-class ExistVar(val varName: String): Function() {
-    override val commandName: String
-        get() = "Is exist"
-    override val commandDescription: String
-        get() = varName
-    override val iconId: Int
-        get() = R.drawable.icon_sample
-
+@JsonTypeName("ExistVar")
+class ExistVar(
+    @JsonProperty("varName")
+    val varName: String
+) :
+    Function("Is exist", varName, R.drawable.icon_sample, CommandBuilder.CommandClass.ExistVar) {
 
     override fun perform(program: Program, context: Context) {
         functionResult = program.variables.containsKey(varName)

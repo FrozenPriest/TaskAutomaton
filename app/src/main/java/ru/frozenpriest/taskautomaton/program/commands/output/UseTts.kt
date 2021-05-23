@@ -2,19 +2,31 @@ package ru.frozenpriest.taskautomaton.program.commands.output
 
 import android.content.Context
 import android.speech.tts.TextToSpeech
+import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.annotation.JsonTypeName
 import ru.frozenpriest.taskautomaton.App
 import ru.frozenpriest.taskautomaton.R
-import ru.frozenpriest.taskautomaton.program.Command
+import ru.frozenpriest.taskautomaton.presentation.commands.CommandBuilder
 import ru.frozenpriest.taskautomaton.program.Program
+import ru.frozenpriest.taskautomaton.program.commands.Command
+import ru.frozenpriest.taskautomaton.program.commands.CommandType
 import java.util.*
 
-class UseTts(val stringToShow: String, val args: Array<String>, val language: Locale) : Command() {
-    override val commandName: String
-        get() = "Speak text"
-    override val commandDescription: String
-        get() = "$stringToShow, lang = ${language.language}"
-    override val iconId: Int
-        get() = R.drawable.icon_sample
+@JsonTypeName("UseTts")
+class UseTts(
+    @JsonProperty("stringToShow")
+    val stringToShow: String,
+    @JsonProperty("args")
+    val args: List<String>,
+    @JsonProperty("language")
+    val language: Locale
+) : Command(
+    name = "Speak text",
+    description = "$stringToShow, lang = ${language.language}",
+    iconId = R.drawable.icon_sample,
+    commandType = CommandType.Output,
+    commandClass = CommandBuilder.CommandClass.UseTts
+) {
 
     override fun perform(program: Program, context: Context) {
         val vars = args.map { program.variables[it] }.toTypedArray()

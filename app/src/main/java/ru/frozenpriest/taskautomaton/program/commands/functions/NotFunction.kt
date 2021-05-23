@@ -1,18 +1,19 @@
 package ru.frozenpriest.taskautomaton.program.commands.functions
 
 import android.content.Context
+import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.annotation.JsonTypeName
 import ru.frozenpriest.taskautomaton.R
-import ru.frozenpriest.taskautomaton.program.commands.Function
+import ru.frozenpriest.taskautomaton.presentation.commands.CommandBuilder
 import ru.frozenpriest.taskautomaton.program.Program
+import ru.frozenpriest.taskautomaton.program.commands.Function
 
-class NotFunction(val function: Function) : Function() {
-    override val commandName: String
-        get() = "Not"
-    override val commandDescription: String
-        get() = function.commandName
-    override val iconId: Int
-        get() = R.drawable.icon_sample
-
+@JsonTypeName("NotFunction")
+class NotFunction(
+    @JsonProperty("function")
+    val function: Function
+) :
+    Function("Not", "!(${function.info.description})", R.drawable.icon_sample, CommandBuilder.CommandClass.NotFunction) {
 
     override fun perform(program: Program, context: Context) {
         function.perform(program, context)
