@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:icon="@drawable/ic_baseline_play_arrow_24"
+        android:title="@string/play"
+        android:id="@+id/imageButtonPlay"
+        app:showAsAction="ifRoom" />
+    <item
+        android:icon="@drawable/ic_baseline_play_for_work_24"
+        android:title="@string/step"
+        app:showAsAction="ifRoom"
+        android:id="@+id/imageButtonStep"/>
+    <item
+        android:icon="@drawable/ic_baseline_stop_24"
+        android:title="@string/reset"
+        app:showAsAction="ifRoom"
+        android:id="@+id/imageButtonStop"/>
+</menu>

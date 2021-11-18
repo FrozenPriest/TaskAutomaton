@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">TaskAutomaton</string>
+    <string name="play">Play</string>
+    <string name="step">Step</string>
+    <string name="reset">Reset</string>
+    <string name="command_icon">Command icon</string>
+    <string name="add_command">Add command</string>
+    <string name="delete_command">Delete command</string>
+    <string name="triggers">Triggers</string>
+    <string name="programs">Programs</string>
+</resources>
